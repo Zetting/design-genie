@@ -561,13 +561,13 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
 .ta-modal-cnt{font-size:10px;color:#bbb;text-align:right;}
 
 /* 包含模块多选 */
-.module-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:8px 0 0 8px;margin:-8px 0 0 -8px;}
+.module-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px 0 0 0;overflow:visible;}
 .mod-card{
-  border:1.5px solid var(--border);border-radius:12px;padding:11px 12px 10px;
+  border:1.5px solid var(--border);border-radius:12px;padding:18px 12px 10px;
   cursor:grab;transition:border-color .15s,opacity .15s,box-shadow .15s;
   display:flex;flex-direction:column;
   align-items:flex-start;gap:3px;background:#fff;position:relative;
-  user-select:none;
+  user-select:none;overflow:visible;
 }
 .mod-card:active{cursor:grabbing;}
 .mod-card:hover{border-color:var(--pp2);}
@@ -1277,7 +1277,7 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
   cursor:pointer;font-family:inherit;white-space:nowrap;
 }
 
-/* ══ 板块设置弹窗 ══ */
+/* ══ 板块设置弹窗（底部抽屉） ══ */
 .ipln-mask{
   display:none;position:fixed;inset:0;z-index:700;
   align-items:flex-end;justify-content:center;
@@ -1290,6 +1290,62 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
   box-shadow:0 -4px 32px rgba(0,0,0,.12);
   display:flex;flex-direction:column;overflow:hidden;
 }
+
+/* ══ AI 智能弹窗（居中对话框） ══ */
+.ai-mode-mask{
+  display:none;position:fixed;inset:0;z-index:710;
+  align-items:center;justify-content:center;
+  background:rgba(0,0,0,.38);
+}
+.ai-mode-mask.show{display:flex;}
+.ai-mode-sheet{
+  width:380px;max-height:86vh;background:#fff;
+  border-radius:18px;
+  box-shadow:0 8px 40px rgba(0,0,0,.18);
+  display:flex;flex-direction:column;overflow:hidden;
+  animation:aiSheetIn .2s cubic-bezier(.34,1.3,.64,1) both;
+}
+@keyframes aiSheetIn{
+  from{opacity:0;transform:scale(.93) translateY(8px);}
+  to{opacity:1;transform:scale(1) translateY(0);}
+}
+/* 每个板块行（AI弹窗内） */
+.ai-mode-row{
+  display:flex;flex-direction:column;
+  border-bottom:1px solid #f3f3f5;
+}
+.ai-mode-row:last-child{border-bottom:none;}
+.ai-mode-row-main{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 20px;
+}
+.ai-mode-row.off .ai-mode-row-main{opacity:.4;}
+/* 要求展开区 */
+.ai-mode-req-zone{
+  max-height:0;overflow:hidden;
+  transition:max-height .22s ease;
+  padding:0 20px;
+}
+.ai-mode-req-zone.open{max-height:80px;padding-bottom:10px;}
+.ai-mode-req-ta{
+  width:100%;box-sizing:border-box;
+  border:1.5px solid #e8e8e8;border-radius:8px;
+  padding:7px 10px;font-size:12px;font-family:inherit;
+  color:#333;resize:none;height:56px;outline:none;
+  background:#fafafa;line-height:1.5;
+  transition:border-color .15s;
+}
+.ai-mode-req-ta:focus{border-color:#6366f1;background:#fff;}
+.ai-mode-req-ta::placeholder{color:#ccc;}
+/* 展开箭头按钮 */
+.ai-mode-exp{
+  width:22px;height:22px;border:none;background:none;
+  cursor:pointer;color:#bbb;padding:0;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  transition:color .15s,transform .2s;
+}
+.ai-mode-exp:hover{color:#6366f1;}
+.ai-mode-exp.open{color:#6366f1;transform:rotate(180deg);}
 /* 顶部拖把条 */
 .ipln-handle{
   width:36px;height:4px;border-radius:2px;background:#e0e0e0;
@@ -1717,9 +1773,10 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
 
 /* ══ 套图卡片类型标签 ══ */
 .mod-stype-tag{
-  position:absolute;top:-9px;left:8px;
-  font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;
-  background:rgba(99,102,241,.13);color:#6366f1;pointer-events:none;z-index:2;
+  position:absolute;top:-8px;left:9px;
+  font-size:9px;font-weight:700;padding:1px 6px;border-radius:4px;
+  background:rgba(99,102,241,.13);color:#6366f1;pointer-events:none;z-index:3;
+  line-height:14px;white-space:nowrap;
 }
 .mod-stype-tag.stype-detail{background:rgba(16,185,129,.12);color:#059669;}
 .mod-stype-tag.stype-sku   {background:rgba(124,58,237,.12);color:#7c3aed;}
@@ -2772,44 +2829,40 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
   <div class="stool">🤖</div>
 </div>
 
-<!-- 生成设置弹窗（全局层） -->
-<!-- ══ AI 智能模式弹窗 ══ -->
-<div class="ipln-mask" id="aiModeMask" onclick="closeAiModeMask(event)">
-  <div class="ipln-sheet" onclick="event.stopPropagation()" style="max-height:82vh;">
-    <div class="ipln-handle"></div>
+<!-- ══ AI 智能模式弹窗（居中） ══ -->
+<div class="ai-mode-mask" id="aiModeMask" onclick="closeAiModeMask(event)">
+  <div class="ai-mode-sheet" onclick="event.stopPropagation()">
 
     <!-- 头部 -->
-    <div class="ipln-head" style="padding-bottom:12px;">
-      <div style="display:flex;flex-direction:column;gap:2px;">
-        <span class="ipln-title" style="display:flex;align-items:center;gap:6px;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2.2"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;padding:20px 20px 14px;flex-shrink:0;border-bottom:1px solid #f3f3f5;">
+      <div style="display:flex;flex-direction:column;gap:3px;">
+        <span style="font-size:15px;font-weight:700;color:#111;display:flex;align-items:center;gap:7px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2.2"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
           AI 智能生成
         </span>
-        <span style="font-size:11px;color:#bbb;">配置要生成的图片类型，AI 自动分析规划</span>
+        <span style="font-size:11px;color:#aaa;">选择类型和数量，可添加生成要求，AI 自动分析规划</span>
       </div>
-      <button class="ipln-close" onclick="closeAiModeMask()">
+      <button class="ipln-close" onclick="closeAiModeMask()" style="margin-top:2px;">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
 
-    <!-- 板块列表 -->
-    <div class="ipln-body" id="aiModeIplnList" style="flex:1;"></div>
+    <!-- 板块列表（可滚动） -->
+    <div style="flex:1;overflow-y:auto;" id="aiModeIplnList"></div>
 
     <!-- 自定义添加 -->
-    <div class="ipln-add-zone">
+    <div class="ipln-add-zone" style="border-top:1px solid #f3f3f5;border-bottom:none;">
       <input class="ipln-add-field" id="aiModeNewName" placeholder="自定义类型，如 SKU图" maxlength="10"
         onkeydown="if(event.key==='Enter')aiModeAddRow()" />
       <button class="ipln-add-go" onclick="aiModeAddRow()">添加</button>
     </div>
 
     <!-- 底部按钮 -->
-    <div class="ipln-foot">
-      <!-- 分析中状态 -->
+    <div class="ipln-foot" style="border-top:1px solid #f3f3f5;">
       <div id="aiModeAnalyzing" style="display:none;align-items:center;justify-content:center;gap:8px;padding:12px 0;">
         <div class="ipln-ai-spinner"></div>
         <span style="font-size:13px;color:#6366f1;font-weight:600;">AI 正在分析，规划生成方案...</span>
       </div>
-      <!-- 正常按钮 -->
       <button class="ipln-save-btn" id="aiModeStartBtn"
         style="background:linear-gradient(135deg,#6366f1,#7c3aed);"
         onclick="aiModeStartAnalyze()">
@@ -3421,12 +3474,12 @@ function openAiModeMask(){
   document.getElementById('aiModeMask').classList.add('show');
   document.getElementById('aiModeAnalyzing').style.display = 'none';
   document.getElementById('aiModeStartBtn').style.display = '';
+  document.getElementById('aiModeIplnList').style.opacity = '';
 }
 
 function closeAiModeMask(e){
   if(!e || e.target === document.getElementById('aiModeMask')){
     document.getElementById('aiModeMask').classList.remove('show');
-    // 若用户关掉而未分析，把模式切回自定义
     _genMode = 'custom';
     document.getElementById('genModeCustomBtn').classList.add('active');
     document.getElementById('genModeAiBtn').classList.remove('active');
@@ -3442,22 +3495,34 @@ function _aiModeRender(){
     var opts = ratios.map(function(r){
       return '<option value="'+r+'"'+(d.ratio===r?' selected':'')+'>'+r+'</option>';
     }).join('');
-    html += '<div class="ai-ipln-row'+(d.on?'':' off')+'" id="aiModeRow'+i+'">'
-      +'<label class="ai-tog">'
-        +'<input type="checkbox"'+(d.on?' checked':'')
-          +' onchange="aiModeToggle(this,'+i+')">'
-        +'<span class="ai-tog-track"></span>'
-        +'<span class="ai-tog-thumb"></span>'
-      +'</label>'
-      +'<span class="ai-ipln-name">'+d.key+'</span>'
-      +'<div class="ai-st">'
-        +'<button class="ai-st-btn" onclick="aiModeStep('+i+',-1)">−</button>'
-        +'<span class="ai-st-n" id="aiModeN'+i+'">'+d.count+'</span>'
-        +'<button class="ai-st-btn" onclick="aiModeStep('+i+',1)">+</button>'
+    html += '<div class="ai-mode-row'+(d.on?'':' off')+'" id="aiModeRow'+i+'">'
+      // 主行
+      +'<div class="ai-mode-row-main">'
+        +'<label class="ai-tog">'
+          +'<input type="checkbox"'+(d.on?' checked':'')
+            +' onchange="aiModeToggle(this,'+i+')">'
+          +'<span class="ai-tog-track"></span>'
+          +'<span class="ai-tog-thumb"></span>'
+        +'</label>'
+        +'<span class="ai-ipln-name" style="flex:1;">'+d.key+'</span>'
+        +'<div class="ai-st">'
+          +'<button class="ai-st-btn" onclick="aiModeStep('+i+',-1)">−</button>'
+          +'<span class="ai-st-n" id="aiModeN'+i+'">'+d.count+'</span>'
+          +'<button class="ai-st-btn" onclick="aiModeStep('+i+',1)">+</button>'
+        +'</div>'
+        +'<div class="ai-sz">'
+          +'<select class="ai-sz-sel" onchange="aiModeRatio('+i+',this.value)">'+opts+'</select>'
+          +'<svg class="ai-sz-arr" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>'
+        +'</div>'
+        // 展开要求箭头
+        +'<button class="ai-mode-exp" id="aiModeExp'+i+'" onclick="aiModeToggleReq('+i+')" title="生成要求">'
+          +'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>'
+        +'</button>'
       +'</div>'
-      +'<div class="ai-sz">'
-        +'<select class="ai-sz-sel" onchange="aiModeRatio('+i+',this.value)">'+opts+'</select>'
-        +'<svg class="ai-sz-arr" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>'
+      // 要求展开区
+      +'<div class="ai-mode-req-zone" id="aiModeReq'+i+'">'
+        +'<textarea class="ai-mode-req-ta" placeholder="描述此类图片的特殊要求，如：背景纯白、突出产品细节..."'
+          +' onchange="aiModeSetReq('+i+',this.value)">'+( d.req||'' )+'</textarea>'
       +'</div>'
     +'</div>';
   });
@@ -3477,6 +3542,17 @@ function aiModeStep(idx, delta){
 }
 
 function aiModeRatio(idx, r){ _iplnData[idx].ratio = r; }
+
+function aiModeToggleReq(idx){
+  var zone = document.getElementById('aiModeReq'+idx);
+  var btn  = document.getElementById('aiModeExp'+idx);
+  if(!zone) return;
+  var isOpen = zone.classList.toggle('open');
+  if(btn) btn.classList.toggle('open', isOpen);
+  if(isOpen) zone.querySelector('textarea').focus();
+}
+
+function aiModeSetReq(idx, val){ _iplnData[idx].req = val; }
 
 function aiModeAddRow(){
   var inp = document.getElementById('aiModeNewName');
