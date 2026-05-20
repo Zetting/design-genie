@@ -1173,6 +1173,61 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
 /* ══ 电商套图：两个设置按钮垂直堆叠 ══ */
 .suite-cfg-btns{display:flex;flex-direction:column;gap:7px;}
 
+/* ══ 配置区空态 ══ */
+.cfg-empty{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:32px 16px 28px;gap:8px;
+}
+.cfg-empty-ic{
+  width:52px;height:52px;border-radius:14px;
+  background:linear-gradient(135deg,#f0eeff,#ede9fe);
+  display:flex;align-items:center;justify-content:center;margin-bottom:4px;
+}
+.cfg-empty-text{font-size:13px;font-weight:700;color:#555;}
+.cfg-empty-sub{font-size:11px;color:#bbb;text-align:center;line-height:1.7;}
+
+/* ══ 板块卡片入场动画 ══ */
+@keyframes modCardIn{
+  from{opacity:0;transform:translateY(10px) scale(.96);}
+  to{opacity:1;transform:translateY(0) scale(1);}
+}
+.mod-card.entering{
+  animation:modCardIn .28s cubic-bezier(.34,1.2,.64,1) both;
+}
+
+/* ══ 自定义选板块抽屉 — 分组 ══ */
+.cpick-group{padding:4px 0;}
+.cpick-group-label{
+  font-size:10px;font-weight:700;color:#bbb;letter-spacing:.06em;
+  padding:10px 20px 4px;text-transform:uppercase;
+}
+.cpick-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 20px;cursor:pointer;transition:background .12s;
+}
+.cpick-item:hover{background:#fafafa;}
+.cpick-item.picked .cpick-check{
+  background:#6366f1;border-color:#6366f1;
+}
+.cpick-item.picked .cpick-check svg{display:block;}
+.cpick-check{
+  width:18px;height:18px;border:1.5px solid #e0e0e0;border-radius:5px;
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  transition:all .15s;
+}
+.cpick-check svg{display:none;}
+.cpick-tag{
+  font-size:9px;font-weight:700;padding:2px 5px;border-radius:3px;
+  flex-shrink:0;
+}
+.cpick-tag-main{background:#ede9fe;color:#6366f1;}
+.cpick-tag-detail{background:#dbeafe;color:#2563eb;}
+.cpick-tag-sku{background:#dcfce7;color:#16a34a;}
+.cpick-tag-promo{background:#fef9c3;color:#b45309;}
+.cpick-info{flex:1;display:flex;flex-direction:column;gap:1px;}
+.cpick-name{font-size:13px;font-weight:600;color:#222;}
+.cpick-desc{font-size:11px;color:#aaa;}
+
 /* ══ 内联生成设置 ══ */
 .gset-inline{
   margin-top:10px;border:1.5px solid #eee;border-radius:10px;
@@ -2504,11 +2559,11 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
             </button>
           </div>
 
-          <!-- 生成模式切换 -->
+          <!-- 生成模式 -->
           <div class="gen-mode-row" style="margin-top:12px;">
-            <span class="gen-mode-label">生成模式</span>
+            <span class="gen-mode-label">配置板块</span>
             <div class="gen-mode-seg">
-              <button class="gen-mode-btn active" id="genModeCustomBtn" onclick="switchGenMode('custom')">自定义</button>
+              <button class="gen-mode-btn" id="genModeCustomBtn" onclick="openCustomPickMask()">自定义</button>
               <button class="gen-mode-btn" id="genModeAiBtn" onclick="switchGenMode('ai')">
                 <span style="background:linear-gradient(135deg,#6366f1,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">✦ AI 智能</span>
               </button>
@@ -2522,186 +2577,31 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
             <h3>配置</h3>
             <div class="tip">?</div>
           </div>
-          <div class="mod-hd-row">
-            <span style="font-size:11px;color:var(--muted)">双击可编辑</span>
+          <div class="mod-hd-row" id="modHdRowAdv" style="display:none;">
+            <span style="font-size:11px;color:var(--muted)">点击勾选 · 拖拽排序</span>
             <div style="display:flex;align-items:center;gap:8px;">
-              <button class="mod-sel-all" onclick="resetMods()">
+              <button class="mod-sel-all" onclick="clearAdvGrid()">
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.63"/></svg>
-                重置
+                清空
               </button>
-              <button class="mod-sel-all" id="modSelAllBtnAdv" onclick="toggleSelAllAdv()">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                全选
+              <button class="mod-sel-all" onclick="openCustomPickMask()">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                添加
               </button>
-              <button class="mod-dots-btn" id="modDotsBtnAdv" onclick="toggleModMenu(event)">···</button>
             </div>
           </div>
 
-          <div class="module-grid" id="modGridAdv">
-
-            <div class="mod-card sel" draggable="true" data-stype="主图" onclick="toggleMod(this)" ondblclick="openSuiteCfg(event,this)">
-              <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-              <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-stype-tag">主图</span>
-              <span class="mod-name">首屏主视觉</span>
-              <span class="mod-desc">传递核心价值</span>
-              <div class="mod-ref-dot"></div>
+          <!-- 空态引导 -->
+          <div class="cfg-empty" id="cfgEmptyAdv">
+            <div class="cfg-empty-ic">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#c4b5fd" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
             </div>
-
-            <div class="mod-card sel" draggable="true" data-stype="主图" onclick="toggleMod(this)" ondblclick="openSuiteCfg(event,this)">
-              <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-              <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-stype-tag">主图</span>
-              <span class="mod-name">核心卖点图</span>
-              <span class="mod-desc">突出差异优势</span>
-              <div class="mod-ref-dot"></div>
-            </div>
-
-            <div class="mod-card sel" draggable="true" data-stype="详情" onclick="toggleMod(this)" ondblclick="openSuiteCfg(event,this)">
-              <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-              <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-stype-tag stype-detail">详情</span>
-              <span class="mod-name">使用场景图</span>
-              <span class="mod-desc">呈现真实使用场景</span>
-              <div class="mod-ref-dot"></div>
-            </div>
-
-            <div class="mod-card sel" draggable="true" data-stype="详情" onclick="toggleMod(this)" ondblclick="openSuiteCfg(event,this)">
-              <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-              <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-stype-tag stype-detail">详情</span>
-              <span class="mod-name">多角度图</span>
-              <span class="mod-desc">多角度呈现外观</span>
-              <div class="mod-ref-dot"></div>
-            </div>
-
-            <div class="mod-card sel" draggable="true" data-stype="SKU" onclick="toggleMod(this)" ondblclick="openSuiteCfg(event,this)">
-              <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-              <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-stype-tag stype-sku">SKU</span>
-              <span class="mod-name">场景氛围图</span>
-              <span class="mod-desc">展示使用场景</span>
-              <div class="mod-ref-dot"></div>
-            </div>
-
-            <div class="mod-card" draggable="true" data-stype="详情" onclick="toggleMod(this)" ondblclick="openSuiteCfg(event,this)">
-              <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-              <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-stype-tag stype-detail">详情</span>
-              <span class="mod-name">商品细节图</span>
-              <span class="mod-desc">放大材质与工艺</span>
-              <div class="mod-ref-dot"></div>
-            </div>
-
-            <div class="mod-card" draggable="true" data-stype="车图" onclick="toggleMod(this)" ondblclick="openSuiteCfg(event,this)">
-              <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-              <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-stype-tag stype-promo">车图</span>
-              <span class="mod-name">品牌故事图</span>
-              <span class="mod-desc">传达品牌理念</span>
-              <div class="mod-ref-dot"></div>
-            </div>
-
-            <div class="mod-card" draggable="true" data-stype="详情" onclick="toggleMod(this)" ondblclick="openSuiteCfg(event,this)">
-              <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-              <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-stype-tag stype-detail">详情</span>
-              <span class="mod-name">尺寸/容量/尺码图</span>
-              <span class="mod-desc">展示规格信息</span>
-              <div class="mod-ref-dot"></div>
-            </div>
-
-            <div class="mod-card" draggable="true" data-stype="详情" onclick="toggleMod(this)" ondblclick="openSuiteCfg(event,this)">
-              <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-              <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-stype-tag stype-detail">详情</span>
-              <span class="mod-name">效果对比图</span>
-              <span class="mod-desc">使用前后效果对比</span>
-              <div class="mod-ref-dot"></div>
-            </div>
-
-            <div class="mod-card" draggable="true" data-stype="详情" onclick="toggleMod(this)" ondblclick="openSuiteCfg(event,this)">
-              <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-              <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-stype-tag stype-detail">详情</span>
-              <span class="mod-name">详细规格/参数表</span>
-              <span class="mod-desc">展示详细商品数据</span>
-              <div class="mod-ref-dot"></div>
-            </div>
-
-            <div class="mod-card" draggable="true" data-stype="详情" onclick="toggleMod(this)" ondblclick="openSuiteCfg(event,this)">
-              <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-              <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-stype-tag stype-detail">详情</span>
-              <span class="mod-name">工艺制作图</span>
-              <span class="mod-desc">展示工艺制作过程</span>
-              <div class="mod-ref-dot"></div>
-            </div>
-
-            <div class="mod-card" draggable="true" data-stype="主图" onclick="toggleMod(this)" ondblclick="openSuiteCfg(event,this)">
-              <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-              <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-stype-tag">主图</span>
-              <span class="mod-name">配件/赠品图</span>
-              <span class="mod-desc">明确收货的所有物品</span>
-              <div class="mod-ref-dot"></div>
-            </div>
-
-            <div class="mod-card" draggable="true" data-stype="SKU" onclick="toggleMod(this)" ondblclick="openSuiteCfg(event,this)">
-              <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-              <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-stype-tag stype-sku">SKU</span>
-              <span class="mod-name">系列展示图</span>
-              <span class="mod-desc">多色或多SKU展示</span>
-              <div class="mod-ref-dot"></div>
-            </div>
-
-            <!-- 第 14 格：更多 | + 添加 -->
-            <div class="mod-card mod-more-card" id="modMoreCardAdv">
-              <div class="mod-more-left" onclick="toggleModMore()">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="transition:transform .2s;color:var(--muted);"><polyline points="6 9 12 15 18 9"/></svg>
-                <span style="font-size:11px;font-weight:500;color:var(--muted);">更多</span>
-              </div>
-              <div class="mod-more-sep"></div>
-              <div class="mod-more-right" onclick="addNewSuiteCard()">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                <span style="font-size:10px;font-weight:500;">添加</span>
-              </div>
-            </div>
-
-          </div><!-- /modGridAdv -->
-
-          <div class="mod-extra-grid module-grid" id="modExtraGridAdv" style="display:none;margin-top:8px;">
-
-            <div class="mod-card" draggable="true" onclick="toggleMod(this)" ondblclick="editModName(event,this)">
-              <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-              <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-name" ondblclick="editModName(event,this)">商品成分图</span>
-              <span class="mod-desc" ondblclick="editModDesc(event,this)">展示配方/材质/成分</span>
-            </div>
-
-            <div class="mod-card" draggable="true" onclick="toggleMod(this)" ondblclick="editModName(event,this)">
-              <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-              <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-name" ondblclick="editModName(event,this)">售后保障图</span>
-              <span class="mod-desc" ondblclick="editModDesc(event,this)">说明质保退换政策</span>
-            </div>
-
-            <div class="mod-card" draggable="true" onclick="toggleMod(this)" ondblclick="editModName(event,this)">
-              <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-              <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-name" ondblclick="editModName(event,this)">使用建议图</span>
-              <span class="mod-desc" ondblclick="editModDesc(event,this)">商品使用的注意事项</span>
-            </div>
-
-            <div class="mod-card" draggable="true" onclick="toggleMod(this)" ondblclick="editModName(event,this)">
-              <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-              <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-name" ondblclick="editModName(event,this)">物流包装图</span>
-              <span class="mod-desc" ondblclick="editModDesc(event,this)">展示包装与配送</span>
-            </div>
-
+            <div class="cfg-empty-text">板块待配置</div>
+            <div class="cfg-empty-sub">点击「✦ AI 智能」让 AI 自动规划，<br>或点击「自定义」手动选择板块</div>
           </div>
+
+          <!-- 已配置板块网格（动态渲染） -->
+          <div class="module-grid" id="modGridAdv" style="display:none;"></div>
 
         </div>
 
@@ -2862,6 +2762,23 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
   <div class="stool">⟳</div>
   <div class="stool" style="font-size:11px">AZ</div>
   <div class="stool">🤖</div>
+</div>
+
+<!-- ══ 自定义选板块弹窗（底部抽屉） ══ -->
+<div class="ipln-mask" id="customPickMask" onclick="closeCustomPickMask(event)">
+  <div class="ipln-sheet" onclick="event.stopPropagation()">
+    <div class="ipln-handle"></div>
+    <div class="ipln-head">
+      <span class="ipln-title">选择板块</span>
+      <button class="ipln-close" onclick="closeCustomPickMask()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="ipln-body" id="customPickBody"></div>
+    <div class="ipln-foot">
+      <button class="ipln-save-btn" onclick="confirmCustomPick()">确认添加 <span id="customPickCount"></span></button>
+    </div>
+  </div>
 </div>
 
 <!-- ══ AI 智能模式弹窗（居中） ══ -->
@@ -3492,49 +3409,194 @@ function iplnAiConfirm(){
 ════════════════════════════════════════ */
 var _genMode = 'custom';
 
-/* ── 内联生成设置：选值函数 ── */
-var _gset = { plat:'亚马逊', lang:'英文', model:'GPT-Image 2', res:'标准1K' };
+/* ══════════════════════════════════════════
+   配置板块 — 全局数据 & 工具
+══════════════════════════════════════════ */
 
-function _gsetPickOne(rowId, btn, val, key){
-  document.querySelectorAll('#'+rowId+' .gset-pill').forEach(function(b){ b.classList.remove('active'); });
-  btn.classList.add('active');
-  _gset[key] = val;
-  _syncGcfgFromGset(); // 同步到 genCfgMask 弹窗的摘要
-}
-function gsetPickPlat(btn, val){ _gsetPickOne('gsetPlatRow', btn, val, 'plat'); }
-function gsetPickLang(btn, val){ _gsetPickOne('gsetLangRow', btn, val, 'lang'); }
-function gsetPickModel(btn, val){ _gsetPickOne('gsetModelRow', btn, val, 'model'); }
-function gsetPickRes(btn, val){ _gsetPickOne('gsetResRow', btn, val, 'res'); }
+// 所有可选板块库
+var _ALL_MODS = [
+  {stype:'主图',  stypeCls:'',            name:'首屏主视觉',     desc:'传递核心价值'},
+  {stype:'主图',  stypeCls:'',            name:'核心卖点图',     desc:'突出差异优势'},
+  {stype:'主图',  stypeCls:'',            name:'配件/赠品图',    desc:'明确收货的所有物品'},
+  {stype:'主图',  stypeCls:'',            name:'白底主图',       desc:'纯白背景产品正面'},
+  {stype:'详情',  stypeCls:'stype-detail',name:'使用场景图',     desc:'呈现真实使用场景'},
+  {stype:'详情',  stypeCls:'stype-detail',name:'多角度图',       desc:'多角度呈现外观'},
+  {stype:'详情',  stypeCls:'stype-detail',name:'商品细节图',     desc:'放大材质与工艺'},
+  {stype:'详情',  stypeCls:'stype-detail',name:'效果对比图',     desc:'使用前后效果对比'},
+  {stype:'详情',  stypeCls:'stype-detail',name:'尺寸/规格图',    desc:'展示规格信息'},
+  {stype:'详情',  stypeCls:'stype-detail',name:'详细参数表',     desc:'展示详细商品数据'},
+  {stype:'详情',  stypeCls:'stype-detail',name:'工艺制作图',     desc:'展示工艺制作过程'},
+  {stype:'详情',  stypeCls:'stype-detail',name:'商品成分图',     desc:'展示配方/材质/成分'},
+  {stype:'详情',  stypeCls:'stype-detail',name:'售后保障图',     desc:'说明质保退换政策'},
+  {stype:'SKU',   stypeCls:'stype-sku',   name:'场景氛围图',     desc:'展示使用场景'},
+  {stype:'SKU',   stypeCls:'stype-sku',   name:'系列展示图',     desc:'多色或多SKU展示'},
+  {stype:'推广',  stypeCls:'stype-promo', name:'品牌故事图',     desc:'传达品牌理念'},
+  {stype:'推广',  stypeCls:'stype-promo', name:'物流包装图',     desc:'展示包装与配送'},
+];
 
-function _syncGcfgFromGset(){
-  var s = document.getElementById('cfgSummaryAdv');
-  if(s) s.textContent = _gset.plat+' · '+_gset.lang+' · '+_gset.model+' · '+_gset.res;
-}
+// 当前配置区已有的板块
+var _advMods = [];
 
-function switchGenMode(mode){
-  _genMode = mode;
-  var isAi = mode === 'ai';
+// 渲染配置区网格
+function _renderAdvGrid(){
+  var grid = document.getElementById('modGridAdv');
+  var empty = document.getElementById('cfgEmptyAdv');
+  var hd = document.getElementById('modHdRowAdv');
+  if(!grid) return;
 
-  document.getElementById('genModeCustomBtn').classList.toggle('active', !isAi);
-  document.getElementById('genModeAiBtn').classList.toggle('active', isAi);
-
-  if(isAi){
-    openAiModeMask();
-  } else {
-    var txtAdv = document.getElementById('genBtnTxtAdv');
+  if(!_advMods.length){
+    grid.style.display = 'none';
+    if(empty) empty.style.display = '';
+    if(hd) hd.style.display = 'none';
+    // 按钮置灰
     var btnAdv = document.getElementById('genBtnAdv');
-    if(txtAdv && btnAdv && !btnAdv.classList.contains('disabled')){
-      txtAdv.textContent = '✨ 立即生成套图';
-    }
+    var txtAdv = document.getElementById('genBtnTxtAdv');
+    if(btnAdv) btnAdv.classList.add('disabled');
+    if(txtAdv) txtAdv.textContent = '请先配置板块';
+    return;
+  }
+
+  if(empty) empty.style.display = 'none';
+  if(hd) hd.style.display = '';
+  grid.style.display = '';
+
+  var html = '';
+  _advMods.forEach(function(m, i){
+    html += '<div class="mod-card sel entering" draggable="true"'
+      +' style="animation-delay:'+(i*0.06)+'s"'
+      +' onclick="toggleModAdv(this)" data-idx="'+i+'">'
+      +'<button class="mod-del-btn" onclick="delModAdv(event,'+i+')">'
+        +'<svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
+      +'</button>'
+      +'<div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>'
+      +'<span class="mod-stype-tag '+m.stypeCls+'">'+m.stype+'</span>'
+      +'<span class="mod-name">'+m.name+'</span>'
+      +'<span class="mod-desc">'+m.desc+'</span>'
+      +'<div class="mod-ref-dot"></div>'
+    +'</div>';
+  });
+  // 末位添加按钮
+  html += '<div class="mod-card mod-more-card" onclick="openCustomPickMask()">'
+    +'<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:100%;height:100%;color:var(--muted);">'
+      +'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>'
+      +'<span style="font-size:10px;">添加板块</span>'
+    +'</div>'
+  +'</div>';
+
+  grid.innerHTML = html;
+
+  // 解禁按钮
+  var btnAdv = document.getElementById('genBtnAdv');
+  var txtAdv = document.getElementById('genBtnTxtAdv');
+  if(btnAdv && _imgs && _imgs.length){
+    btnAdv.classList.remove('disabled');
+    if(txtAdv) txtAdv.textContent = '✨ 立即生成套图';
+  } else if(txtAdv){
+    txtAdv.textContent = '请上传产品图';
   }
 }
 
-/* ── AI 智能模式弹窗 ── */
+function toggleModAdv(card){
+  card.classList.toggle('sel');
+}
+
+function delModAdv(e, idx){
+  e.stopPropagation();
+  _advMods.splice(idx, 1);
+  _renderAdvGrid();
+}
+
+function clearAdvGrid(){
+  _advMods = [];
+  _renderAdvGrid();
+}
+
+/* ── 生成模式 ── */
+var _genMode = 'custom';
+function switchGenMode(mode){
+  _genMode = mode;
+  if(mode === 'ai') openAiModeMask();
+}
+
+/* ══ 自定义选板块弹窗 ══ */
+var _cpickSelected = [];
+
+function openCustomPickMask(){
+  // 初始化：已有的板块名标记为已选
+  _cpickSelected = _advMods.map(function(m){ return m.name; });
+  _renderCpick();
+  document.getElementById('customPickMask').classList.add('show');
+}
+
+function closeCustomPickMask(e){
+  if(!e || e.target === document.getElementById('customPickMask')){
+    document.getElementById('customPickMask').classList.remove('show');
+  }
+}
+
+function _renderCpick(){
+  var groups = {};
+  _ALL_MODS.forEach(function(m){
+    if(!groups[m.stype]) groups[m.stype] = [];
+    groups[m.stype].push(m);
+  });
+  var tagMap = {主图:'cpick-tag-main', 详情:'cpick-tag-detail', SKU:'cpick-tag-sku', 推广:'cpick-tag-promo'};
+  var html = '';
+  Object.keys(groups).forEach(function(stype){
+    html += '<div class="cpick-group">'
+      +'<div class="cpick-group-label">'+stype+'</div>';
+    groups[stype].forEach(function(m){
+      var picked = _cpickSelected.indexOf(m.name) >= 0;
+      html += '<div class="cpick-item'+(picked?' picked':'')+'" onclick="cpickToggle(this,\''+m.name+'\')">'
+        +'<div class="cpick-check">'
+          +'<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>'
+        +'</div>'
+        +'<span class="cpick-tag '+(tagMap[stype]||'cpick-tag-main')+'">'+stype+'</span>'
+        +'<div class="cpick-info">'
+          +'<span class="cpick-name">'+m.name+'</span>'
+          +'<span class="cpick-desc">'+m.desc+'</span>'
+        +'</div>'
+      +'</div>';
+    });
+    html += '</div>';
+  });
+  document.getElementById('customPickBody').innerHTML = html;
+  _updateCpickCount();
+}
+
+function cpickToggle(el, name){
+  var idx = _cpickSelected.indexOf(name);
+  if(idx >= 0){ _cpickSelected.splice(idx,1); el.classList.remove('picked'); }
+  else { _cpickSelected.push(name); el.classList.add('picked'); }
+  _updateCpickCount();
+}
+
+function _updateCpickCount(){
+  var n = _cpickSelected.length;
+  var cnt = document.getElementById('customPickCount');
+  if(cnt) cnt.textContent = n ? '('+n+')' : '';
+}
+
+function confirmCustomPick(){
+  // 合并选中的板块（保留已有的，追加新的）
+  var existing = _advMods.map(function(m){ return m.name; });
+  _cpickSelected.forEach(function(name){
+    if(existing.indexOf(name) < 0){
+      var found = _ALL_MODS.find(function(m){ return m.name === name; });
+      if(found) _advMods.push(found);
+    }
+  });
+  // 删除取消勾选的
+  _advMods = _advMods.filter(function(m){ return _cpickSelected.indexOf(m.name) >= 0; });
+  closeCustomPickMask();
+  _renderAdvGrid();
+}
+
+/* ══ AI 智能模式弹窗 ══ */
 function openAiModeMask(){
   _aiModeRender();
-  // 同步摘要条
   var bar = document.getElementById('aiModeGsetText');
-  if(bar) bar.textContent = _gset.plat+' · '+_gset.lang+' · '+_gset.model+' · '+_gset.res;
+  if(bar) bar.textContent = '亚马逊 · 英文 · GPT-Image 2 · 标准1K';
   document.getElementById('aiModeMask').classList.add('show');
   document.getElementById('aiModeAnalyzing').style.display = 'none';
   document.getElementById('aiModeStartBtn').style.display = '';
@@ -3544,9 +3606,6 @@ function openAiModeMask(){
 function closeAiModeMask(e){
   if(!e || e.target === document.getElementById('aiModeMask')){
     document.getElementById('aiModeMask').classList.remove('show');
-    _genMode = 'custom';
-    document.getElementById('genModeCustomBtn').classList.add('active');
-    document.getElementById('genModeAiBtn').classList.remove('active');
   }
 }
 
@@ -3631,23 +3690,40 @@ function aiModeStartAnalyze(){
   var active = _iplnData.filter(function(d){ return d.on; });
   if(!active.length){ alert('请至少开启一种图片类型'); return; }
 
-  // 显示分析中状态
   document.getElementById('aiModeStartBtn').style.display = 'none';
   document.getElementById('aiModeAnalyzing').style.display = 'flex';
   document.getElementById('aiModeIplnList').style.opacity = '0.4';
+
+  // AI 分析：每种类型 × 张数，映射到板块库
+  var typeToMods = {
+    '主图':  ['首屏主视觉','核心卖点图','白底主图','配件/赠品图'],
+    '详情图': ['使用场景图','多角度图','商品细节图','效果对比图','尺寸/规格图','详细参数表'],
+    '白底图': ['白底主图'],
+    '推广图': ['品牌故事图','物流包装图'],
+    '活动图': ['场景氛围图'],
+    '场景图': ['使用场景图','场景氛围图'],
+  };
 
   setTimeout(function(){
     document.getElementById('aiModeMask').classList.remove('show');
     document.getElementById('aiModeIplnList').style.opacity = '';
 
-    // 更新生成按钮
-    var txtAdv = document.getElementById('genBtnTxtAdv');
-    var btnAdv = document.getElementById('genBtnAdv');
-    if(txtAdv){ txtAdv.textContent = '✦ AI 智能生成'; }
-    if(btnAdv){ btnAdv.classList.remove('disabled'); }
+    // 根据配置生成板块列表
+    _advMods = [];
+    active.forEach(function(d){
+      var pool = typeToMods[d.key] || [d.key+'图'];
+      for(var i = 0; i < d.count; i++){
+        var modName = pool[i % pool.length];
+        var found = _ALL_MODS.find(function(m){ return m.name === modName; });
+        if(found && !_advMods.find(function(x){ return x.name === found.name; })){
+          _advMods.push(found);
+        } else if(!found){
+          _advMods.push({stype:d.key, stypeCls:'', name:modName, desc:d.req||d.key+'类图片'});
+        }
+      }
+    });
 
-    // 同步 summary
-    saveImgPlanCfg();
+    _renderAdvGrid();
   }, 2000);
 }
 
@@ -4008,6 +4084,8 @@ function _updateModalCnt(n){
 
 // 关闭按钮
 document.addEventListener('DOMContentLoaded', function(){
+  // 初始化配置区空态
+  _renderAdvGrid();
   var closeBtn = document.querySelector('.ta-modal-close');
   if(closeBtn) closeBtn.addEventListener('click', _doCloseTaModal);
   // Esc 关闭
