@@ -588,7 +588,7 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
 .mod-del-btn:hover{background:rgba(220,50,50,.15);color:#c0392b;}
 /* 右上角勾选圆点 */
 .mod-check{
-  position:absolute;top:8px;right:9px;
+  position:absolute;top:8px;right:9px;cursor:pointer;
   width:20px;height:20px;border-radius:50%;
   border:1.5px solid var(--border);background:#fff;
   display:flex;align-items:center;justify-content:center;
@@ -604,6 +604,17 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
 }
 .mod-card.sel .mod-name{color:var(--text);}
 .mod-desc{font-size:11px;color:var(--muted);line-height:1.3;outline:none;cursor:default;}
+/* 电商套图卡片左上角类型 tag */
+.mod-type-tag{
+  position:absolute;top:7px;left:8px;
+  font-size:9.5px;font-weight:600;line-height:1;
+  padding:2px 6px;border-radius:4px;
+  background:rgba(99,102,241,.08);color:#6366f1;
+  pointer-events:none;white-space:nowrap;
+  display:none; /* 无值时隐藏 */
+}
+.mod-type-tag:not(:empty){display:block;}
+.mod-card.sel .mod-type-tag{background:rgba(99,102,241,.15);}
 /* 双击编辑态 */
 .mod-name[contenteditable="true"]{
   border-bottom:1.5px dashed var(--pp);cursor:text;color:var(--pp);
@@ -709,6 +720,218 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
 .mod-menu-danger{color:#e74c3c;}
 .mod-menu-danger:hover{background:#fff5f5;}
 .mod-menu-sep{height:1px;background:var(--border);margin:10px 0;}
+
+/* ══ 主详图配置保存条（极简版） ══ */
+.cfg-bar{
+  position:relative;
+}
+.cfg-bar-trigger{
+  display:flex;align-items:center;gap:0;
+  border:1.5px solid #d0ccf5;border-radius:10px;
+  background:#fff;cursor:pointer;
+  transition:border-color .15s;user-select:none;
+  padding:0;overflow:hidden;
+}
+.cfg-bar-trigger:hover,.cfg-bar-trigger.open{border-color:#6366f1;}
+.cfg-bar-trigger-label{
+  font-size:12px;font-weight:600;color:#6366f1;
+  padding:9px 10px 9px 14px;flex-shrink:0;white-space:nowrap;
+  border-right:1.5px solid #ede9ff;
+}
+.cfg-bar-trigger-val{
+  flex:1;font-size:12px;color:#888;
+  padding:9px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.cfg-bar-trigger-val.selected{color:#1a1a2e;}
+.cfg-bar-trigger-arrow{
+  padding:9px 12px;color:#aaa;flex-shrink:0;
+  transition:transform .18s;
+}
+.cfg-bar-trigger.open .cfg-bar-trigger-arrow{transform:rotate(180deg);color:#6366f1;}
+
+/* 下拉菜单 */
+.cfg-bar-drop{
+  display:none;position:absolute;bottom:calc(100% + 6px);left:0;right:0;
+  background:#fff;border-radius:10px;z-index:600;
+  box-shadow:0 4px 24px rgba(0,0,0,.10);
+  border:1px solid #ede9ff;overflow:hidden;
+}
+.cfg-bar-drop.open{display:block;animation:cfgDropIn .16s ease;}
+@keyframes cfgDropIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+
+/* 搜索框 */
+.cfg-drop-search-row{
+  display:flex;align-items:center;gap:6px;
+  padding:8px 10px;border-bottom:1px solid #f0eeff;
+}
+.cfg-drop-search{
+  flex:1;padding:5px 8px;border:1.5px solid #ede9ff;border-radius:7px;
+  font-size:11px;font-family:inherit;outline:none;background:#fafafe;
+  transition:border-color .13s;
+}
+.cfg-drop-search:focus{border-color:#6366f1;}
+
+/* 已保存配置列表 */
+.cfg-drop-list{max-height:160px;overflow-y:auto;padding:4px 0;}
+.cfg-drop-list::-webkit-scrollbar{width:3px;}
+.cfg-drop-list::-webkit-scrollbar-thumb{background:#e0dcff;border-radius:2px;}
+.cfg-drop-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 14px;cursor:pointer;transition:background .1s;
+  font-size:12px;color:#1a1a2e;
+}
+.cfg-drop-item:hover{background:#f5f4ff;}
+.cfg-drop-item.active{color:#6366f1;font-weight:600;}
+.cfg-drop-item-check{
+  width:14px;height:14px;flex-shrink:0;margin-right:2px;
+  color:#6366f1;display:none;align-items:center;justify-content:center;
+}
+.cfg-drop-item.active .cfg-drop-item-check{display:flex;}
+.cfg-drop-item-del{
+  width:18px;height:18px;border:none;background:transparent;
+  color:#ccc;cursor:pointer;border-radius:4px;display:flex;
+  align-items:center;justify-content:center;flex-shrink:0;
+  transition:all .1s;padding:0;
+}
+.cfg-drop-item-del:hover{background:#fff0f0;color:#ff6b6b;}
+.cfg-drop-empty{
+  padding:14px;text-align:center;font-size:11px;color:#bbb;
+}
+/* 分割线 + 操作项 */
+.cfg-drop-divider{height:1px;background:#f0eeff;margin:2px 0;}
+.cfg-drop-action{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 14px;cursor:pointer;font-size:12px;
+  transition:background .1s;
+}
+.cfg-drop-action:hover{background:#f5f4ff;}
+.cfg-drop-action.disabled{color:#ccc;cursor:default;pointer-events:none;}
+.cfg-drop-action:hover:not(.disabled){color:#6366f1;}
+
+/* 命名输入行（内嵌在下拉里） */
+.cfg-drop-nameinput{
+  display:none;padding:8px 10px;border-top:1px solid #f0eeff;
+  gap:6px;align-items:center;
+}
+.cfg-drop-nameinput.show{display:flex;}
+.cfg-drop-nameinput input{
+  flex:1;padding:6px 9px;border:1.5px solid #ede9ff;border-radius:7px;
+  font-size:12px;font-family:inherit;outline:none;
+  transition:border-color .13s;
+}
+.cfg-drop-nameinput input:focus{border-color:#6366f1;}
+.cfg-drop-nameinput-ok{
+  flex-shrink:0;padding:6px 12px;border-radius:7px;border:none;
+  background:#6366f1;color:#fff;font-size:11px;font-weight:600;
+  cursor:pointer;font-family:inherit;
+}
+.cfg-drop-nameinput-ok:hover{background:#5254cc;}
+
+/* ══ 全局配置管理浮层 ══ */
+.cfg-mgr-mask{
+  display:none;position:fixed;inset:0;z-index:800;
+  background:rgba(20,18,40,.35);backdrop-filter:blur(3px);
+}
+.cfg-mgr-mask.show{display:block;}
+.cfg-mgr-panel{
+  position:absolute;top:58px;right:16px;
+  width:320px;border-radius:16px;
+  background:#fff;box-shadow:0 12px 48px rgba(99,102,241,.18);
+  overflow:hidden;
+  animation:cfgPanelIn .2s cubic-bezier(.34,1.3,.64,1);
+}
+@keyframes cfgPanelIn{
+  from{opacity:0;transform:translateY(-8px) scale(.97);}
+  to{opacity:1;transform:translateY(0) scale(1);}
+}
+.cfg-mgr-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 16px 10px;border-bottom:1px solid #f0eeff;
+}
+.cfg-mgr-title{font-size:13px;font-weight:700;color:#1a1a2e;}
+.cfg-mgr-close{
+  width:24px;height:24px;border-radius:50%;border:none;
+  background:#f5f4ff;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:#6366f1;
+}
+.cfg-mgr-close:hover{background:#ede9ff;}
+/* 保存区 */
+.cfg-mgr-save-row{
+  display:flex;gap:6px;align-items:center;
+  padding:12px 16px;border-bottom:1px solid #f0eeff;
+}
+.cfg-mgr-name-input{
+  flex:1;padding:7px 10px;border:1.5px solid #ede9ff;border-radius:9px;
+  font-size:12px;color:#1a1a2e;font-family:inherit;outline:none;
+  background:#fafafe;transition:border-color .13s;
+}
+.cfg-mgr-name-input:focus{border-color:#6366f1;background:#fff;}
+.cfg-mgr-save-btn{
+  padding:7px 14px;border-radius:9px;border:none;flex-shrink:0;
+  background:linear-gradient(135deg,#6366f1,#a78bfa);
+  font-size:12px;font-weight:600;color:#fff;cursor:pointer;
+  font-family:inherit;transition:opacity .13s;white-space:nowrap;
+}
+.cfg-mgr-save-btn:hover{opacity:.88;}
+/* 搜索区 */
+.cfg-mgr-search-row{
+  display:flex;align-items:center;gap:6px;
+  padding:8px 16px;border-bottom:1px solid #f0eeff;
+}
+.cfg-mgr-search{
+  flex:1;padding:6px 8px;border:1.5px solid #ede9ff;border-radius:8px;
+  font-size:12px;font-family:inherit;outline:none;background:#fafafe;
+  transition:border-color .13s;
+}
+.cfg-mgr-search:focus{border-color:#6366f1;}
+/* 列表 */
+.cfg-mgr-list{max-height:220px;overflow-y:auto;padding:6px 8px;}
+.cfg-mgr-list::-webkit-scrollbar{width:3px;}
+.cfg-mgr-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+.cfg-mgr-item{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 8px;border-radius:9px;cursor:pointer;
+  transition:background .12s;
+}
+.cfg-mgr-item:hover{background:#f5f4ff;}
+.cfg-mgr-item.active{background:#f0eeff;}
+.cfg-mgr-item-icon{
+  width:28px;height:28px;border-radius:7px;flex-shrink:0;
+  background:linear-gradient(135deg,#6366f1,#a78bfa);
+  display:flex;align-items:center;justify-content:center;
+}
+.cfg-mgr-item-info{flex:1;min-width:0;}
+.cfg-mgr-item-name{
+  font-size:12px;font-weight:600;color:#1a1a2e;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.cfg-mgr-item-meta{font-size:10px;color:var(--muted);margin-top:1px;}
+.cfg-mgr-item-load{
+  padding:3px 8px;border-radius:6px;border:1px solid #ede9ff;
+  background:#fff;font-size:11px;color:#6366f1;
+  cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;
+  transition:all .12s;
+}
+.cfg-mgr-item-load:hover{background:#6366f1;color:#fff;border-color:#6366f1;}
+.cfg-mgr-item-del{
+  width:22px;height:22px;border-radius:5px;border:none;flex-shrink:0;
+  background:transparent;color:var(--muted);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .12s;
+}
+.cfg-mgr-item-del:hover{background:#fff0f0;color:#ff6b6b;}
+.cfg-mgr-empty{
+  text-align:center;padding:24px 0;color:var(--muted);font-size:12px;
+}
+/* nav 保存/加载按钮 */
+.cfg-nav-btn{
+  display:flex;align-items:center;gap:4px;
+  padding:5px 12px;border-radius:14px;border:1.5px solid #ede9ff;
+  background:#fff;font-size:12px;color:#6366f1;font-family:inherit;
+  cursor:pointer;font-weight:500;transition:all .13s;
+}
+.cfg-nav-btn:hover{border-color:#6366f1;background:#f5f4ff;}
+.cfg-nav-btn.has-saves{border-color:#a78bfa;}
 
 /* 保存配置区 */
 .mod-tpl-sub{margin-top:0;}
@@ -1185,6 +1408,34 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
 }
 .cfg-empty-text{font-size:13px;font-weight:700;color:#555;}
 .cfg-empty-sub{font-size:11px;color:#bbb;text-align:center;line-height:1.7;}
+/* AI 优先引导按钮 */
+.cfg-empty-ai-btn{
+  margin-top:4px;padding:8px 22px;border:none;border-radius:20px;cursor:pointer;
+  background:linear-gradient(135deg,#6366f1,#a78bfa);
+  font-size:12.5px;font-weight:600;font-family:inherit;
+  position:relative;overflow:hidden;
+}
+.cfg-empty-ai-shimmer{
+  background:linear-gradient(90deg,#fff 30%,#ede9fe 50%,#fff 70%);
+  background-size:200% 100%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:shimmer 2.2s infinite linear;
+}
+@keyframes shimmer{
+  0%{background-position:100% 0}100%{background-position:-100% 0}
+}
+.cfg-empty-or{
+  display:flex;align-items:center;gap:8px;font-size:11px;color:#d0d0d0;width:80%;
+}
+.cfg-empty-or::before,.cfg-empty-or::after{
+  content:'';flex:1;height:1px;background:#eee;
+}
+.cfg-empty-custom-btn{
+  padding:6px 18px;border:1.5px solid #e0dff8;border-radius:20px;cursor:pointer;
+  background:#fff;color:#6366f1;font-size:12px;font-weight:500;font-family:inherit;
+  transition:border-color .2s,background .2s;
+}
+.cfg-empty-custom-btn:hover{border-color:#a5b4fc;background:#f5f3ff;}
 
 /* ══ 板块卡片入场动画 ══ */
 @keyframes modCardIn{
@@ -1387,7 +1638,7 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
 }
 .ai-mode-mask.show{display:flex;}
 .ai-mode-sheet{
-  width:380px;max-height:86vh;background:#fff;
+  width:420px;max-height:88vh;background:#fff;
   border-radius:18px;
   box-shadow:0 8px 40px rgba(0,0,0,.18);
   display:flex;flex-direction:column;overflow:hidden;
@@ -1397,6 +1648,33 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
   from{opacity:0;transform:scale(.93) translateY(8px);}
   to{opacity:1;transform:scale(1) translateY(0);}
 }
+/* Tab 切换条 */
+.ai-mode-tabs{
+  display:flex;padding:0 20px;flex-shrink:0;
+  border-bottom:1px solid #f3f3f5;
+}
+.ai-mode-tab{
+  display:flex;align-items:center;gap:5px;padding:9px 14px;border:none;background:none;
+  font-size:12.5px;font-weight:500;color:#bbb;cursor:pointer;
+  border-bottom:2.5px solid transparent;margin-bottom:-1px;
+  transition:color .18s,border-color .18s;font-family:inherit;
+}
+.ai-mode-tab.active{color:#6366f1;border-bottom-color:#6366f1;font-weight:600;}
+.ai-mode-tab:hover:not(.active){color:#888;}
+/* 删除按钮 */
+.ai-mode-del{
+  flex-shrink:0;width:24px;height:24px;border:none;background:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;border-radius:6px;
+  color:#d0d0d0;transition:color .15s,background .15s;padding:0;margin-left:2px;
+}
+.ai-mode-del:hover{color:#ef4444;background:#fef2f2;}
+/* 需求快速 chip */
+.ai-req-chip{
+  padding:4px 10px;border:1.5px solid #e8e8f0;border-radius:20px;
+  background:#fff;color:#666;font-size:11px;cursor:pointer;font-family:inherit;
+  transition:border-color .15s,color .15s,background .15s;white-space:nowrap;
+}
+.ai-req-chip:hover{border-color:#a5b4fc;color:#6366f1;background:#f5f3ff;}
 /* 每个板块行（AI弹窗内） */
 .ai-mode-row{
   display:flex;flex-direction:column;
@@ -1990,6 +2268,112 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
   color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;
 }
 
+/* 已配置状态小圆点 */
+.mod-card.has-cfg::after,
+.img-cfg-row.has-cfg::after{
+  content:'';position:absolute;top:5px;right:5px;
+  width:5px;height:5px;border-radius:50%;
+  background:#6366f1;pointer-events:none;
+}
+.mod-card{position:relative;}
+.img-cfg-row{position:relative;}
+
+/* 主图行双击提示 */
+.img-cfg-row[ondblclick]{cursor:default;}
+.img-cfg-row[ondblclick]:hover{background:#f5f4ff;}
+.img-cfg-row[ondblclick]:hover .img-cfg-name{color:var(--pp);}
+.img-cfg-row .mod-del-btn{opacity:0;transition:opacity .15s;}
+.img-cfg-row:hover .mod-del-btn{opacity:1;}
+
+/* ══ 板块编辑弹窗 ══ */
+.card-edit-mask{
+  display:none;position:fixed;inset:0;z-index:900;
+  background:rgba(20,18,40,.45);backdrop-filter:blur(4px);
+  align-items:center;justify-content:center;
+}
+.card-edit-mask.show{display:flex;}
+.card-edit-sheet{
+  width:360px;max-width:94vw;border-radius:18px;
+  background:#fff;box-shadow:0 20px 60px rgba(99,102,241,.18);
+  padding:0;overflow:hidden;
+  animation:ceSheetIn .22s cubic-bezier(.34,1.3,.64,1);
+}
+@keyframes ceSheetIn{
+  from{opacity:0;transform:scale(.92) translateY(10px);}
+  to{opacity:1;transform:scale(1) translateY(0);}
+}
+.card-edit-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 18px 12px;border-bottom:1px solid #f0eeff;
+}
+.card-edit-title{font-size:14px;font-weight:700;color:#1a1a2e;}
+.card-edit-close{
+  width:26px;height:26px;border-radius:50%;border:none;background:#f5f4ff;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:#6366f1;transition:background .13s;
+}
+.card-edit-close:hover{background:#ede9ff;}
+.card-edit-body{padding:14px 18px;display:flex;flex-direction:column;gap:13px;}
+.card-edit-label{
+  font-size:11px;font-weight:600;color:#6366f1;letter-spacing:.03em;
+  margin-bottom:4px;display:block;
+}
+.card-edit-input{
+  width:100%;box-sizing:border-box;padding:8px 10px;
+  border:1.5px solid #ede9ff;border-radius:9px;
+  font-size:12px;color:#1a1a2e;font-family:inherit;
+  outline:none;transition:border-color .13s;background:#fafafe;
+}
+.card-edit-input:focus{border-color:#6366f1;background:#fff;}
+.card-edit-ta{
+  width:100%;box-sizing:border-box;padding:8px 10px;
+  border:1.5px solid #ede9ff;border-radius:9px;
+  font-size:12px;color:#1a1a2e;font-family:inherit;
+  outline:none;resize:vertical;min-height:64px;
+  transition:border-color .13s;background:#fafafe;line-height:1.5;
+}
+.card-edit-ta:focus{border-color:#6366f1;background:#fff;}
+/* 参考图上传区 */
+.card-edit-upload{
+  display:flex;gap:6px;flex-wrap:wrap;align-items:flex-start;
+}
+.card-edit-ref-thumb{
+  position:relative;width:58px;height:58px;border-radius:8px;
+  overflow:hidden;flex-shrink:0;border:1.5px solid #ede9ff;
+  background:#f5f4ff;
+}
+.card-edit-ref-thumb img{width:100%;height:100%;object-fit:cover;}
+.card-edit-ref-del{
+  position:absolute;top:2px;right:2px;width:16px;height:16px;
+  border-radius:50%;background:rgba(30,20,60,.6);border:none;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:#fff;padding:0;line-height:1;
+}
+.card-edit-add-img{
+  width:58px;height:58px;border-radius:8px;border:1.5px dashed #c4b5fd;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;cursor:pointer;background:#fafafe;transition:all .13s;flex-shrink:0;
+}
+.card-edit-add-img:hover{background:#f0eeff;border-color:#6366f1;}
+.card-edit-add-img span{font-size:9px;color:#a78bfa;}
+.card-edit-foot{
+  display:flex;gap:8px;justify-content:flex-end;
+  padding:12px 18px 16px;border-top:1px solid #f0eeff;
+}
+.card-edit-cancel{
+  padding:7px 16px;border-radius:9px;border:1.5px solid #ede9ff;
+  background:#fff;font-size:12px;font-weight:500;color:#6b7280;
+  cursor:pointer;font-family:inherit;transition:all .13s;
+}
+.card-edit-cancel:hover{border-color:#c4b5fd;color:#6366f1;}
+.card-edit-save{
+  padding:7px 20px;border-radius:9px;border:none;
+  background:linear-gradient(135deg,#6366f1,#a78bfa);
+  font-size:12px;font-weight:600;color:#fff;
+  cursor:pointer;font-family:inherit;transition:opacity .13s;
+}
+.card-edit-save:hover{opacity:.88;}
+
 /* ══ 添加套图弹窗 ══ */
 .suite-add-mask{
   position:fixed;inset:0;background:rgba(0,0,0,.35);
@@ -2036,6 +2420,14 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
 </style>
 </head>
 <body>
+<!-- 套图类型 datalist -->
+<datalist id="advTypeList">
+  <option value="主图">
+  <option value="详情">
+  <option value="SKU">
+  <option value="推广图">
+  <option value="活动">
+</datalist>
 
 <!-- NAV -->
 <nav class="nav">
@@ -2045,6 +2437,10 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
   </div>
   <button class="nav-btn">＋ 新建任务</button>
   <div class="nav-r">
+    <button class="cfg-nav-btn" id="cfgNavBtn" onclick="openCfgMgr()">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+      配置管理
+    </button>
     <div class="gem-chip"><div class="gem-dot"></div>9964307</div>
     <div class="nav-tag">
       <button class="btn-outline">批量托管</button>
@@ -2190,9 +2586,23 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
             <h3>主图配置</h3>
             <div class="tip">?</div>
           </div>
-          <div class="img-cfg-list">
+          <!-- 操作提示行 + 重置/添加按钮 -->
+          <div class="mod-hd-row">
+            <span style="font-size:11px;color:var(--muted)">双击可编辑</span>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <button class="mod-sel-all" onclick="resetMainCfg()">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><polyline points="3 3 3 8 8 8"/></svg>
+                重置
+              </button>
+              <button class="mod-sel-all" onclick="addMainCfgRow()">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                添加
+              </button>
+            </div>
+          </div>
+          <div class="img-cfg-list" id="mainCfgList">
             <!-- 卖点图 -->
-            <div class="img-cfg-row row-checked">
+            <div class="img-cfg-row row-checked" ondblclick="openCardEdit(event,this,'main')" title="双击编辑">
               <div class="img-cfg-check checked" onclick="toggleImgCfg(this)">
                 <svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="#fff" stroke-width="2.8"><polyline points="1.5 5 4 7.5 8.5 2.5"/></svg>
               </div>
@@ -2203,9 +2613,10 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
                 <button onclick="stepImg(this,1)">+</button>
               </div>
               <button class="ratio-drop" onclick="openRatioDrop(this,event)">1:1 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>
+              <button class="mod-del-btn" style="position:static;width:18px;height:18px;border-radius:4px;flex-shrink:0;" onclick="delMainCfgRow(event,this)" title="删除"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
             </div>
             <!-- 场景图 -->
-            <div class="img-cfg-row">
+            <div class="img-cfg-row" ondblclick="openCardEdit(event,this,'main')" title="双击编辑">
               <div class="img-cfg-check" onclick="toggleImgCfg(this)">
                 <svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="#fff" stroke-width="2.8"><polyline points="1.5 5 4 7.5 8.5 2.5"/></svg>
               </div>
@@ -2216,9 +2627,10 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
                 <button onclick="stepImg(this,1)">+</button>
               </div>
               <button class="ratio-drop" onclick="openRatioDrop(this,event)">1:1 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>
+              <button class="mod-del-btn" style="position:static;width:18px;height:18px;border-radius:4px;flex-shrink:0;" onclick="delMainCfgRow(event,this)" title="删除"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
             </div>
             <!-- 细节图 -->
-            <div class="img-cfg-row">
+            <div class="img-cfg-row" ondblclick="openCardEdit(event,this,'main')" title="双击编辑">
               <div class="img-cfg-check" onclick="toggleImgCfg(this)">
                 <svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="#fff" stroke-width="2.8"><polyline points="1.5 5 4 7.5 8.5 2.5"/></svg>
               </div>
@@ -2229,9 +2641,10 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
                 <button onclick="stepImg(this,1)">+</button>
               </div>
               <button class="ratio-drop" onclick="openRatioDrop(this,event)">1:1 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>
+              <button class="mod-del-btn" style="position:static;width:18px;height:18px;border-radius:4px;flex-shrink:0;" onclick="delMainCfgRow(event,this)" title="删除"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
             </div>
             <!-- 白底图 -->
-            <div class="img-cfg-row">
+            <div class="img-cfg-row" ondblclick="openCardEdit(event,this,'main')" title="双击编辑">
               <div class="img-cfg-check" onclick="toggleImgCfg(this)">
                 <svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="#fff" stroke-width="2.8"><polyline points="1.5 5 4 7.5 8.5 2.5"/></svg>
               </div>
@@ -2242,6 +2655,7 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
                 <button onclick="stepImg(this,1)">+</button>
               </div>
               <button class="ratio-drop" onclick="openRatioDrop(this,event)">1:1 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>
+              <button class="mod-del-btn" style="position:static;width:18px;height:18px;border-radius:4px;flex-shrink:0;" onclick="delMainCfgRow(event,this)" title="删除"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
             </div>
           </div>
           <!-- 尺寸 popover（全局唯一） -->
@@ -2279,118 +2693,116 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
             <span style="font-size:11px;color:var(--muted)">双击可编辑</span>
             <div style="display:flex;align-items:center;gap:8px;">
               <button class="mod-sel-all" onclick="resetMods()">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.63"/></svg>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><polyline points="3 3 3 8 8 8"/></svg>
                 重置
               </button>
-              <button class="mod-sel-all" id="modSelAllBtn" onclick="toggleSelAll()">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                全选
+              <button class="mod-sel-all" onclick="addNewMod()">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                添加
               </button>
-              <!-- ··· 按钮 -->
-              <button class="mod-dots-btn" id="modDotsBtn" onclick="toggleModMenu(event)">···</button>
             </div>
           </div>
 
           <!-- 14格：前13张普通板块 + 最后1格「更多」卡 -->
           <div class="module-grid" id="modGrid">
 
-            <div class="mod-card sel" draggable="true" onclick="toggleMod(this)" ondblclick="editModName(event,this)">
+            <div class="mod-card sel" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
               <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-              <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-name" ondblclick="editModName(event,this)">首屏主视觉</span>
-              <span class="mod-desc" ondblclick="editModDesc(event,this)">传递核心价值</span>
+              <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <span class="mod-name">首屏主视觉</span>
+              <span class="mod-desc">传递核心价值</span>
             </div>
 
-            <div class="mod-card sel" draggable="true" onclick="toggleMod(this)" ondblclick="editModName(event,this)">
+            <div class="mod-card sel" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
               <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-              <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-name" ondblclick="editModName(event,this)">核心卖点图</span>
-              <span class="mod-desc" ondblclick="editModDesc(event,this)">突出差异优势</span>
+              <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <span class="mod-name">核心卖点图</span>
+              <span class="mod-desc">突出差异优势</span>
             </div>
 
-            <div class="mod-card sel" draggable="true" onclick="toggleMod(this)" ondblclick="editModName(event,this)">
+            <div class="mod-card sel" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
               <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-              <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-name" ondblclick="editModName(event,this)">使用场景图</span>
-              <span class="mod-desc" ondblclick="editModDesc(event,this)">呈现真实使用场景</span>
+              <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <span class="mod-name">使用场景图</span>
+              <span class="mod-desc">呈现真实使用场景</span>
             </div>
 
-            <div class="mod-card sel" draggable="true" onclick="toggleMod(this)" ondblclick="editModName(event,this)">
+            <div class="mod-card sel" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
               <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-              <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-name" ondblclick="editModName(event,this)">多角度图</span>
-              <span class="mod-desc" ondblclick="editModDesc(event,this)">多角度呈现外观</span>
+              <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <span class="mod-name">多角度图</span>
+              <span class="mod-desc">多角度呈现外观</span>
             </div>
 
-            <div class="mod-card sel" draggable="true" onclick="toggleMod(this)" ondblclick="editModName(event,this)">
+            <div class="mod-card sel" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
               <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-              <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-name" ondblclick="editModName(event,this)">场景氛围图</span>
-              <span class="mod-desc" ondblclick="editModDesc(event,this)">展示使用场景</span>
+              <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <span class="mod-name">场景氛围图</span>
+              <span class="mod-desc">展示使用场景</span>
             </div>
 
-            <div class="mod-card" draggable="true" onclick="toggleMod(this)" ondblclick="editModName(event,this)">
+            <div class="mod-card" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
 
               <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-              <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-name" ondblclick="editModName(event,this)">商品细节图</span>
-              <span class="mod-desc" ondblclick="editModDesc(event,this)">放大材质与工艺</span>
+              <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <span class="mod-name">商品细节图</span>
+              <span class="mod-desc">放大材质与工艺</span>
             </div>
 
-            <div class="mod-card" draggable="true" onclick="toggleMod(this)" ondblclick="editModName(event,this)">
+            <div class="mod-card" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
 
               <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-              <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-name" ondblclick="editModName(event,this)">品牌故事图</span>
-              <span class="mod-desc" ondblclick="editModDesc(event,this)">传达品牌理念</span>
+              <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <span class="mod-name">品牌故事图</span>
+              <span class="mod-desc">传达品牌理念</span>
             </div>
 
-            <div class="mod-card" draggable="true" onclick="toggleMod(this)" ondblclick="editModName(event,this)">
+            <div class="mod-card" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
 
               <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-              <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-name" ondblclick="editModName(event,this)">尺寸/容量/尺码图</span>
-              <span class="mod-desc" ondblclick="editModDesc(event,this)">展示规格信息</span>
+              <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <span class="mod-name">尺寸/容量/尺码图</span>
+              <span class="mod-desc">展示规格信息</span>
             </div>
 
-            <div class="mod-card" draggable="true" onclick="toggleMod(this)" ondblclick="editModName(event,this)">
+            <div class="mod-card" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
 
               <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-              <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-name" ondblclick="editModName(event,this)">效果对比图</span>
-              <span class="mod-desc" ondblclick="editModDesc(event,this)">使用前后效果对比</span>
+              <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <span class="mod-name">效果对比图</span>
+              <span class="mod-desc">使用前后效果对比</span>
             </div>
 
-            <div class="mod-card" draggable="true" onclick="toggleMod(this)" ondblclick="editModName(event,this)">
+            <div class="mod-card" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
 
               <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-              <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-name" ondblclick="editModName(event,this)">详细规格/参数表</span>
-              <span class="mod-desc" ondblclick="editModDesc(event,this)">展示详细商品数据</span>
+              <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <span class="mod-name">详细规格/参数表</span>
+              <span class="mod-desc">展示详细商品数据</span>
             </div>
 
-            <div class="mod-card" draggable="true" onclick="toggleMod(this)" ondblclick="editModName(event,this)">
+            <div class="mod-card" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
 
               <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-              <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-name" ondblclick="editModName(event,this)">工艺制作图</span>
-              <span class="mod-desc" ondblclick="editModDesc(event,this)">展示工艺制作过程</span>
+              <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <span class="mod-name">工艺制作图</span>
+              <span class="mod-desc">展示工艺制作过程</span>
             </div>
 
-            <div class="mod-card" draggable="true" onclick="toggleMod(this)" ondblclick="editModName(event,this)">
+            <div class="mod-card" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
 
               <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-              <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-name" ondblclick="editModName(event,this)">配件/赠品图</span>
-              <span class="mod-desc" ondblclick="editModDesc(event,this)">明确收货的所有物品</span>
+              <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <span class="mod-name">配件/赠品图</span>
+              <span class="mod-desc">明确收货的所有物品</span>
             </div>
 
-            <div class="mod-card" draggable="true" onclick="toggleMod(this)" ondblclick="editModName(event,this)">
+            <div class="mod-card" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
 
               <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-              <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-name" ondblclick="editModName(event,this)">系列展示图</span>
-              <span class="mod-desc" ondblclick="editModDesc(event,this)">多色或多SKU展示</span>
+              <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <span class="mod-name">系列展示图</span>
+              <span class="mod-desc">多色或多SKU展示</span>
             </div>
 
             <!-- 第 14 格：更多 | + 添加 -->
@@ -2411,36 +2823,36 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
           <!-- 更多板块（点击「更多」后展开，追加进 grid 视觉） -->
           <div class="mod-extra-grid module-grid" id="modExtraGrid" style="display:none;margin-top:8px;">
 
-            <div class="mod-card" draggable="true" onclick="toggleMod(this)" ondblclick="editModName(event,this)">
+            <div class="mod-card" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
 
               <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-              <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-name" ondblclick="editModName(event,this)">商品成分图</span>
-              <span class="mod-desc" ondblclick="editModDesc(event,this)">展示配方/材质/成分</span>
+              <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <span class="mod-name">商品成分图</span>
+              <span class="mod-desc">展示配方/材质/成分</span>
             </div>
 
-            <div class="mod-card" draggable="true" onclick="toggleMod(this)" ondblclick="editModName(event,this)">
+            <div class="mod-card" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
 
               <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-              <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-name" ondblclick="editModName(event,this)">售后保障图</span>
-              <span class="mod-desc" ondblclick="editModDesc(event,this)">说明质保退换政策</span>
+              <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <span class="mod-name">售后保障图</span>
+              <span class="mod-desc">说明质保退换政策</span>
             </div>
 
-            <div class="mod-card" draggable="true" onclick="toggleMod(this)" ondblclick="editModName(event,this)">
+            <div class="mod-card" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
 
               <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-              <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-name" ondblclick="editModName(event,this)">使用建议图</span>
-              <span class="mod-desc" ondblclick="editModDesc(event,this)">商品使用的注意事项</span>
+              <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <span class="mod-name">使用建议图</span>
+              <span class="mod-desc">商品使用的注意事项</span>
             </div>
 
-            <div class="mod-card" draggable="true" onclick="toggleMod(this)" ondblclick="editModName(event,this)">
+            <div class="mod-card" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
 
               <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-              <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-name" ondblclick="editModName(event,this)">物流包装图</span>
-              <span class="mod-desc" ondblclick="editModDesc(event,this)">展示包装与配送</span>
+              <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <span class="mod-name">物流包装图</span>
+              <span class="mod-desc">展示包装与配送</span>
             </div>
 
           </div>
@@ -2451,7 +2863,56 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
 
 
 
-      </div><!-- /scroll -->
+        <!-- 配置保存/加载条（极简） -->
+        <div class="sec-block" style="margin-top:8px;">
+          <div class="sec-hd">
+            <h3>配置管理</h3>
+            <div class="tip">?</div>
+          </div>
+          <div class="mod-hd-row" style="margin-bottom:8px;">
+            <span style="font-size:11px;color:var(--muted)">选择配置加载 · 保存或更新</span>
+          </div>
+        <div class="cfg-bar" id="cfgBar">
+          <!-- 触发控件 -->
+          <div class="cfg-bar-trigger" id="cfgBarTrigger" onclick="cfgBarToggle(event)">
+            <span class="cfg-bar-trigger-label">配置</span>
+            <span class="cfg-bar-trigger-val" id="cfgBarVal">请选择</span>
+            <span class="cfg-bar-trigger-arrow">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+            </span>
+          </div>
+          <!-- 下拉菜单（向上弹出） -->
+          <div class="cfg-bar-drop" id="cfgBarDrop">
+            <!-- 搜索框 -->
+            <div class="cfg-drop-search-row">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2" style="flex-shrink:0"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input class="cfg-drop-search" id="cfgDropSearch" type="text" placeholder="搜索配置…"
+                oninput="cfgBarRenderList()" onclick="event.stopPropagation()"/>
+            </div>
+            <!-- 已保存配置列表 -->
+            <div class="cfg-drop-list" id="cfgDropList"></div>
+            <div class="cfg-drop-divider"></div>
+            <!-- 存为新配置 -->
+            <div class="cfg-drop-action" onclick="cfgBarShowNameInput()">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              存为新配置
+            </div>
+            <!-- 更新当前 -->
+            <div class="cfg-drop-action" id="cfgDropUpdate" onclick="cfgBarUpdate()">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><polyline points="3 3 3 8 8 8"/></svg>
+              更新
+            </div>
+            <!-- 命名输入行 -->
+            <div class="cfg-drop-nameinput" id="cfgDropNameRow">
+              <input type="text" id="cfgDropNameInput" placeholder="配置名称…" maxlength="40"
+                onkeydown="if(event.key==='Enter')cfgBarConfirmSave();if(event.key==='Escape')cfgBarHideNameInput();"/>
+              <button class="cfg-drop-nameinput-ok" onclick="cfgBarConfirmSave()">保存</button>
+            </div>
+          </div>
+        </div>
+        </div><!-- /sec-block -->
+
+        </div><!-- /scroll -->
 
       <!-- 底部按钮 -->
       <div class="left-foot">
@@ -2561,9 +3022,8 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
 
           <!-- 生成模式 -->
           <div class="gen-mode-row" style="margin-top:12px;">
-            <span class="gen-mode-label">配置板块</span>
             <div class="gen-mode-seg">
-              <button class="gen-mode-btn" id="genModeCustomBtn" onclick="openCustomPickMask()">自定义</button>
+              <button class="gen-mode-btn active" id="genModeCustomBtn" onclick="switchGenMode('custom')">自定义</button>
               <button class="gen-mode-btn" id="genModeAiBtn" onclick="switchGenMode('ai')">
                 <span style="background:linear-gradient(135deg,#6366f1,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">✦ AI 智能</span>
               </button>
@@ -2577,33 +3037,228 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
             <h3>配置</h3>
             <div class="tip">?</div>
           </div>
-          <div class="mod-hd-row" id="modHdRowAdv" style="display:none;">
-            <span style="font-size:11px;color:var(--muted)">点击勾选 · 拖拽排序</span>
+          <div class="mod-hd-row" id="advCfgHeaderBtns">
+            <span style="font-size:11px;color:var(--muted)">双击可编辑</span>
             <div style="display:flex;align-items:center;gap:8px;">
-              <button class="mod-sel-all" onclick="clearAdvGrid()">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.63"/></svg>
-                清空
+              <button class="mod-sel-all" onclick="resetAdvCfg()">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><polyline points="3 3 3 8 8 8"/></svg>
+                重置
               </button>
-              <button class="mod-sel-all" onclick="openCustomPickMask()">
+              <button class="mod-sel-all" onclick="addAdvModCard()">
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                 添加
               </button>
             </div>
           </div>
 
+
           <!-- 空态引导 -->
           <div class="cfg-empty" id="cfgEmptyAdv">
             <div class="cfg-empty-ic">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#c4b5fd" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
             </div>
-            <div class="cfg-empty-text">板块待配置</div>
-            <div class="cfg-empty-sub">点击「✦ AI 智能」让 AI 自动规划，<br>或点击「自定义」手动选择板块</div>
+            <div class="cfg-empty-text">套图板块待配置</div>
+            <div class="cfg-empty-sub">AI 自动分析产品，智能规划套图方案</div>
+            <button class="cfg-empty-ai-btn" onclick="switchGenMode('ai');openAiModeMask()">
+              <span class="cfg-empty-ai-shimmer">✦ AI 智能分析</span>
+            </button>
+            <div class="cfg-empty-or">
+              <span>或</span>
+            </div>
+            <button class="cfg-empty-custom-btn" onclick="switchGenMode('custom')">自定义配置</button>
           </div>
 
-          <!-- 已配置板块网格（动态渲染） -->
-          <div class="module-grid" id="modGridAdv" style="display:none;"></div>
+          <!-- 自定义模式：与主详图相同的板块配置区 -->
+          <div id="cfgCustomBlock" style="display:none;">
+
+            <div class="module-grid" id="modGridAdv">
+
+              <div class="mod-card sel" onclick="toggleMod(this)" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
+                <button class="mod-del-btn" onclick="delModCard(event,this)"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><span class="mod-type-tag"></span>
+                <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span class="mod-name">首屏主视觉</span>
+                <span class="mod-desc">传递核心价值</span>
+              </div>
+
+              <div class="mod-card sel" onclick="toggleMod(this)" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
+                <button class="mod-del-btn" onclick="delModCard(event,this)"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><span class="mod-type-tag"></span>
+                <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span class="mod-name">核心卖点图</span>
+                <span class="mod-desc">突出差异优势</span>
+              </div>
+
+              <div class="mod-card sel" onclick="toggleMod(this)" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
+                <button class="mod-del-btn" onclick="delModCard(event,this)"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><span class="mod-type-tag"></span>
+                <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span class="mod-name">使用场景图</span>
+                <span class="mod-desc">呈现真实使用场景</span>
+              </div>
+
+              <div class="mod-card sel" onclick="toggleMod(this)" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
+                <button class="mod-del-btn" onclick="delModCard(event,this)"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><span class="mod-type-tag"></span>
+                <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span class="mod-name">多角度图</span>
+                <span class="mod-desc">多角度呈现外观</span>
+              </div>
+
+              <div class="mod-card sel" onclick="toggleMod(this)" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
+                <button class="mod-del-btn" onclick="delModCard(event,this)"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><span class="mod-type-tag"></span>
+                <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span class="mod-name">场景氛围图</span>
+                <span class="mod-desc">展示使用场景</span>
+              </div>
+
+              <div class="mod-card" onclick="toggleMod(this)" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
+                <button class="mod-del-btn" onclick="delModCard(event,this)"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><span class="mod-type-tag"></span>
+                <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span class="mod-name">商品细节图</span>
+                <span class="mod-desc">放大材质与工艺</span>
+              </div>
+
+              <div class="mod-card" onclick="toggleMod(this)" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
+                <button class="mod-del-btn" onclick="delModCard(event,this)"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><span class="mod-type-tag"></span>
+                <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span class="mod-name">品牌故事图</span>
+                <span class="mod-desc">传达品牌理念</span>
+              </div>
+
+              <div class="mod-card" onclick="toggleMod(this)" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
+                <button class="mod-del-btn" onclick="delModCard(event,this)"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><span class="mod-type-tag"></span>
+                <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span class="mod-name">尺寸/容量/尺码图</span>
+                <span class="mod-desc">展示规格信息</span>
+              </div>
+
+              <div class="mod-card" onclick="toggleMod(this)" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
+                <button class="mod-del-btn" onclick="delModCard(event,this)"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><span class="mod-type-tag"></span>
+                <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span class="mod-name">效果对比图</span>
+                <span class="mod-desc">使用前后效果对比</span>
+              </div>
+
+              <div class="mod-card" onclick="toggleMod(this)" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
+                <button class="mod-del-btn" onclick="delModCard(event,this)"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><span class="mod-type-tag"></span>
+                <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span class="mod-name">详细规格/参数表</span>
+                <span class="mod-desc">展示详细商品数据</span>
+              </div>
+
+              <div class="mod-card" onclick="toggleMod(this)" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
+                <button class="mod-del-btn" onclick="delModCard(event,this)"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><span class="mod-type-tag"></span>
+                <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span class="mod-name">工艺制作图</span>
+                <span class="mod-desc">展示工艺制作过程</span>
+              </div>
+
+              <div class="mod-card" onclick="toggleMod(this)" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
+                <button class="mod-del-btn" onclick="delModCard(event,this)"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><span class="mod-type-tag"></span>
+                <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span class="mod-name">配件/赠品图</span>
+                <span class="mod-desc">明确收货的所有物品</span>
+              </div>
+
+              <div class="mod-card" onclick="toggleMod(this)" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
+                <button class="mod-del-btn" onclick="delModCard(event,this)"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><span class="mod-type-tag"></span>
+                <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span class="mod-name">系列展示图</span>
+                <span class="mod-desc">多色或多SKU展示</span>
+              </div>
+
+              <!-- 更多 | 添加 -->
+              <div class="mod-card mod-more-card" id="modMoreCardAdv">
+                <div class="mod-more-left" onclick="toggleModMoreAdv()">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" id="modMoreIcSvgAdv" style="transition:transform .2s;color:var(--muted);"><polyline points="6 9 12 15 18 9"/></svg>
+                  <span id="modMoreLabelAdv" style="font-size:11px;font-weight:500;color:var(--muted);">更多</span>
+                </div>
+                <div class="mod-more-sep"></div>
+                <div class="mod-more-right" onclick="addNewModAdv()">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  <span style="font-size:10px;font-weight:500;">添加</span>
+                </div>
+              </div>
+
+            </div><!-- /modGridAdv -->
+
+            <!-- 更多板块（展开） -->
+            <div class="mod-extra-grid module-grid" id="modExtraGridAdv" style="display:none;margin-top:8px;">
+
+              <div class="mod-card" onclick="toggleMod(this)" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
+                <button class="mod-del-btn" onclick="delModCard(event,this)"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span class="mod-name">商品成分图</span>
+                <span class="mod-desc">展示配方/材质/成分</span>
+              </div>
+
+              <div class="mod-card" onclick="toggleMod(this)" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
+                <button class="mod-del-btn" onclick="delModCard(event,this)"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span class="mod-name">售后保障图</span>
+                <span class="mod-desc">说明质保退换政策</span>
+              </div>
+
+              <div class="mod-card" onclick="toggleMod(this)" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
+                <button class="mod-del-btn" onclick="delModCard(event,this)"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span class="mod-name">使用建议图</span>
+                <span class="mod-desc">商品使用的注意事项</span>
+              </div>
+
+              <div class="mod-card" onclick="toggleMod(this)" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
+                <button class="mod-del-btn" onclick="delModCard(event,this)"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span class="mod-name">物流包装图</span>
+                <span class="mod-desc">展示包装与配送</span>
+              </div>
+
+            </div>
+          </div><!-- /cfgCustomBlock -->
+
+          <!-- AI模式：动态渲染结果网格 -->
+          <div class="module-grid" id="modGridAiAdv" style="display:none;"></div>
 
         </div>
+
+        <!-- 套图配置管理 -->
+        <div class="sec-block" style="margin-top:8px;">
+          <div class="sec-hd">
+            <h3>配置管理</h3>
+            <div class="tip">?</div>
+          </div>
+          <div class="mod-hd-row" style="margin-bottom:8px;">
+            <span style="font-size:11px;color:var(--muted)">选择配置加载 · 保存或更新</span>
+          </div>
+          <div class="cfg-bar" id="advCfgBar">
+            <div class="cfg-bar-trigger" id="advCfgBarTrigger" onclick="advCfgBarToggle(event)">
+              <span class="cfg-bar-trigger-label">配置</span>
+              <span class="cfg-bar-trigger-val" id="advCfgBarVal">请选择</span>
+              <span class="cfg-bar-trigger-arrow">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+              </span>
+            </div>
+            <div class="cfg-bar-drop" id="advCfgBarDrop">
+              <div class="cfg-drop-search-row">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2" style="flex-shrink:0"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input class="cfg-drop-search" id="advCfgDropSearch" type="text" placeholder="搜索配置…"
+                  oninput="advCfgBarRenderList()" onclick="event.stopPropagation()"/>
+              </div>
+              <div class="cfg-drop-list" id="advCfgDropList"></div>
+              <div class="cfg-drop-divider"></div>
+              <div class="cfg-drop-action" onclick="advCfgBarShowNameInput()">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                存为新配置
+              </div>
+              <div class="cfg-drop-action" id="advCfgDropUpdate" onclick="advCfgBarUpdate()">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><polyline points="3 3 3 8 8 8"/></svg>
+                更新
+              </div>
+              <div class="cfg-drop-nameinput" id="advCfgDropNameRow">
+                <input type="text" id="advCfgDropNameInput" placeholder="配置名称…" maxlength="40"
+                  onkeydown="if(event.key==='Enter')advCfgBarConfirmSave();if(event.key==='Escape')advCfgBarHideNameInput();"/>
+                <button class="cfg-drop-nameinput-ok" onclick="advCfgBarConfirmSave()">保存</button>
+              </div>
+            </div>
+          </div>
+        </div><!-- /套图配置管理 -->
 
       </div><!-- /scroll -->
 
@@ -2794,8 +3449,26 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
         </span>
         <span style="font-size:11px;color:#aaa;">选择类型和数量，可添加生成要求，AI 自动分析规划</span>
       </div>
-      <button class="ipln-close" onclick="closeAiModeMask()" style="margin-top:2px;">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      <div style="display:flex;align-items:center;gap:6px;margin-top:2px;">
+        <button class="mod-sel-all" onclick="aiModeReset()" title="恢复默认配置">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><polyline points="3 3 3 8 8 8"/></svg>
+          重置
+        </button>
+        <button class="ipln-close" onclick="closeAiModeMask()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Tab 切换条 -->
+    <div class="ai-mode-tabs" id="aiModeTabs">
+      <button class="ai-mode-tab active" id="aiModeTabCfg" onclick="aiModeTabSwitch('cfg')">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="7" height="7" rx="1.2"/><rect x="14" y="3" width="7" height="7" rx="1.2"/><rect x="3" y="14" width="7" height="7" rx="1.2"/><rect x="14" y="14" width="7" height="7" rx="1.2"/></svg>
+        配置类型
+      </button>
+      <button class="ai-mode-tab" id="aiModeTabReq" onclick="aiModeTabSwitch('req')">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+        描述需求
       </button>
     </div>
 
@@ -2809,14 +3482,38 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
       <span id="aiModeGsetText" style="font-size:11px;color:#6366f1;font-weight:600;">亚马逊 · 英文 · GPT-Image 2 · 标准1K</span>
     </div>
 
-    <!-- 板块列表（可滚动） -->
-    <div style="flex:1;overflow-y:auto;" id="aiModeIplnList"></div>
+    <!-- 面板A：配置类型 -->
+    <div id="aiModePanelCfg" style="display:flex;flex-direction:column;flex:1;overflow:hidden;min-height:0;">
+      <!-- 板块列表（可滚动） -->
+      <div style="flex:1;overflow-y:auto;" id="aiModeIplnList"></div>
+      <!-- 自定义添加 -->
+      <div class="ipln-add-zone" style="border-top:1px solid #f3f3f5;border-bottom:none;">
+        <input class="ipln-add-field" id="aiModeNewName" placeholder="自定义类型，如 SKU图" maxlength="10"
+          onkeydown="if(event.key==='Enter')aiModeAddRow()" />
+        <button class="ipln-add-go" onclick="aiModeAddRow()">添加</button>
+      </div>
+    </div>
 
-    <!-- 自定义添加 -->
-    <div class="ipln-add-zone" style="border-top:1px solid #f3f3f5;border-bottom:none;">
-      <input class="ipln-add-field" id="aiModeNewName" placeholder="自定义类型，如 SKU图" maxlength="10"
-        onkeydown="if(event.key==='Enter')aiModeAddRow()" />
-      <button class="ipln-add-go" onclick="aiModeAddRow()">添加</button>
+    <!-- 面板B：描述需求（AI 自动解析） -->
+    <div id="aiModePanelReq" style="display:none;flex-direction:column;flex:1;padding:18px 20px;gap:12px;overflow-y:auto;">
+      <p style="font-size:12px;color:#888;line-height:1.7;margin:0;">
+        用文字描述你的产品和需求，AI 将自动识别所需图片类型与数量，生成配置方案。
+      </p>
+      <textarea id="aiModeReqText"
+        style="flex:1;min-height:140px;resize:none;border:1.5px solid #e8e8f0;border-radius:10px;
+               padding:12px 14px;font-size:13px;font-family:inherit;color:#333;outline:none;
+               line-height:1.7;transition:border-color .2s;"
+        placeholder="例如：我是做亚马逊宠物用品的，需要白底图3张、场景图2张，要体现产品质感，目标用户是年轻宠主……"
+        onfocus="this.style.borderColor='#a5b4fc'"
+        onblur="this.style.borderColor='#e8e8f0'"
+      ></textarea>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+        <span style="font-size:11px;color:#bbb;">快速选择：</span>
+        <button class="ai-req-chip" onclick="aiModeReqChip('主图3张 详情图5张，重点突出产品功能卖点')">主图+详情</button>
+        <button class="ai-req-chip" onclick="aiModeReqChip('亚马逊白底主图3张，白色背景干净清晰')">白底图</button>
+        <button class="ai-req-chip" onclick="aiModeReqChip('社媒推广图2张、活动场景图2张，氛围感强')">推广图</button>
+        <button class="ai-req-chip" onclick="aiModeReqChip('全套：主图3张、详情图5张、白底图2张、推广图2张')">全套</button>
+      </div>
     </div>
 
     <!-- 底部按钮 -->
@@ -3439,15 +4136,17 @@ var _advMods = [];
 
 // 渲染配置区网格
 function _renderAdvGrid(){
-  var grid = document.getElementById('modGridAdv');
+  var grid = document.getElementById('modGridAiAdv');
   var empty = document.getElementById('cfgEmptyAdv');
   var hd = document.getElementById('modHdRowAdv');
+  var customEl = document.getElementById('cfgCustomBlock');
   if(!grid) return;
 
   if(!_advMods.length){
     grid.style.display = 'none';
     if(empty) empty.style.display = '';
     if(hd) hd.style.display = 'none';
+    if(customEl) customEl.style.display = 'none';
     // 按钮置灰
     var btnAdv = document.getElementById('genBtnAdv');
     var txtAdv = document.getElementById('genBtnTxtAdv');
@@ -3456,7 +4155,9 @@ function _renderAdvGrid(){
     return;
   }
 
+  // AI 分析完成，切换到 AI 结果视图
   if(empty) empty.style.display = 'none';
+  if(customEl) customEl.style.display = 'none';
   if(hd) hd.style.display = '';
   grid.style.display = '';
 
@@ -3468,7 +4169,7 @@ function _renderAdvGrid(){
       +'<button class="mod-del-btn" onclick="delModAdv(event,'+i+')">'
         +'<svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
       +'</button>'
-      +'<div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>'
+      +'<div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>'
       +'<span class="mod-stype-tag '+m.stypeCls+'">'+m.stype+'</span>'
       +'<span class="mod-name">'+m.name+'</span>'
       +'<span class="mod-desc">'+m.desc+'</span>'
@@ -3476,7 +4177,7 @@ function _renderAdvGrid(){
     +'</div>';
   });
   // 末位添加按钮
-  html += '<div class="mod-card mod-more-card" onclick="openCustomPickMask()">'
+  html += '<div class="mod-card mod-more-card" onclick="switchGenMode(\'custom\')">'
     +'<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:100%;height:100%;color:var(--muted);">'
       +'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>'
       +'<span style="font-size:10px;">添加板块</span>'
@@ -3511,12 +4212,87 @@ function clearAdvGrid(){
   _renderAdvGrid();
 }
 
+/* 清空板块并自动弹出 AI 智能弹窗 */
+function clearAdvGridAndAi(){
+  _advMods = [];
+  // 重置为空态显示
+  var emptyEl    = document.getElementById('cfgEmptyAdv');
+  var customEl   = document.getElementById('cfgCustomBlock');
+  var aiEl       = document.getElementById('modGridAiAdv');
+  var headerBtns = document.getElementById('advCfgHeaderBtns');
+  if(customEl)   customEl.style.display   = 'none';
+  if(aiEl)       aiEl.style.display       = 'none';
+  if(emptyEl)    emptyEl.style.display    = '';
+  if(headerBtns) headerBtns.style.display = 'none';
+  // 切换 Tab 状态到 AI
+  var customBtn = document.getElementById('genModeCustomBtn');
+  var aiBtn     = document.getElementById('genModeAiBtn');
+  if(customBtn){ customBtn.classList.remove('active','ai-mode'); }
+  if(aiBtn)    { aiBtn.classList.remove('active'); aiBtn.classList.add('active','ai-mode'); }
+  _genMode = 'ai';
+  // 自动打开 AI 智能弹窗
+  setTimeout(function(){ openAiModeMask(); }, 150);
+}
+
+/* 同步全选按钮文字 */
+function _syncAdvSelAllBtn(){
+  var btn = document.getElementById('advSelAllBtn');
+  if(!btn) return;
+  var cards = document.querySelectorAll('#modGridAdv .mod-card:not(.mod-more-card), #modExtraGridAdv .mod-card');
+  var allSel = cards.length > 0 && [...cards].every(function(c){ return c.classList.contains('sel'); });
+  btn.innerHTML = allSel
+    ? '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> 取消'
+    : '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 全选';
+}
+
 /* ── 生成模式 ── */
 var _genMode = 'custom';
 function switchGenMode(mode){
   _genMode = mode;
-  if(mode === 'ai') openAiModeMask();
+  var customBtn  = document.getElementById('genModeCustomBtn');
+  var aiBtn      = document.getElementById('genModeAiBtn');
+  var emptyEl    = document.getElementById('cfgEmptyAdv');
+  var customEl   = document.getElementById('cfgCustomBlock');
+  var aiEl       = document.getElementById('modGridAiAdv');
+  var headerBtns = document.getElementById('advCfgHeaderBtns');
+
+  // 重置所有区域
+  if(emptyEl)  emptyEl.style.display  = 'none';
+  if(customEl) customEl.style.display = 'none';
+  if(aiEl)     aiEl.style.display     = 'none';
+  if(customBtn){ customBtn.classList.remove('active','ai-mode'); }
+  if(aiBtn)    { aiBtn.classList.remove('active','ai-mode'); }
+  // 空态时隐藏清空/全选
+  if(headerBtns) headerBtns.style.display = 'none';
+
+  if(mode === 'custom'){
+    if(customEl) customEl.style.display = '';
+    if(customBtn) customBtn.classList.add('active');
+    if(headerBtns) headerBtns.style.display = '';
+  } else if(mode === 'ai'){
+    if(aiBtn) aiBtn.classList.add('active','ai-mode');
+    if(headerBtns) headerBtns.style.display = '';
+    openAiModeMask();
+  }
 }
+
+/* 初始化：优先展示空态引导，让用户选择 AI 或自定义 */
+document.addEventListener('DOMContentLoaded', function(){
+  var customEl   = document.getElementById('cfgCustomBlock');
+  var emptyEl    = document.getElementById('cfgEmptyAdv');
+  var customBtn  = document.getElementById('genModeCustomBtn');
+  var aiBtn      = document.getElementById('genModeAiBtn');
+  var headerBtns = document.getElementById('advCfgHeaderBtns');
+  // 初始展示空态引导，不激活任何模式按钮，隐藏重置/添加
+  if(customEl)   customEl.style.display  = 'none';
+  if(emptyEl)    emptyEl.style.display   = '';
+  if(customBtn)  customBtn.classList.remove('active');
+  if(aiBtn)      aiBtn.classList.remove('active');
+  if(headerBtns) headerBtns.style.display = 'none';
+  _genMode = '';
+
+
+});
 
 /* ══ 自定义选板块弹窗 ══ */
 var _cpickSelected = [];
@@ -3594,6 +4370,14 @@ function confirmCustomPick(){
 
 /* ══ AI 智能模式弹窗 ══ */
 function openAiModeMask(){
+  // 重置到「配置类型」Tab
+  _aiModeTab = 'cfg';
+  document.getElementById('aiModeTabCfg').classList.add('active');
+  document.getElementById('aiModeTabReq').classList.remove('active');
+  document.getElementById('aiModePanelCfg').style.display = 'flex';
+  document.getElementById('aiModePanelReq').style.display = 'none';
+  var btn = document.getElementById('aiModeStartBtn');
+  if(btn) btn.querySelector('span').innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>开始分析';
   _aiModeRender();
   var bar = document.getElementById('aiModeGsetText');
   if(bar) bar.textContent = '亚马逊 · 英文 · GPT-Image 2 · 标准1K';
@@ -3619,7 +4403,6 @@ function _aiModeRender(){
       return '<option value="'+r+'"'+(d.ratio===r?' selected':'')+'>'+r+'</option>';
     }).join('');
     html += '<div class="ai-mode-row'+(d.on?'':' off')+'" id="aiModeRow'+i+'">'
-      // 主行
       +'<div class="ai-mode-row-main">'
         +'<label class="ai-tog">'
           +'<input type="checkbox"'+(d.on?' checked':'')
@@ -3637,12 +4420,13 @@ function _aiModeRender(){
           +'<select class="ai-sz-sel" onchange="aiModeRatio('+i+',this.value)">'+opts+'</select>'
           +'<svg class="ai-sz-arr" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>'
         +'</div>'
-        // 展开要求箭头
         +'<button class="ai-mode-exp" id="aiModeExp'+i+'" onclick="aiModeToggleReq('+i+')" title="生成要求">'
           +'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>'
         +'</button>'
+        +'<button class="ai-mode-del" onclick="aiModeDelRow('+i+')" title="删除此类型">'
+          +'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
+        +'</button>'
       +'</div>'
-      // 要求展开区
       +'<div class="ai-mode-req-zone" id="aiModeReq'+i+'">'
         +'<textarea class="ai-mode-req-ta" placeholder="描述此类图片的特殊要求，如：背景纯白、突出产品细节..."'
           +' onchange="aiModeSetReq('+i+',this.value)">'+( d.req||'' )+'</textarea>'
@@ -3677,6 +4461,80 @@ function aiModeToggleReq(idx){
 
 function aiModeSetReq(idx, val){ _iplnData[idx].req = val; }
 
+function aiModeReset(){
+  _iplnData = [
+    {key:'主图',   on:true,  count:3, ratio:'1:1',  req:''},
+    {key:'详情图', on:true,  count:5, ratio:'9:16', req:''},
+    {key:'白底图', on:false, count:1, ratio:'1:1',  req:''},
+    {key:'推广图', on:false, count:1, ratio:'16:9', req:''},
+    {key:'活动图', on:false, count:1, ratio:'16:9', req:''},
+  ];
+  // 切回配置类型 Tab 并重新渲染
+  aiModeTabSwitch('cfg');
+  _aiModeRender();
+  // 清空需求文本框
+  var ta = document.getElementById('aiModeReqText');
+  if(ta) ta.value = '';
+}
+
+function aiModeDelRow(idx){
+  _iplnData.splice(idx, 1);
+  _aiModeRender();
+}
+
+/* Tab 切换：cfg / req */
+var _aiModeTab = 'cfg';
+function aiModeTabSwitch(tab){
+  _aiModeTab = tab;
+  document.getElementById('aiModeTabCfg').classList.toggle('active', tab === 'cfg');
+  document.getElementById('aiModeTabReq').classList.toggle('active', tab === 'req');
+  document.getElementById('aiModePanelCfg').style.display = tab === 'cfg' ? 'flex' : 'none';
+  document.getElementById('aiModePanelReq').style.display = tab === 'req' ? 'flex' : 'none';
+  // 描述需求模式：按钮文案改为「AI 解析并开始」
+  var btn = document.getElementById('aiModeStartBtn');
+  if(btn){
+    btn.querySelector('span').innerHTML = tab === 'req'
+      ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>AI 解析并生成'
+      : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>开始分析';
+  }
+}
+
+/* 快速需求 chip 填充 */
+function aiModeReqChip(text){
+  var ta = document.getElementById('aiModeReqText');
+  if(ta){ ta.value = text; ta.focus(); }
+}
+
+/* 从需求文字解析 _iplnData */
+function _aiParseReqText(text){
+  var result = [];
+  // 规则：识别「X图N张」「X图×N」「X图」等模式
+  var rules = [
+    { re:/主图[×x*]?(\d+)张?/,  key:'主图',  def:3 },
+    { re:/详情图[×x*]?(\d+)张?/, key:'详情图', def:5 },
+    { re:/白底图[×x*]?(\d+)张?/, key:'白底图', def:3 },
+    { re:/场景图[×x*]?(\d+)张?/, key:'场景图', def:2 },
+    { re:/推广图[×x*]?(\d+)张?/, key:'推广图', def:2 },
+    { re:/活动图[×x*]?(\d+)张?/, key:'活动图', def:2 },
+  ];
+  rules.forEach(function(rule){
+    var m = text.match(rule.re);
+    if(m){
+      result.push({ key:rule.key, on:true, count:parseInt(m[1])||rule.def, ratio: rule.key==='详情图'?'9:16':'1:1', req:'' });
+    } else if(text.indexOf(rule.key) >= 0){
+      result.push({ key:rule.key, on:true, count:rule.def, ratio: rule.key==='详情图'?'9:16':'1:1', req:'' });
+    }
+  });
+  // 无匹配时给默认方案
+  if(!result.length){
+    result = [
+      { key:'主图',  on:true, count:3, ratio:'1:1',  req:'' },
+      { key:'详情图',on:true, count:5, ratio:'9:16', req:'' },
+    ];
+  }
+  return result;
+}
+
 function aiModeAddRow(){
   var inp = document.getElementById('aiModeNewName');
   var name = inp.value.trim();
@@ -3687,6 +4545,18 @@ function aiModeAddRow(){
 }
 
 function aiModeStartAnalyze(){
+  // 描述需求模式：先解析文字生成 _iplnData，再执行正常分析
+  if(_aiModeTab === 'req'){
+    var ta = document.getElementById('aiModeReqText');
+    var text = (ta ? ta.value.trim() : '');
+    if(!text){ ta && (ta.style.borderColor='#f87171'); setTimeout(function(){ ta && (ta.style.borderColor='#e8e8f0'); },1200); return; }
+    var parsed = _aiParseReqText(text);
+    _iplnData = parsed;
+    // 切换到配置 Tab 展示解析结果，短暂停留后自动执行
+    aiModeTabSwitch('cfg');
+    _aiModeRender();
+  }
+
   var active = _iplnData.filter(function(d){ return d.on; });
   if(!active.length){ alert('请至少开启一种图片类型'); return; }
 
@@ -4197,9 +5067,15 @@ document.addEventListener('DOMContentLoaded', function(){
   _initBgGrid();
 });
 
-/* ── 模块多选 ── */
+/* ── mod-check 单击勾选（card 单击改为打开弹窗后，勾选收归此处） ── */
+function toggleModCard(e, checkEl){
+  e.stopPropagation();
+  var card = checkEl.closest('.mod-card');
+  if(card) card.classList.toggle('sel');
+}
+
+/* ── 模块多选（兼容旧调用） ── */
 function toggleMod(el){
-  // 双击编辑中不触发勾选
   if(el.querySelector('.mod-name[contenteditable="true"]')) return;
   el.classList.toggle('sel');
   updateBtn();
@@ -4222,6 +5098,159 @@ function syncSelAllBtn(){
   btn.innerHTML=allSel
     ? '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> 取消全选'
     : '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 全选';
+}
+
+/* ════════════════════════════════
+   通用板块编辑弹窗
+════════════════════════════════ */
+var _ceTarget    = null;  // 当前编辑的 DOM 元素（img-cfg-row 或 mod-card）
+var _ceMode      = null;  // 'main' | 'detail'
+var _ceRefImages = [];    // [{dataUrl, name}]
+
+function openCardEdit(e, el, mode){
+  e.stopPropagation();
+  // 找到正确的容器元素
+  var target = el;
+  if(mode === 'main'){
+    target = el.closest('.img-cfg-row') || el;
+  } else {
+    target = el.closest('.mod-card') || el;
+  }
+  _ceTarget    = target;
+  _ceMode      = mode;
+  _ceRefImages = target._ceRefImages ? target._ceRefImages.slice() : [];
+
+  var mask = document.getElementById('cardEditMask');
+
+  // 填充名称
+  var nameEl = mode === 'main'
+    ? target.querySelector('.img-cfg-name')
+    : target.querySelector('.mod-name');
+  document.getElementById('cardEditName').value = nameEl ? nameEl.textContent.trim() : '';
+
+  // 备注（detail 专用）
+  var descWrap = document.getElementById('cardEditDescWrap');
+  var typeWrap = document.getElementById('cardEditTypeWrap');
+  // 判断是否是电商套图的 detail（card 在 modGridAdv / modExtraGridAdv 内）
+  var isAdv = mode === 'detail' && !!(target.closest('#modGridAdv') || target.closest('#modExtraGridAdv'));
+  if(mode === 'detail'){
+    descWrap.style.display = '';
+    var descEl = target.querySelector('.mod-desc');
+    document.getElementById('cardEditDesc').value = descEl ? descEl.textContent.trim() : '';
+  } else {
+    descWrap.style.display = 'none';
+    document.getElementById('cardEditDesc').value = '';
+  }
+  if(isAdv){
+    typeWrap.style.display = '';
+    document.getElementById('cardEditType').value = target._ceType || '';
+    document.getElementById('cardEditSize').value = target._ceSize || '1:1';
+  } else {
+    typeWrap.style.display = 'none';
+  }
+
+  // 生成要求
+  document.getElementById('cardEditReq').value = target._ceReq || '';
+
+  // 参考图
+  _renderCeRefs();
+
+  // 标题
+  document.getElementById('cardEditTitle').textContent =
+    mode === 'main' ? '编辑主图配置' : '编辑详情图板块';
+
+  mask.classList.add('show');
+  setTimeout(function(){ document.getElementById('cardEditName').focus(); }, 80);
+}
+
+function _renderCeRefs(){
+  var zone = document.getElementById('cardEditUploadZone');
+  // 保留最后一个"添加"按钮
+  var addBtn = zone.querySelector('.card-edit-add-img');
+  zone.innerHTML = '';
+  _ceRefImages.forEach(function(img, idx){
+    var thumb = document.createElement('div');
+    thumb.className = 'card-edit-ref-thumb';
+    thumb.innerHTML =
+      '<img src="' + img.dataUrl + '" alt="ref"/>' +
+      '<button class="card-edit-ref-del" onclick="ceDelRef(' + idx + ')" title="删除">' +
+      '<svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+      '</button>';
+    zone.appendChild(thumb);
+  });
+  zone.appendChild(addBtn || (function(){
+    var b = document.createElement('div');
+    b.className = 'card-edit-add-img';
+    b.onclick = cardEditPickImg;
+    b.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>上传图</span>';
+    return b;
+  })());
+}
+
+function ceDelRef(idx){
+  _ceRefImages.splice(idx, 1);
+  _renderCeRefs();
+}
+
+function cardEditPickImg(){
+  document.getElementById('cardEditFileInput').value = '';
+  document.getElementById('cardEditFileInput').click();
+}
+
+function cardEditHandleFiles(input){
+  var files = Array.from(input.files);
+  var remaining = 5 - _ceRefImages.length;
+  files.slice(0, remaining).forEach(function(file){
+    var reader = new FileReader();
+    reader.onload = function(ev){
+      _ceRefImages.push({ dataUrl: ev.target.result, name: file.name });
+      _renderCeRefs();
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function saveCardEdit(){
+  if(!_ceTarget) return;
+  var name = document.getElementById('cardEditName').value.trim();
+  var req  = document.getElementById('cardEditReq').value.trim();
+
+  if(_ceMode === 'main'){
+    var nameEl = _ceTarget.querySelector('.img-cfg-name');
+    if(nameEl && name) nameEl.textContent = name;
+  } else {
+    var nameSpan = _ceTarget.querySelector('.mod-name');
+    var descSpan = _ceTarget.querySelector('.mod-desc');
+    var desc = document.getElementById('cardEditDesc').value.trim();
+    if(nameSpan && name) nameSpan.textContent = name;
+    if(descSpan && desc) descSpan.textContent = desc;
+  }
+
+  // 持久化到元素
+  _ceTarget._ceReq       = req;
+  _ceTarget._ceRefImages = _ceRefImages.slice();
+
+  // 电商套图：保存类型/尺寸并更新左上角 tag
+  var typeWrap = document.getElementById('cardEditTypeWrap');
+  if(typeWrap && typeWrap.style.display !== 'none'){
+    var t = document.getElementById('cardEditType').value.trim();
+    var s = document.getElementById('cardEditSize').value;
+    _ceTarget._ceType = t;
+    _ceTarget._ceSize = s;
+    var tag = _ceTarget.querySelector('.mod-type-tag');
+    if(tag) tag.textContent = t || '';
+  }
+
+  // 右上角小圆点：有参考图时亮起
+  _ceTarget.classList.toggle('has-cfg', _ceRefImages.length > 0);
+
+  closeCardEdit();
+}
+
+function closeCardEdit(e){
+  if(e && e.target !== document.getElementById('cardEditMask')) return;
+  document.getElementById('cardEditMask').classList.remove('show');
+  _ceTarget = null;
 }
 
 /* ── 双击编辑板块名称 ── */
@@ -4266,6 +5295,623 @@ function editModDesc(e, el){
     if(!el.textContent.trim()) el.textContent='点击添加备注';
   });
 }
+
+/* ════════════════════════════════════
+   全局配置管理（主图 + 详情图完整保存）
+════════════════════════════════════ */
+var _cfgStore = JSON.parse(localStorage.getItem('detailPageCfgStore') || '[]');
+var _cfgCurrentId = null;
+
+function _saveCfgStore(){
+  localStorage.setItem('detailPageCfgStore', JSON.stringify(_cfgStore));
+}
+
+/* 读取产品名称作为默认配置名 */
+function _getProductName(){
+  var el = document.getElementById('aiwProdName');
+  if(el && el.value.trim()) return el.value.trim();
+  var ta = document.getElementById('sellingTa') || document.getElementById('sellingTaAdv');
+  if(ta && ta.value.trim()){
+    var m = ta.value.trim().match(/^(.{1,20})/);
+    if(m) return m[1];
+  }
+  return '配置 ' + new Date().toLocaleDateString('zh-CN',{month:'2-digit',day:'2-digit'});
+}
+
+/* 完整序列化当前所有配置 */
+function _readFullConfig(){
+  var cfg = {};
+
+  // 1. 主图配置行
+  cfg.mainRows = [];
+  document.querySelectorAll('#mainCfgList .img-cfg-row').forEach(function(row){
+    var nameEl = row.querySelector('.img-cfg-name');
+    var checkEl = row.querySelector('.img-cfg-check');
+    var stepEl = row.querySelector('.img-stepper span');
+    var ratioEl = row.querySelector('.ratio-drop');
+    cfg.mainRows.push({
+      name:    nameEl  ? nameEl.textContent.trim()  : '',
+      checked: checkEl ? checkEl.classList.contains('checked') : false,
+      count:   stepEl  ? parseInt(stepEl.textContent) || 1 : 1,
+      ratio:   ratioEl ? ratioEl.textContent.replace(/\s*▾?\s*/,'').trim() : '1:1',
+      req:     row._ceReq || '',
+      refs:    row._ceRefImages ? row._ceRefImages.map(function(r){ return {dataUrl:r.dataUrl, name:r.name}; }) : []
+    });
+  });
+
+  // 2. 详情图板块
+  cfg.detailCards = [];
+  var detailCards = [
+    ...document.querySelectorAll('#modGrid .mod-card:not(.mod-more-card)'),
+    ...document.querySelectorAll('#modExtraGrid .mod-card')
+  ];
+  detailCards.forEach(function(card){
+    cfg.detailCards.push({
+      name: (card.querySelector('.mod-name') || {}).textContent || '',
+      desc: (card.querySelector('.mod-desc') || {}).textContent || '',
+      sel:  card.classList.contains('sel'),
+      req:  card._ceReq || '',
+      refs: card._ceRefImages ? card._ceRefImages.map(function(r){ return {dataUrl:r.dataUrl, name:r.name}; }) : [],
+      hasCfg: card.classList.contains('has-cfg')
+    });
+  });
+
+  // 3. 生成设置（平台/地区/语言/类型/数量/卖点文案）
+  cfg.genSettings = {
+    platform: (document.getElementById('sPlatform') || {}).value || '',
+    region:   (document.getElementById('sRegion')   || {}).value || '',
+    lang:     (document.getElementById('sLang')     || {}).value || '',
+    type:     (document.getElementById('sType')     || {}).value || '',
+    count:    (document.getElementById('countVal')  || {}).textContent || '2',
+    sellingTa: (document.getElementById('sellingTa') || document.getElementById('sellingTaAdv') || {}).value || ''
+  };
+
+  return cfg;
+}
+
+/* 完整反序列化 */
+function _applyFullConfig(cfg){
+  // 1. 主图配置
+  if(cfg.mainRows && cfg.mainRows.length){
+    var list = document.getElementById('mainCfgList');
+    if(list){
+      list.innerHTML = '';
+      cfg.mainRows.forEach(function(item){
+        var row = _makeMainRow(item.name, item.checked);
+        // 数量
+        var stepSpan = row.querySelector('.img-stepper span');
+        if(stepSpan) stepSpan.textContent = item.count || 1;
+        // 比例
+        var ratioBtn = row.querySelector('.ratio-drop');
+        if(ratioBtn && item.ratio) ratioBtn.childNodes[0].textContent = item.ratio + ' ';
+        // 要求和参考图
+        row._ceReq       = item.req || '';
+        row._ceRefImages = item.refs || [];
+        row.classList.toggle('has-cfg', (item.refs && item.refs.length > 0));
+        list.appendChild(row);
+      });
+    }
+  }
+
+  // 2. 详情图板块
+  if(cfg.detailCards && cfg.detailCards.length){
+    _applyConfig(cfg.detailCards); // 复用现有函数处理 name/desc/sel
+    var allCards = [
+      ...document.querySelectorAll('#modGrid .mod-card:not(.mod-more-card)'),
+      ...document.querySelectorAll('#modExtraGrid .mod-card')
+    ];
+    cfg.detailCards.forEach(function(item, i){
+      if(!allCards[i]) return;
+      allCards[i]._ceReq       = item.req || '';
+      allCards[i]._ceRefImages = item.refs || [];
+      allCards[i].classList.toggle('has-cfg', !!(item.refs && item.refs.length));
+    });
+  }
+
+  // 3. 生成设置
+  if(cfg.genSettings){
+    var gs = cfg.genSettings;
+    var set = function(id, val){ var el=document.getElementById(id); if(el && val) el.value=val; };
+    set('sPlatform', gs.platform); set('sRegion', gs.region);
+    set('sLang', gs.lang); set('sType', gs.type);
+    if(gs.count){ var cv=document.getElementById('countVal'); if(cv) cv.textContent=gs.count; _cnt=parseInt(gs.count)||2; }
+    if(gs.sellingTa){
+      var ta = document.getElementById('sellingTa') || document.getElementById('sellingTaAdv');
+      if(ta){ ta.value = gs.sellingTa; countTa(ta); }
+    }
+  }
+  updateBtn();
+}
+
+/* 打开配置管理浮层 */
+function openCfgMgr(){
+  var mask = document.getElementById('cfgMgrMask');
+  var inp  = document.getElementById('cfgMgrNameInput');
+  // 默认填入产品名称
+  if(!inp.value) inp.value = _getProductName();
+  document.getElementById('cfgMgrSearch').value = '';
+  renderCfgList('');
+  _updateCfgNavBtn();
+  mask.classList.add('show');
+  setTimeout(function(){ inp.select(); }, 60);
+}
+
+function closeCfgMgr(e){
+  if(e && e.target !== document.getElementById('cfgMgrMask')) return;
+  document.getElementById('cfgMgrMask').classList.remove('show');
+}
+
+/* 保存当前配置 */
+function saveCfgFull(){
+  var inp  = document.getElementById('cfgMgrNameInput');
+  var name = inp.value.trim() || _getProductName();
+  var cfg  = _readFullConfig();
+  var now  = new Date();
+  var timeStr = now.getMonth()+1 + '/' + now.getDate() + ' ' + now.getHours() + ':' + String(now.getMinutes()).padStart(2,'0');
+
+  if(_cfgCurrentId){
+    // 更新现有
+    var idx = _cfgStore.findIndex(function(c){ return c.id === _cfgCurrentId; });
+    if(idx >= 0){
+      _cfgStore[idx].name    = name;
+      _cfgStore[idx].cfg     = cfg;
+      _cfgStore[idx].updTime = timeStr;
+    }
+  } else {
+    var newId = 'cfg_' + Date.now();
+    _cfgStore.unshift({ id:newId, name:name, cfg:cfg, updTime:timeStr });
+    _cfgCurrentId = newId;
+  }
+  _saveCfgStore();
+  renderCfgList('');
+  _updateCfgNavBtn();
+
+  // 短暂反馈
+  var btn = document.querySelector('.cfg-mgr-save-btn');
+  if(btn){
+    btn.textContent = '已保存 ✓';
+    btn.style.background = '#27ae60';
+    setTimeout(function(){
+      btn.textContent = '保存配置';
+      btn.style.background = '';
+    }, 1200);
+  }
+}
+
+/* 加载配置 */
+function loadCfgFull(id){
+  var item = _cfgStore.find(function(c){ return c.id === id; });
+  if(!item) return;
+  _applyFullConfig(item.cfg);
+  _cfgCurrentId = id;
+  document.getElementById('cfgMgrNameInput').value = item.name;
+  renderCfgList('');
+  // 短暂反馈后关闭
+  setTimeout(function(){ document.getElementById('cfgMgrMask').classList.remove('show'); }, 300);
+}
+
+/* 删除配置 */
+function delCfgFull(e, id){
+  e.stopPropagation();
+  _cfgStore = _cfgStore.filter(function(c){ return c.id !== id; });
+  if(_cfgCurrentId === id) _cfgCurrentId = null;
+  _saveCfgStore();
+  renderCfgList(document.getElementById('cfgMgrSearch').value);
+  _updateCfgNavBtn();
+}
+
+/* 渲染配置列表 */
+function renderCfgList(q){
+  var list = document.getElementById('cfgMgrList');
+  var filtered = _cfgStore.filter(function(c){
+    return !q || c.name.toLowerCase().includes(q.toLowerCase());
+  });
+  if(!filtered.length){
+    list.innerHTML = '<div class="cfg-mgr-empty">' + (_cfgStore.length ? '无匹配结果' : '暂无保存的配置') + '</div>';
+    return;
+  }
+  list.innerHTML = filtered.map(function(c){
+    var active = c.id === _cfgCurrentId ? ' active' : '';
+    return '<div class="cfg-mgr-item' + active + '">' +
+      '<div class="cfg-mgr-item-icon">' +
+        '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>' +
+      '</div>' +
+      '<div class="cfg-mgr-item-info">' +
+        '<div class="cfg-mgr-item-name">' + escHtml(c.name) + '</div>' +
+        '<div class="cfg-mgr-item-meta">' + (c.updTime || '') + ' · ' +
+          (c.cfg.mainRows ? c.cfg.mainRows.length : 0) + '张主图 · ' +
+          (c.cfg.detailCards ? c.cfg.detailCards.length : 0) + '个板块' +
+        '</div>' +
+      '</div>' +
+      '<button class="cfg-mgr-item-load" onclick="loadCfgFull(\'' + c.id + '\')">加载</button>' +
+      '<button class="cfg-mgr-item-del" onclick="delCfgFull(event,\'' + c.id + '\')" title="删除">' +
+        '<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+      '</button>' +
+    '</div>';
+  }).join('');
+}
+
+/* Nav 按钮状态更新 */
+function _updateCfgNavBtn(){
+  var btn = document.getElementById('cfgNavBtn');
+  if(btn) btn.classList.toggle('has-saves', _cfgStore.length > 0);
+}
+
+// 初始化 nav 按钮状态
+_updateCfgNavBtn();
+
+/* ════════════════════════════════════
+   主详图板块内置配置条（极简版）
+════════════════════════════════════ */
+var _cfgBarCurrentId = null;
+var _cfgBarOpen = false;
+
+function cfgBarToggle(e){
+  e.stopPropagation();
+  _cfgBarOpen ? cfgBarClose() : cfgBarOpen();
+}
+
+function cfgBarOpen(){
+  _cfgBarOpen = true;
+  document.getElementById('cfgBarTrigger').classList.add('open');
+  document.getElementById('cfgBarDrop').classList.add('open');
+  var s = document.getElementById('cfgDropSearch');
+  if(s) s.value = '';
+  cfgBarRenderList();
+  setTimeout(function(){
+    document.addEventListener('mousedown', _cfgBarOutside);
+    if(s) s.focus();
+  }, 60);
+}
+
+function cfgBarClose(){
+  _cfgBarOpen = false;
+  document.getElementById('cfgBarTrigger').classList.remove('open');
+  document.getElementById('cfgBarDrop').classList.remove('open');
+  cfgBarHideNameInput();
+  document.removeEventListener('mousedown', _cfgBarOutside);
+}
+
+function _cfgBarOutside(e){
+  var drop = document.getElementById('cfgBarDrop');
+  var trigger = document.getElementById('cfgBarTrigger');
+  if(!drop.contains(e.target) && !trigger.contains(e.target)) cfgBarClose();
+}
+
+function cfgBarRenderList(){
+  var list  = document.getElementById('cfgDropList');
+  var updEl = document.getElementById('cfgDropUpdate');
+  if(updEl) updEl.className = 'cfg-drop-action' + (_cfgBarCurrentId ? '' : ' disabled');
+
+  var q = (document.getElementById('cfgDropSearch') || {}).value || '';
+  var filtered = _cfgStore.filter(function(c){
+    return !q || c.name.toLowerCase().includes(q.toLowerCase());
+  });
+
+  if(!_cfgStore.length){
+    list.innerHTML = '<div class="cfg-drop-empty">暂无保存的配置</div>';
+    return;
+  }
+  if(!filtered.length){
+    list.innerHTML = '<div class="cfg-drop-empty">无匹配结果</div>';
+    return;
+  }
+
+  var CHECK_ICON = '<span class="cfg-drop-item-check">' +
+    '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>' +
+    '</span>';
+
+  list.innerHTML = filtered.map(function(c){
+    var active = c.id === _cfgBarCurrentId ? ' active' : '';
+    return '<div class="cfg-drop-item' + active + '" onclick="cfgBarLoad(\'' + c.id + '\')">' +
+      CHECK_ICON +
+      '<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + escHtml(c.name) + '</span>' +
+      '<button class="cfg-drop-item-del" onclick="cfgBarDel(event,\'' + c.id + '\')" title="删除">' +
+        '<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+      '</button>' +
+    '</div>';
+  }).join('');
+}
+
+function cfgBarLoad(id){
+  var item = _cfgStore.find(function(c){ return c.id === id; });
+  if(!item) return;
+  _applyFullConfig(item.cfg);
+  _cfgBarCurrentId = id;
+  document.getElementById('cfgBarVal').textContent = item.name;
+  document.getElementById('cfgBarVal').classList.add('selected');
+  cfgBarClose();
+}
+
+function cfgBarDel(e, id){
+  e.stopPropagation();
+  _cfgStore = _cfgStore.filter(function(c){ return c.id !== id; });
+  if(_cfgBarCurrentId === id){
+    _cfgBarCurrentId = null;
+    document.getElementById('cfgBarVal').textContent = '请选择';
+    document.getElementById('cfgBarVal').classList.remove('selected');
+  }
+  _saveCfgStore();
+  _updateCfgNavBtn();
+  cfgBarRenderList();
+}
+
+function cfgBarShowNameInput(){
+  var row = document.getElementById('cfgDropNameRow');
+  var inp = document.getElementById('cfgDropNameInput');
+  row.classList.add('show');
+  inp.value = _getProductName();
+  setTimeout(function(){ inp.select(); inp.focus(); }, 40);
+}
+
+function cfgBarHideNameInput(){
+  var row = document.getElementById('cfgDropNameRow');
+  if(row) row.classList.remove('show');
+}
+
+function cfgBarConfirmSave(){
+  var name = document.getElementById('cfgDropNameInput').value.trim() || _getProductName();
+  var now  = new Date();
+  var timeStr = (now.getMonth()+1) + '/' + now.getDate() + ' ' +
+                now.getHours() + ':' + String(now.getMinutes()).padStart(2,'0');
+  var newId = 'cfg_' + Date.now();
+  _cfgStore.unshift({ id:newId, name:name, cfg:_readFullConfig(), updTime:timeStr });
+  _cfgBarCurrentId = newId;
+  _saveCfgStore();
+  _updateCfgNavBtn();
+  document.getElementById('cfgBarVal').textContent = name;
+  document.getElementById('cfgBarVal').classList.add('selected');
+  cfgBarClose();
+}
+
+function cfgBarUpdate(){
+  if(!_cfgBarCurrentId) return;
+  var idx = _cfgStore.findIndex(function(c){ return c.id === _cfgBarCurrentId; });
+  if(idx < 0) return;
+  var now = new Date();
+  _cfgStore[idx].cfg     = _readFullConfig();
+  _cfgStore[idx].updTime = (now.getMonth()+1) + '/' + now.getDate() + ' ' +
+                            now.getHours() + ':' + String(now.getMinutes()).padStart(2,'0');
+  _saveCfgStore();
+  cfgBarClose();
+  // 简短反馈
+  var val = document.getElementById('cfgBarVal');
+  var prev = val.textContent;
+  val.textContent = '已更新 ✓';
+  val.style.color = '#27ae60';
+  setTimeout(function(){ val.textContent = prev; val.style.color = ''; }, 1200);
+}
+
+// 初始化
+cfgBarRenderList();
+
+/* ════════════════════════════════════
+   电商套图 · 独立配置管理
+════════════════════════════════════ */
+var _advCfgStore = JSON.parse(localStorage.getItem('advSuiteCfgStore') || '[]');
+var _advCfgBarCurrentId = null;
+var _advCfgBarOpen = false;
+
+function _saveAdvCfgStore(){
+  localStorage.setItem('advSuiteCfgStore', JSON.stringify(_advCfgStore));
+}
+
+/* 读取当前套图面板完整配置 */
+function _readAdvConfig(){
+  var cfg = {};
+  // 生成模式
+  cfg.genMode = _genMode;
+  // 基础生成设置（复用平台/语言等字段）
+  cfg.genSettings = {
+    platform:  (document.getElementById('sPlatform') || {}).value || '',
+    region:    (document.getElementById('sRegion')   || {}).value || '',
+    lang:      (document.getElementById('sLang')     || {}).value || '',
+    type:      (document.getElementById('sType')     || {}).value || '',
+    count:     (document.getElementById('countVal')  || {}).textContent || '2',
+    sellingTa: (document.getElementById('sellingTaAdv') || {}).value || ''
+  };
+  // 自定义模式：采集板块选择状态
+  cfg.advCards = [];
+  var cards = [
+    ...document.querySelectorAll('#modGridAdv .mod-card:not(.mod-more-card)'),
+    ...document.querySelectorAll('#modExtraGridAdv .mod-card')
+  ];
+  cards.forEach(function(card){
+    cfg.advCards.push({
+      name:   (card.querySelector('.mod-name') || {}).textContent || '',
+      desc:   (card.querySelector('.mod-desc') || {}).textContent || '',
+      sel:    card.classList.contains('sel'),
+      type:   (card.querySelector('.mod-meta-type') || {}).value || '',
+      size:   (card.querySelector('.mod-meta-size') || {}).value || '1:1',
+      req:    card._ceReq || '',
+      refs:   card._ceRefImages ? card._ceRefImages.map(function(r){ return {dataUrl:r.dataUrl, name:r.name}; }) : [],
+      hasCfg: card.classList.contains('has-cfg')
+    });
+  });
+  // AI 模式结果（_advMods）
+  cfg.advAiMods = typeof _advMods !== 'undefined' ? _advMods.slice() : [];
+  return cfg;
+}
+
+/* 应用套图配置 */
+function _applyAdvConfig(cfg){
+  if(!cfg) return;
+  // 恢复生成设置
+  if(cfg.genSettings){
+    var gs = cfg.genSettings;
+    var setEl = function(id, val){ var el=document.getElementById(id); if(el && val !== undefined) el.value = val; };
+    setEl('sPlatform', gs.platform); setEl('sRegion', gs.region);
+    setEl('sLang', gs.lang); setEl('sType', gs.type);
+    if(gs.count){ var cv=document.getElementById('countVal'); if(cv){ cv.textContent=gs.count; _cnt=parseInt(gs.count)||2; } }
+    if(gs.sellingTa){ var ta=document.getElementById('sellingTaAdv'); if(ta){ ta.value=gs.sellingTa; countTa(ta); } }
+  }
+  // 切换到对应模式
+  if(cfg.genMode === 'ai' && cfg.advAiMods && cfg.advAiMods.length){
+    _advMods = cfg.advAiMods;
+    switchGenMode('ai');
+    _renderAdvGrid();
+  } else {
+    switchGenMode('custom');
+    // 恢复自定义板块选择状态
+    if(cfg.advCards && cfg.advCards.length){
+      var allCards = [
+        ...document.querySelectorAll('#modGridAdv .mod-card:not(.mod-more-card)'),
+        ...document.querySelectorAll('#modExtraGridAdv .mod-card')
+      ];
+      cfg.advCards.forEach(function(item, i){
+        var card = allCards[i];
+        if(!card) return;
+        card.classList.toggle('sel', !!item.sel);
+        card._ceReq       = item.req || '';
+        card._ceRefImages = item.refs || [];
+        card.classList.toggle('has-cfg', !!(item.refs && item.refs.length));
+        var ti = card.querySelector('.mod-meta-type');
+        var si = card.querySelector('.mod-meta-size');
+        if(ti && item.type !== undefined) ti.value = item.type;
+        if(si && item.size)               si.value = item.size;
+      });
+    }
+  }
+  updateBtn();
+}
+
+/* 下拉控制 */
+function advCfgBarToggle(e){
+  e.stopPropagation();
+  _advCfgBarOpen ? advCfgBarClose() : advCfgBarOpen();
+}
+function advCfgBarOpen(){
+  _advCfgBarOpen = true;
+  document.getElementById('advCfgBarTrigger').classList.add('open');
+  document.getElementById('advCfgBarDrop').classList.add('open');
+  var s = document.getElementById('advCfgDropSearch');
+  if(s) s.value = '';
+  advCfgBarRenderList();
+  setTimeout(function(){
+    document.addEventListener('mousedown', _advCfgBarOutside);
+    if(s) s.focus();
+  }, 60);
+}
+function advCfgBarClose(){
+  _advCfgBarOpen = false;
+  document.getElementById('advCfgBarTrigger').classList.remove('open');
+  document.getElementById('advCfgBarDrop').classList.remove('open');
+  advCfgBarHideNameInput();
+  document.removeEventListener('mousedown', _advCfgBarOutside);
+}
+function _advCfgBarOutside(e){
+  var drop = document.getElementById('advCfgBarDrop');
+  var trigger = document.getElementById('advCfgBarTrigger');
+  if(!drop || !trigger) return;
+  if(!drop.contains(e.target) && !trigger.contains(e.target)) advCfgBarClose();
+}
+
+/* 渲染列表 */
+function advCfgBarRenderList(){
+  var list  = document.getElementById('advCfgDropList');
+  var updEl = document.getElementById('advCfgDropUpdate');
+  if(!list) return;
+  if(updEl) updEl.className = 'cfg-drop-action' + (_advCfgBarCurrentId ? '' : ' disabled');
+  var q = (document.getElementById('advCfgDropSearch') || {}).value || '';
+  var filtered = _advCfgStore.filter(function(c){
+    return !q || c.name.toLowerCase().includes(q.toLowerCase());
+  });
+  if(!_advCfgStore.length){
+    list.innerHTML = '<div class="cfg-drop-empty">暂无保存的配置</div>';
+    return;
+  }
+  if(!filtered.length){
+    list.innerHTML = '<div class="cfg-drop-empty">无匹配结果</div>';
+    return;
+  }
+  var CHECK_ICON = '<span class="cfg-drop-item-check">' +
+    '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>' +
+    '</span>';
+  list.innerHTML = filtered.map(function(c){
+    var active = c.id === _advCfgBarCurrentId ? ' active' : '';
+    return '<div class="cfg-drop-item' + active + '" onclick="advCfgBarLoad(\'' + c.id + '\')">' +
+      CHECK_ICON +
+      '<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + escHtml(c.name) + '</span>' +
+      '<button class="cfg-drop-item-del" onclick="advCfgBarDel(event,\'' + c.id + '\')" title="删除">' +
+        '<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+      '</button>' +
+    '</div>';
+  }).join('');
+}
+
+/* 加载 */
+function advCfgBarLoad(id){
+  var item = _advCfgStore.find(function(c){ return c.id === id; });
+  if(!item) return;
+  _applyAdvConfig(item.cfg);
+  _advCfgBarCurrentId = id;
+  document.getElementById('advCfgBarVal').textContent = item.name;
+  document.getElementById('advCfgBarVal').classList.add('selected');
+  advCfgBarClose();
+}
+
+/* 删除 */
+function advCfgBarDel(e, id){
+  e.stopPropagation();
+  _advCfgStore = _advCfgStore.filter(function(c){ return c.id !== id; });
+  if(_advCfgBarCurrentId === id){
+    _advCfgBarCurrentId = null;
+    var val = document.getElementById('advCfgBarVal');
+    if(val){ val.textContent = '请选择'; val.classList.remove('selected'); }
+  }
+  _saveAdvCfgStore();
+  advCfgBarRenderList();
+}
+
+/* 命名输入显隐 */
+function advCfgBarShowNameInput(){
+  var row = document.getElementById('advCfgDropNameRow');
+  var inp = document.getElementById('advCfgDropNameInput');
+  if(!row || !inp) return;
+  row.classList.add('show');
+  inp.value = _getProductName ? _getProductName() : '';
+  setTimeout(function(){ inp.select(); inp.focus(); }, 40);
+}
+function advCfgBarHideNameInput(){
+  var row = document.getElementById('advCfgDropNameRow');
+  if(row) row.classList.remove('show');
+}
+
+/* 存为新配置 */
+function advCfgBarConfirmSave(){
+  var inp  = document.getElementById('advCfgDropNameInput');
+  var name = (inp ? inp.value.trim() : '') || (_getProductName ? _getProductName() : '套图配置');
+  var now  = new Date();
+  var timeStr = (now.getMonth()+1) + '/' + now.getDate() + ' ' +
+                now.getHours() + ':' + String(now.getMinutes()).padStart(2,'0');
+  var newId = 'advcfg_' + Date.now();
+  _advCfgStore.unshift({ id:newId, name:name, cfg:_readAdvConfig(), updTime:timeStr });
+  _advCfgBarCurrentId = newId;
+  _saveAdvCfgStore();
+  var val = document.getElementById('advCfgBarVal');
+  if(val){ val.textContent = name; val.classList.add('selected'); }
+  advCfgBarClose();
+}
+
+/* 更新当前 */
+function advCfgBarUpdate(){
+  if(!_advCfgBarCurrentId) return;
+  var idx = _advCfgStore.findIndex(function(c){ return c.id === _advCfgBarCurrentId; });
+  if(idx < 0) return;
+  var now = new Date();
+  _advCfgStore[idx].cfg     = _readAdvConfig();
+  _advCfgStore[idx].updTime = (now.getMonth()+1) + '/' + now.getDate() + ' ' +
+                              now.getHours() + ':' + String(now.getMinutes()).padStart(2,'0');
+  _saveAdvCfgStore();
+  advCfgBarClose();
+  var val = document.getElementById('advCfgBarVal');
+  var prev = val ? val.textContent : '';
+  if(val){ val.textContent = '已更新 ✓'; val.style.color = '#27ae60'; }
+  setTimeout(function(){ if(val){ val.textContent = prev; val.style.color = ''; } }, 1200);
+}
+
+// 初始化
+advCfgBarRenderList();
 
 /* ── 模板管理 ── */
 var _tplCurrentId = null; // 当前加载的模板 id
@@ -4371,7 +6017,7 @@ function _initModDrag(){
       });
     });
   });
-  ['modGrid','modExtraGrid'].forEach(function(id){
+  ['modGrid','modExtraGrid','modGridAdv','modExtraGridAdv'].forEach(function(id){
     var el=document.getElementById(id);
     if(el) observer.observe(el,{childList:true});
   });
@@ -4381,15 +6027,16 @@ document.addEventListener('DOMContentLoaded', _initModDrag);
 
 /* ── 添加新板块（inline） ── */
 function addNewMod(){
-  var DEL_BTN = '<button class="mod-del-btn" onclick="delModCard(event,this)" title="删除"><svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>';
-  var CHECK   = '<div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>';
+  var DEL_BTN   = '<button class="mod-del-btn" onclick="delModCard(event,this)" title="删除"><svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>';
+  var CHECK     = '<div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>';
 
   var card = document.createElement('div');
   card.className = 'mod-card mod-new sel';
   card.draggable = true;
   card.innerHTML = DEL_BTN + CHECK +
     '<input class="mod-new-name" placeholder="板块名称" maxlength="20">' +
-    '<input class="mod-new-desc" placeholder="备注（可选）" maxlength="30">';
+    '<input class="mod-new-desc" placeholder="备注（可选）" maxlength="30">' +
+    REF_BADGE;
 
   var moreCard = document.getElementById('modMoreCard');
   moreCard.parentElement.insertBefore(card, moreCard);
@@ -4404,15 +6051,15 @@ function addNewMod(){
     var desc = descInput.value.trim() || '自定义板块';
     card.className = 'mod-card sel';
     card.setAttribute('onclick','toggleMod(this)');
-    card.setAttribute('ondblclick','editModName(event,this)');
-    nameInput.replaceWith(Object.assign(document.createElement('span'),{
-      className:'mod-name', textContent:name,
-      ondblclick:function(e){ editModName(e,card); }
-    }));
-    descInput.replaceWith(Object.assign(document.createElement('span'),{
-      className:'mod-desc', textContent:desc,
-      ondblclick:function(e){ editModDesc(e,card); }
-    }));
+    card.setAttribute('ondblclick',"openCardEdit(event,this,'detail')");
+    var nameSpan = document.createElement('span');
+    nameSpan.className = 'mod-name';
+    nameSpan.textContent = name;
+    nameInput.replaceWith(nameSpan);
+    var descSpan = document.createElement('span');
+    descSpan.className = 'mod-desc';
+    descSpan.textContent = desc;
+    descInput.replaceWith(descSpan);
     updateBtn();
   }
 
@@ -4450,6 +6097,149 @@ function toggleModMore(){
     grid.style.display='grid';
     card.classList.add('open');
     label.textContent='收起';
+  }
+}
+
+/* ── 电商套图面板：更多展开 ── */
+function toggleModMoreAdv(){
+  var grid  = document.getElementById('modExtraGridAdv');
+  var card  = document.getElementById('modMoreCardAdv');
+  var label = document.getElementById('modMoreLabelAdv');
+  var ico   = document.getElementById('modMoreIcSvgAdv');
+  var isOpen = grid.style.display !== 'none';
+  if(isOpen){
+    grid.style.display = 'none';
+    card.classList.remove('open');
+    label.textContent = '更多';
+    ico.style.transform = '';
+  } else {
+    grid.style.display = 'grid';
+    card.classList.add('open');
+    label.textContent = '收起';
+    ico.style.transform = 'rotate(180deg)';
+  }
+}
+
+/* ── 电商套图面板：重置 / 添加 ── */
+var _ADV_DEFAULT_CARDS = [
+  {name:'首屏主视觉', desc:'传递核心价值',     sel:true},
+  {name:'核心卖点图', desc:'突出差异优势',     sel:true},
+  {name:'使用场景图', desc:'呈现真实使用场景', sel:true},
+  {name:'多角度图',   desc:'多角度呈现外观',  sel:true},
+  {name:'商品细节图', desc:'聚焦材质与工艺',  sel:true},
+  {name:'效果对比图', desc:'使用前后效果对比', sel:false},
+];
+
+function _makeAdvCard(item){
+  var DEL_BTN = '<button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块">'
+    + '<svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">'
+    + '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>';
+  var CHECK = '<div class="mod-check" onclick="toggleModCard(event,this)">'
+    + '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3">'
+    + '<polyline points="20 6 9 17 4 12"/></svg></div>';
+  var card = document.createElement('div');
+  card.className = 'mod-card' + (item.sel ? ' sel' : '');
+  card.draggable = true;
+  card.setAttribute('onclick', 'toggleMod(this)');
+  card.setAttribute('ondblclick', "openCardEdit(event,this,'detail')");
+  card.innerHTML = DEL_BTN
+    + '<span class="mod-type-tag"></span>'
+    + CHECK
+    + '<span class="mod-name">' + item.name + '</span>'
+    + '<span class="mod-desc">' + item.desc + '</span>';
+  return card;
+}
+
+function resetAdvCfg(){
+  // 按 name 建默认 sel 映射
+  var defMap = {};
+  _ADV_DEFAULT_CARDS.forEach(function(item){ defMap[item.name] = item.sel; });
+
+  var allCards = [
+    ...document.querySelectorAll('#modGridAdv .mod-card:not(.mod-more-card)'),
+    ...document.querySelectorAll('#modExtraGridAdv .mod-card')
+  ];
+  allCards.forEach(function(card){
+    var nameEl = card.querySelector('.mod-name');
+    var name = nameEl ? nameEl.textContent.trim() : '';
+    if(name in defMap){
+      if(defMap[name]) card.classList.add('sel');
+      else card.classList.remove('sel');
+    }
+  });
+
+  updateBtn();
+}
+
+function addAdvModCard(){
+  var mainGrid = document.getElementById('modGridAdv');
+  var moreCard = document.getElementById('modMoreCardAdv');
+  if(!mainGrid) return;
+  var card = _makeAdvCard({name:'新板块', desc:'双击编辑描述', sel:true});
+  card.classList.add('mod-new', 'entering');
+  if(moreCard) mainGrid.insertBefore(card, moreCard);
+  else mainGrid.appendChild(card);
+  _bindDrag(card);
+  card.scrollIntoView({behavior:'smooth', block:'nearest'});
+  // 自动打开编辑弹窗
+  setTimeout(function(){ openCardEdit({stopPropagation:function(){}}, card, 'detail'); }, 60);
+  updateBtn();
+}
+
+function toggleSelAllAdv(){
+  var cards = document.querySelectorAll('#modGridAdv .mod-card:not(.mod-more-card), #modExtraGridAdv .mod-card');
+  var allSel = [...cards].every(function(c){ return c.classList.contains('sel'); });
+  cards.forEach(function(c){ if(allSel) c.classList.remove('sel'); else c.classList.add('sel'); });
+  _syncAdvSelAllBtn();
+}
+
+/* ── 电商套图面板：重置板块 ── */
+function resetModsAdv(){
+  var grid = document.getElementById('modGridAdv');
+  if(!grid) return;
+  var cards = grid.querySelectorAll('.mod-card:not(.mod-more-card)');
+  // 恢复：前5张 sel，其余去掉 sel
+  cards.forEach(function(c, i){
+    if(i < 5) c.classList.add('sel'); else c.classList.remove('sel');
+  });
+  // 收起更多
+  var extraGrid = document.getElementById('modExtraGridAdv');
+  if(extraGrid){ extraGrid.style.display = 'none'; }
+  var moreCard = document.getElementById('modMoreCardAdv');
+  if(moreCard){ moreCard.classList.remove('open'); }
+  var moreLabel = document.getElementById('modMoreLabelAdv');
+  if(moreLabel){ moreLabel.textContent = '更多'; }
+  var moreIco = document.getElementById('modMoreIcSvgAdv');
+  if(moreIco){ moreIco.style.transform = ''; }
+}
+
+/* ── 电商套图面板：添加新板块 ── */
+function addNewModAdv(){
+  var DEL_BTN = '<button class="mod-del-btn" onclick="delModCard(event,this)"><svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>';
+  var CHECK   = '<div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>';
+  var card = document.createElement('div');
+  card.className = 'mod-card mod-new sel entering';
+  card.draggable = true;
+  card.setAttribute('onclick', 'toggleMod(this)');
+  card.innerHTML = DEL_BTN + CHECK +
+    '<span class="mod-name">新板块</span>' +
+    '<span class="mod-desc">双击编辑描述</span>';
+  var grid = document.getElementById('modGridAdv');
+  var moreCard = document.getElementById('modMoreCardAdv');
+  if(grid && moreCard) grid.insertBefore(card, moreCard);
+  else if(grid) grid.appendChild(card);
+  setTimeout(function(){ card.classList.remove('entering'); }, 300);
+  // 进入编辑模式
+  var nameEl = card.querySelector('.mod-name');
+  if(nameEl){
+    nameEl.contentEditable = 'true';
+    nameEl.focus();
+    var range = document.createRange();
+    range.selectNodeContents(nameEl);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    nameEl.addEventListener('blur', function(){ nameEl.contentEditable='false'; }, {once:true});
+    nameEl.addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); nameEl.blur(); }}, {once:true});
   }
 }
 
@@ -4510,50 +6300,94 @@ function closeModMenu(){
   if(_menuOutside){ document.removeEventListener('click', _menuOutside); _menuOutside = null; }
 }
 
-/* 重置 — 完整重建所有板块到出厂状态 */
+/* ── 主图配置：重置 ── */
+var _mainCfgDefault = [
+  { name:'卖点图', checked:true  },
+  { name:'场景图', checked:false },
+  { name:'细节图', checked:false },
+  { name:'白底图', checked:false }
+];
+
+var DEL_ROW_BTN = '<button class="mod-del-btn" style="position:static;width:18px;height:18px;border-radius:4px;flex-shrink:0;" onclick="delMainCfgRow(event,this)" title="删除"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>';
+
+function _makeMainRow(name, checked){
+  var row = document.createElement('div');
+  row.className = 'img-cfg-row' + (checked ? ' row-checked' : '');
+  row.title = '双击编辑';
+  row.setAttribute('ondblclick', "openCardEdit(event,this,'main')");
+  row.innerHTML =
+    '<div class="img-cfg-check' + (checked ? ' checked' : '') + '" onclick="toggleImgCfg(this)">' +
+      '<svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="#fff" stroke-width="2.8"><polyline points="1.5 5 4 7.5 8.5 2.5"/></svg>' +
+    '</div>' +
+    '<span class="img-cfg-name' + (checked ? ' checked' : '') + '">' + name + '</span>' +
+    '<div class="img-stepper">' +
+      '<button onclick="stepImg(this,-1)">−</button>' +
+      '<span>1</span>' +
+      '<button onclick="stepImg(this,1)">+</button>' +
+    '</div>' +
+    '<button class="ratio-drop" onclick="openRatioDrop(this,event)">1:1 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>' +
+    '' +
+    DEL_ROW_BTN;
+  return row;
+}
+
+function resetMainCfg(){
+  var list = document.getElementById('mainCfgList');
+  if(!list) return;
+  // 只恢复每行的勾选状态，不删不重建
+  var rows = list.querySelectorAll('.img-cfg-row');
+  rows.forEach(function(row, i){
+    var def = _mainCfgDefault[i];
+    var checked = def ? def.checked : false;
+    var chk = row.querySelector('.img-cfg-check');
+    var name = row.querySelector('.img-cfg-name');
+    if(checked){
+      row.classList.add('row-checked');
+      if(chk)  chk.classList.add('checked');
+      if(name) name.classList.add('checked');
+    } else {
+      row.classList.remove('row-checked');
+      if(chk)  chk.classList.remove('checked');
+      if(name) name.classList.remove('checked');
+    }
+  });
+}
+
+function addMainCfgRow(){
+  var list = document.getElementById('mainCfgList');
+  if(!list) return;
+  var row = _makeMainRow('新图类型', false);
+  list.appendChild(row);
+  // 自动打开编辑弹窗
+  setTimeout(function(){ openCardEdit({ stopPropagation:function(){} }, row, 'main'); }, 60);
+}
+
+function delMainCfgRow(e, btn){
+  e.stopPropagation();
+  var row = btn.closest('.img-cfg-row');
+  if(row) row.remove();
+}
+
+/* 重置 — 只恢复勾选状态，不动卡片结构 */
 function resetMods(){
-  var DEL_BTN = '<button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>';
-  var CHECK   = '<div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>';
+  // 按 name 建默认 sel 映射
+  var defMap = {};
+  _DEFAULT_MODS.forEach(function(item){ defMap[item.name] = item.sel; });
 
-  function makeCard(item){
-    var card = document.createElement('div');
-    card.className = 'mod-card' + (item.sel ? ' sel' : '');
-    card.draggable = true;
-    card.setAttribute('onclick','toggleMod(this)');
-    card.setAttribute('ondblclick','editModName(event,this)');
-    card.innerHTML = DEL_BTN + CHECK +
-      '<span class="mod-name" ondblclick="editModName(event,this)">' + item.name + '</span>' +
-      '<span class="mod-desc" ondblclick="editModDesc(event,this)">' + item.desc + '</span>';
-    return card;
-  }
-
-  // 主 grid：前 13 张 + 更多卡（保留）
-  var mainGrid = document.getElementById('modGrid');
-  var moreCard = document.getElementById('modMoreCard');
-  // 清除所有非更多卡
-  Array.from(mainGrid.querySelectorAll('.mod-card:not(.mod-more-card)')).forEach(function(c){ c.remove(); });
-  _DEFAULT_MODS.slice(0,13).forEach(function(item){
-    mainGrid.insertBefore(makeCard(item), moreCard);
+  var allCards = [
+    ...document.querySelectorAll('#modGrid .mod-card:not(.mod-more-card)'),
+    ...document.querySelectorAll('#modExtraGrid .mod-card')
+  ];
+  allCards.forEach(function(card){
+    var nameEl = card.querySelector('.mod-name');
+    var name = nameEl ? nameEl.textContent.trim() : '';
+    // 有默认值的按默认，用户自建卡片保持不变
+    if(name in defMap){
+      if(defMap[name]) card.classList.add('sel');
+      else card.classList.remove('sel');
+    }
   });
 
-  // 扩展 grid
-  var extraGrid = document.getElementById('modExtraGrid');
-  extraGrid.innerHTML = '';
-  _DEFAULT_MODS.slice(13).forEach(function(item){
-    extraGrid.appendChild(makeCard(item));
-  });
-
-  // 收起更多，重新绑拖拽
-  extraGrid.style.display = 'none';
-  moreCard.classList.remove('open');
-  document.getElementById('modMoreLabel').textContent = '更多';
-
-  // 重新绑定拖拽
-  document.querySelectorAll('.mod-card[draggable="true"]').forEach(function(card){
-    _bindDrag(card);
-  });
-
-  _tplCurrentId = null;
   updateBtn();
 }
 
@@ -5186,7 +7020,7 @@ function confirmSuiteAdd(){
   card.innerHTML=
     '<button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块">'+
     '<svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>'+
-    '<div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>'+
+    '<div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>'+
     '<span class="mod-stype-tag '+tagClass+'">'+stype+'</span>'+
     '<span class="mod-name">'+name+'</span>'+
     '<span class="mod-desc">'+note+'</span>'+
@@ -5227,15 +7061,106 @@ function changeCount(id, delta){
   el.textContent = next;
 }
 
-/* ── 电商套图面板：全选切换 ── */
-function toggleSelAllAdv(){
-  var cards=document.querySelectorAll('#modGridAdv .mod-card:not(.mod-more-card)');
-  var allSel=[...cards].every(c=>c.classList.contains('sel'));
-  cards.forEach(c=>{ allSel?c.classList.remove('sel'):c.classList.add('sel'); });
-  var btn=document.getElementById('modSelAllBtnAdv');
-  btn.innerHTML='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> '+(allSel?'全选':'取消全选');
-}
+
 </script>
+
+<!-- ══ 板块编辑弹窗（主图 & 详情图通用） ══ -->
+<div class="card-edit-mask" id="cardEditMask" onclick="closeCardEdit(event)">
+  <div class="card-edit-sheet" onclick="event.stopPropagation()">
+    <div class="card-edit-head">
+      <span class="card-edit-title" id="cardEditTitle">编辑板块</span>
+      <button class="card-edit-close" onclick="closeCardEdit()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="card-edit-body">
+      <!-- 名称 -->
+      <div>
+        <span class="card-edit-label">名称</span>
+        <input class="card-edit-input" id="cardEditName" type="text" placeholder="输入板块名称…"/>
+      </div>
+      <!-- 备注（详情图专用，主图隐藏） -->
+      <div id="cardEditDescWrap">
+        <span class="card-edit-label">备注</span>
+        <input class="card-edit-input" id="cardEditDesc" type="text" placeholder="简短备注说明…"/>
+      </div>
+      <!-- 类型 + 尺寸（电商套图 detail 专用） -->
+      <div id="cardEditTypeWrap" style="display:none;">
+        <div style="display:flex;gap:8px;align-items:flex-end;">
+          <div style="flex:1;">
+            <span class="card-edit-label">类型</span>
+            <input class="card-edit-input" id="cardEditType" list="advTypeList"
+              placeholder="主图 / 详情 / SKU / 推广图 / 活动" maxlength="12"/>
+          </div>
+          <div style="width:84px;">
+            <span class="card-edit-label">尺寸</span>
+            <div style="position:relative;">
+              <select class="card-edit-input" id="cardEditSize"
+                style="appearance:none;-webkit-appearance:none;padding-right:22px;cursor:pointer;">
+                <option>1:1</option>
+                <option>3:4</option>
+                <option>9:16</option>
+                <option>16:9</option>
+                <option>4:3</option>
+              </select>
+              <svg style="position:absolute;right:8px;top:50%;transform:translateY(-50%);pointer-events:none;"
+                width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2.5">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 生成要求 -->
+      <div>
+        <span class="card-edit-label">生成要求</span>
+        <textarea class="card-edit-ta" id="cardEditReq" placeholder="描述此图的风格、重点、特殊要求…"></textarea>
+      </div>
+      <!-- 参考图 -->
+      <div>
+        <span class="card-edit-label">参考图</span>
+        <div class="card-edit-upload" id="cardEditUploadZone">
+          <!-- 已上传缩略图动态生成 -->
+          <div class="card-edit-add-img" onclick="cardEditPickImg()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>上传图</span>
+          </div>
+        </div>
+        <input type="file" id="cardEditFileInput" accept="image/*" multiple style="display:none" onchange="cardEditHandleFiles(this)"/>
+      </div>
+    </div>
+    <div class="card-edit-foot">
+      <button class="card-edit-cancel" onclick="closeCardEdit()">取消</button>
+      <button class="card-edit-save" onclick="saveCardEdit()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 全局配置管理浮层 ══ -->
+<div class="cfg-mgr-mask" id="cfgMgrMask" onclick="closeCfgMgr(event)">
+  <div class="cfg-mgr-panel" onclick="event.stopPropagation()">
+    <div class="cfg-mgr-head">
+      <span class="cfg-mgr-title">配置管理</span>
+      <button class="cfg-mgr-close" onclick="closeCfgMgr()">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <!-- 保存当前配置 -->
+    <div class="cfg-mgr-save-row">
+      <input class="cfg-mgr-name-input" id="cfgMgrNameInput" type="text" placeholder="配置名称…" maxlength="40"/>
+      <button class="cfg-mgr-save-btn" onclick="saveCfgFull()">保存配置</button>
+    </div>
+    <!-- 搜索历史 -->
+    <div class="cfg-mgr-search-row">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--muted);flex-shrink:0"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input class="cfg-mgr-search" id="cfgMgrSearch" type="text" placeholder="搜索已保存的配置…" oninput="renderCfgList(this.value)"/>
+    </div>
+    <!-- 已保存列表 -->
+    <div class="cfg-mgr-list" id="cfgMgrList">
+      <div class="cfg-mgr-empty">暂无保存的配置</div>
+    </div>
+  </div>
+</div>
 
 <!-- ··· 保存配置 popover -->
 <div class="mod-menu-pop" id="modMenuPop">
