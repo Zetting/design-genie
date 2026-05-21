@@ -3341,6 +3341,24 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
             <label class="adv-label">板块名称</label>
             <input type="text" class="adv-input" id="advInputName" placeholder="如：核心卖点图"/>
           </div>
+          <div class="adv-form-row" id="advInputTypeWrap" style="display:none;">
+            <div style="display:flex; gap:12px;">
+              <div style="flex:1;">
+                <label class="adv-label">板块类型</label>
+                <input type="text" class="adv-input" id="advInputType" list="advTypeList" placeholder="如：主图 / 详情"/>
+              </div>
+              <div style="width:100px;">
+                <label class="adv-label">建议尺寸</label>
+                <select class="adv-input" id="advInputSize">
+                  <option>1:1</option>
+                  <option>3:4</option>
+                  <option>9:16</option>
+                  <option>16:9</option>
+                  <option>4:3</option>
+                </select>
+              </div>
+            </div>
+          </div>
           <div class="adv-form-row" id="advInputDescWrap">
             <label class="adv-label">备注/描述</label>
             <input type="text" class="adv-input" id="advInputDesc" placeholder="如：突出差异优势"/>
@@ -3545,6 +3563,9 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
               <button class="mod-sel-all" onclick="addAdvModCard()">
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                 添加
+              </button>
+              <button class="mod-sel-all" onclick="openMenuPop(event, this, 'suite')" title="更多" style="padding: 0 4px; min-width: 28px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="margin:0"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
               </button>
             </div>
           </div>
@@ -7820,10 +7841,18 @@ function openMenuPop(e, el, mode) {
 
 function openAdvSettings(mode) {
   _advItems = [];
-  _advActiveIdx = 0;
+  _advActiveIdx = -1; // 初始化为 -1，防止 selectAdvItem(0) 时保存空数据覆盖第一项
   _advMode = mode;
 
-  document.getElementById('advSubtitle').textContent = mode === 'main' ? '支持批量编辑所有主图板块的内容与参考图' : '支持批量编辑所有详情图板块的内容与参考图';
+  var subtitle = '支持批量编辑所有板块的内容与参考图';
+  if (mode === 'main') {
+    subtitle = '支持批量编辑所有主图板块的内容与参考图';
+  } else if (mode === 'suite') {
+    subtitle = '支持批量编辑所有套图板块的内容与参考图';
+  } else if (mode === 'detail') {
+    subtitle = '支持批量编辑所有详情图板块的内容与参考图';
+  }
+  document.getElementById('advSubtitle').textContent = subtitle;
 
   if (mode === 'main') {
     // 1. 收集主图板块
@@ -7834,9 +7863,29 @@ function openAdvSettings(mode) {
         el: el,
         name: nameEl ? nameEl.textContent.trim() : '',
         desc: '', 
+        type: el._ceType || '',
+        size: el._ceSize || '1:1',
         req: el._ceReq || '',
         refImgs: el._refImgs ? [...el._refImgs] : [],
         sel: el.classList.contains('row-checked')
+      });
+    });
+  } else if (mode === 'suite' || mode === 'adv') {
+    // 3. 收集套图板块 (包含自定义网格、自定义更多网格、以及 AI 分析结果网格)
+    document.querySelectorAll('#modGridAdv .mod-card:not(.mod-more-card), #modExtraGridAdv .mod-card, #modGridAiAdv .mod-card:not(.mod-more-card)').forEach(function(el) {
+      var nameEl = el.querySelector('.mod-name');
+      var descEl = el.querySelector('.mod-desc');
+      var typeEl = el.querySelector('.mod-type-tag') || el.querySelector('.mod-stype-tag');
+      _advItems.push({
+        mode: 'suite',
+        el: el,
+        name: nameEl ? nameEl.textContent.trim() : '',
+        desc: descEl ? descEl.textContent.trim() : '',
+        type: typeEl ? typeEl.textContent.trim() : (el._ceType || ''),
+        size: el._ceSize || '1:1',
+        req: el._ceReq || '',
+        refImgs: el._refImgs ? [...el._refImgs] : [],
+        sel: el.classList.contains('sel')
       });
     });
   } else {
@@ -7844,11 +7893,14 @@ function openAdvSettings(mode) {
     document.querySelectorAll('#detailCfgBlock .mod-card').forEach(function(el) {
       var nameEl = el.querySelector('.mod-name');
       var descEl = el.querySelector('.mod-desc');
+      var typeEl = el.querySelector('.mod-type-tag') || el.querySelector('.mod-stype-tag');
       _advItems.push({
         mode: 'detail',
         el: el,
         name: nameEl ? nameEl.textContent.trim() : '',
         desc: descEl ? descEl.textContent.trim() : '',
+        type: typeEl ? typeEl.textContent.trim() : (el._ceType || ''),
+        size: el._ceSize || '1:1',
         req: el._ceReq || '',
         refImgs: el._refImgs ? [...el._refImgs] : [],
         sel: el.classList.contains('sel')
@@ -7900,17 +7952,21 @@ function selectAdvItem(idx) {
     _advItems[_advActiveIdx].name = document.getElementById('advInputName').value;
     _advItems[_advActiveIdx].desc = document.getElementById('advInputDesc').value;
     _advItems[_advActiveIdx].req = document.getElementById('advInputReq').value;
-    // refImgs 已经在添加删除时同步
+    _advItems[_advActiveIdx].type = document.getElementById('advInputType').value;
+    _advItems[_advActiveIdx].size = document.getElementById('advInputSize').value;
   }
 
   _advActiveIdx = idx;
   var item = _advItems[idx];
 
   document.getElementById('advInputName').value = item.name;
-  document.getElementById('advInputDesc').value = item.desc;
+  document.getElementById('advInputDesc').value = item.desc || '';
   document.getElementById('advInputReq').value = item.req;
+  document.getElementById('advInputType').value = item.type || '';
+  document.getElementById('advInputSize').value = item.size || '1:1';
 
   document.getElementById('advInputDescWrap').style.display = (item.mode === 'main' ? 'none' : '');
+  document.getElementById('advInputTypeWrap').style.display = ''; // 总是显示类型和尺寸
 
   // 更新侧边栏选中状态
   var bar = document.getElementById('advSidebar');
@@ -7972,6 +8028,8 @@ function saveAdvSettings() {
     _advItems[_advActiveIdx].name = document.getElementById('advInputName').value;
     _advItems[_advActiveIdx].desc = document.getElementById('advInputDesc').value;
     _advItems[_advActiveIdx].req = document.getElementById('advInputReq').value;
+    _advItems[_advActiveIdx].type = document.getElementById('advInputType').value;
+    _advItems[_advActiveIdx].size = document.getElementById('advInputSize').value;
   }
 
   _advItems.forEach(function(item) {
@@ -7990,11 +8048,15 @@ function saveAdvSettings() {
       el.classList.toggle('sel', item.sel);
       var nameEl = el.querySelector('.mod-name');
       var descEl = el.querySelector('.mod-desc');
+      var typeEl = el.querySelector('.mod-type-tag') || el.querySelector('.mod-stype-tag');
       if (nameEl) nameEl.textContent = item.name;
       if (descEl) descEl.textContent = item.desc;
+      if (typeEl) typeEl.textContent = item.type;
     }
     // 更新存储的属性
     el._ceReq = item.req;
+    el._ceType = item.type;
+    el._ceSize = item.size;
     el._refImgs = [...item.refImgs];
   });
 
