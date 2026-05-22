@@ -89,12 +89,25 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
 .sidebar{width:150px; background:var(--bg-panel); border-right:1px solid var(--border-light);
   display:flex; flex-direction:column; align-items:flex-start; padding:20px 8px; flex-shrink:0; gap:4px;}
 .sidebar-label{font-size:10px; font-weight:700; color:var(--text-muted); padding:8px 12px 4px; text-transform:uppercase; letter-spacing:0.8px; opacity:0.6;}
-.si{width:100%; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:flex-start; padding:0 12px; gap:10px; cursor:pointer; transition:all .2s; color:var(--text-sub); font-size:13px; font-weight:600; position:relative;}
+.si{width:100%; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:flex-start; padding:0 12px; gap:6px; cursor:pointer; transition:all .2s; color:var(--text-sub); font-size:13px; font-weight:600; position:relative; white-space:nowrap;}
 .si:hover{background:rgba(99,102,241,0.04); color:var(--primary);}
 .si.active{background:rgba(99,102,241,0.08); color:var(--primary); font-weight:800; border-right:3px solid var(--primary); border-radius:10px 0 0 10px; box-shadow:none;}
 .si.active:hover{background:rgba(99,102,241,0.12);}
 .si-ic{font-size:16px; display:flex; align-items:center; justify-content:center; width:20px;}
-.si-badge{position:absolute; right:8px; top:50%; transform:translateY(-50%); background:#FF4D4F; color:#fff; font-size:9px; padding:1px 5px; border-radius:8px; font-weight:800; line-height:1; transform: translateY(-50%) scale(0.9);}
+.si-badge{
+  position: relative;
+  top: -8px;
+  left: 2px;
+  background: #FF4D4F;
+  color: #fff;
+  font-size: 9px;
+  padding: 1px 4px;
+  border-radius: 4px;
+  font-weight: 800;
+  line-height: 1;
+  display: inline-block;
+  transform: scale(0.8);
+}
 .main{flex:1; display:flex; flex-direction:row; background:var(--bg-main); overflow:hidden;}
 .left{width:400px; display:flex; flex-direction:column; background:var(--bg-panel); border-right:1px solid var(--border-light); flex-shrink:0;}
 .left-scroll{flex:1; overflow-y:auto; padding:24px;}
@@ -2765,6 +2778,245 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
   background:linear-gradient(135deg,#6366F1,#8b5cf6);
   color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;
 }
+.vdo-ratio-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.vdo-ratio-item{border:1px solid var(--border-light);border-radius:10px;padding:10px 4px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;transition:all .2s;background:#fff;}
+.vdo-ratio-item:hover{border-color:var(--primary);background:rgba(99,102,241,0.02);}
+.vdo-ratio-item.active{border-color:var(--primary);background:rgba(99,102,241,0.05);box-shadow:0 0 0 1px var(--primary);}
+.vdo-ratio-box{border:1.5px solid var(--muted);border-radius:3px;transition:all .2s;}
+.vdo-ratio-item.active .vdo-ratio-box{border-color:var(--primary);background:rgba(99,102,241,0.1);}
+.vdo-ratio-label{font-size:10px;font-weight:600;color:var(--text-sub);white-space:nowrap;}
+.vdo-ratio-item.active .vdo-ratio-label{color:var(--primary);}
+
+.vdo-style-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.vdo-style-item{border:1.5px solid var(--border-light);border-radius:12px;padding:12px;cursor:pointer;transition:all .2s;background:#fff;position:relative;}
+.vdo-style-item:hover{border-color:var(--primary);transform:translateY(-1px);}
+.vdo-style-item.active{border-color:var(--primary);background:rgba(99,102,241,0.02);box-shadow:inset 0 0 0 1px var(--primary);}
+.vdo-style-name{font-size:13px;font-weight:700;color:var(--text-main);margin-bottom:4px;}
+.vdo-style-desc{font-size:11px;color:var(--text-muted);line-height:1.4;}
+.vdo-style-item.active .vdo-style-name{color:var(--primary);}
+
+.vdo-tab-wrap{display:flex;gap:16px;border-bottom:1px solid var(--border-light);margin-bottom:16px;}
+.vdo-tab{padding:8px 4px;font-size:13px;font-weight:600;color:var(--text-muted);cursor:pointer;position:relative;transition:all .2s;}
+.vdo-tab:hover{color:var(--text-main);}
+.vdo-tab.active{color:var(--primary);font-weight:700;}
+.vdo-tab.active::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:2px;background:var(--primary);border-radius:2px;}
+
+.vdo-ta{width:100%;border:1px solid var(--border-light);border-radius:12px;padding:12px;font-size:12px;font-family:inherit;line-height:1.6;resize:none;outline:none;transition:all .2s;background:var(--bg-main);}
+.vdo-ta:focus{border-color:var(--primary);background:#fff;box-shadow:var(--shadow-sm);}
+.vdo-ai-btn{position:absolute;bottom:10px;right:10px;background:#fff;border:1px solid var(--border-light);border-radius:18px;padding:4px 12px;font-size:11px;font-weight:700;color:var(--primary);cursor:pointer;box-shadow:var(--shadow-sm);transition:all .2s;}
+.vdo-ai-btn:hover{background:var(--primary);color:#fff;border-color:var(--primary);}
+
+.vdo-model-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.vdo-model-item{border:1px solid var(--border-light);border-radius:12px;padding:10px;background:#fff;display:flex;flex-direction:column;gap:4px;cursor:pointer;transition:all .2s;}
+.vdo-model-item:hover{border-color:var(--primary);}
+.vdo-model-item.active{border-color:var(--primary);background:rgba(99,102,241,0.03);}
+.vdo-model-label{font-size:10px;color:var(--text-muted);font-weight:600;}
+.vdo-model-val{font-size:12px;font-weight:700;color:var(--text-main);}
+.vdo-duration-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  background: #fff;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border-light);
+}
+.vdo-duration-item {
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-main);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-sub);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.vdo-duration-item:hover {
+  background: #f0f0ff;
+}
+.vdo-duration-item.active {
+  background: #fff;
+  border-color: var(--primary);
+  color: #6a8d11; /* Based on the image showing green text for 10s */
+  box-shadow: 0 2px 6px rgba(106, 141, 17, 0.1);
+}
+
+.vdo-type-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  max-height: 420px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.vdo-type-grid::-webkit-scrollbar {
+  width: 4px;
+}
+.vdo-type-grid::-webkit-scrollbar-thumb {
+  background: var(--border-light);
+  border-radius: 10px;
+}
+.vdo-type-grid::-webkit-scrollbar-thumb:hover {
+  background: #d1d5db;
+}
+.vdo-type-card {
+  background: #fff;
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  padding: 10px 12px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  min-height: 80px;
+}
+.vdo-type-card:hover {
+  border-color: var(--primary);
+}
+.vdo-type-card.active {
+  border-color: var(--primary);
+  background: rgba(99,102,241,0.02);
+  box-shadow: inset 0 0 0 0.5px var(--primary);
+}
+.vdo-type-check {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+}
+.vdo-type-card.active .vdo-type-check {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+.vdo-type-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+.vdo-type-desc {
+  font-size: 10px;
+  color: var(--text-muted);
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  padding-right: 18px;
+}
+
+/* AI Model Panel */
+.vdo-model-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding: 4px 0;
+}
+.vdo-model-panel {
+  background: var(--bg-main);
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid var(--border-light);
+}
+.vdo-model-tabs {
+  display: flex;
+  background: #eee;
+  padding: 2px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+.vdo-model-tab {
+  flex: 1;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+.vdo-model-tab.active {
+  background: #fff;
+  color: var(--text-main);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.vdo-model-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.vdo-model-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.vdo-model-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+.vdo-model-select {
+  height: 36px;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 0 8px;
+  font-size: 12px;
+  background: #fff;
+  outline: none;
+}
+.vdo-model-ta {
+  width: 100%;
+  height: 80px;
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 12px;
+  font-family: inherit;
+  resize: none;
+  outline: none;
+  background: #fff;
+}
+.vdo-model-ta:focus {
+  border-color: var(--primary);
+}
+/* AI Model Panel */
+.vdo-model-mode-btn {
+
+  flex: 1;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+.vdo-model-mode-btn.active {
+  background: #fff;
+  color: var(--primary);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
 </style>
 </head>
 <body>
@@ -2832,19 +3084,32 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
 
   <!-- SIDEBAR -->
   <aside class="sidebar">
-    <div class="sidebar-label">首页 <span style="margin-left:auto; opacity:0.5; font-size:10px;">︿</span></div>
-    <div class="si active" onclick="switchScene('aplus',this)">
-      <span class="si-ic">📄</span>详情页
+    <div id="sideHome">
+      <div class="sidebar-label">首页 <span style="margin-left:auto; opacity:0.5; font-size:10px;">︿</span></div>
+      <div class="si active" onclick="switchScene('aplus',this)">
+        <span class="si-ic">📄</span>详情页
+      </div>
+      <div class="si" onclick="switchScene('aplusAdv',this)">
+        <span class="si-ic">🌟</span>电商套图
+        <span class="si-badge">New</span>
+      </div>
+      <div class="si" onclick="switchScene('copy',this)">
+        <span class="si-ic">✨</span>爆款复刻
+      </div>
+      <div class="si" onclick="switchScene('aplus',this)">
+        <span class="si-ic">⚡</span>服饰穿戴
+      </div>
     </div>
-    <div class="si" onclick="switchScene('aplusAdv',this)">
-      <span class="si-ic">🌟</span>电商套图
-      <span class="si-badge">New</span>
-    </div>
-    <div class="si" onclick="switchScene('copy',this)">
-      <span class="si-ic">✨</span>爆款复刻
-    </div>
-    <div class="si" onclick="switchScene('aplus',this)">
-      <span class="si-ic">⚡</span>服饰穿戴
+
+    <div id="sideVideo" style="display:none">
+      <div class="sidebar-label">AI视频 <span style="margin-left:auto; opacity:0.5; font-size:10px;">︿</span></div>
+      <div class="si active" onclick="switchScene('vdoProd',this)">
+        <span class="si-ic">📹</span>商品视频
+        <span class="si-badge">New</span>
+      </div>
+      <div class="si" onclick="switchScene('vdoReplicate',this)">
+        <span class="si-ic">⟳</span>爆款复刻
+      </div>
     </div>
 
     <div style="margin-top:auto; width:100%; border-top:1px solid var(--border-light); padding-top:12px; display:flex; flex-direction:column; gap:4px;">
@@ -2861,6 +3126,201 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
   </aside>
 
   <div class="main">
+
+    <!-- ═══ LEFT · 商品视频 ═══ -->
+    <div class="left" id="leftVdoProd" style="display:none">
+      <div class="left-scroll">
+        <!-- 商品素材 -->
+        <div class="sec-block">
+          <div class="sec-hd">
+            <h3>商品原图</h3>
+            <div class="tip">?</div>
+          </div>
+          <div class="upload-wrap">
+            <div class="upload-zone" onclick="addImg()">
+              <div class="uz-ic">↑</div>
+              <div class="uz-lbl">点击上传 / 拖拽图片至此</div>
+              <div class="uz-sub">同一产品最多 3 张 · jpg / png / webp</div>
+              <div class="uz-entries" onclick="event.stopPropagation()">
+                <button class="uz-icon-btn" onclick="openQr()">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                    <rect x="3" y="14" width="7" height="7"/>
+                    <rect x="14" y="14" width="3" height="3"/><rect x="19" y="14" width="2" height="2"/>
+                    <rect x="14" y="19" width="2" height="2"/><rect x="19" y="19" width="2" height="2"/>
+                  </svg>
+                  手机扫码
+                </button>
+                <div class="uz-div"></div>
+                <button class="uz-icon-btn" onclick="openLib()">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <polyline points="21 15 16 10 5 21"/>
+                  </svg>
+                  图片库
+                </button>
+              </div>
+            </div>
+          </div>
+          <div id="vdoImgList" class="img-list" style="display:none"></div>
+        </div>
+
+        <!-- 画布比例 & 时长 -->
+        <div class="sec-block">
+          <div class="sec-hd"><h3>画布比例 & 时长</h3></div>
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <div class="vdo-ratio-grid">
+              <div class="vdo-ratio-item active" onclick="setVdoRatio('9:16',this)">
+                <div class="vdo-ratio-box" style="width:10px;height:18px;"></div>
+                <span class="vdo-ratio-label">9:16</span>
+              </div>
+              <div class="vdo-ratio-item" onclick="setVdoRatio('3:4',this)">
+                <div class="vdo-ratio-box" style="width:13px;height:17px;"></div>
+                <span class="vdo-ratio-label">3:4</span>
+              </div>
+              <div class="vdo-ratio-item" onclick="setVdoRatio('1:1',this)">
+                <div class="vdo-ratio-box" style="width:15px;height:15px;"></div>
+                <span class="vdo-ratio-label">1:1</span>
+              </div>
+              <div class="vdo-ratio-item" onclick="setVdoRatio('16:9',this)">
+                <div class="vdo-ratio-box" style="width:18px;height:10px;"></div>
+                <span class="vdo-ratio-label">16:9</span>
+              </div>
+            </div>
+            <div class="vdo-duration-grid" id="vdoDurationGrid">
+              <!-- JS 填充 4s-15s -->
+            </div>
+          </div>
+        </div>
+
+        <!-- 商品卖点&要求 -->
+        <div class="sec-block">
+          <div class="sec-hd">
+            <h3>商品卖点&amp;要求</h3>
+            <div class="tip">?</div>
+          </div>
+          <div class="ta-wrap" style="position:relative;">
+            <textarea id="vdoSellingTa" placeholder="建议包含以下信息生成更精准：&#10;1. 产品名称&#10;2. 核心卖点&#10;3. 适用人群&#10;4. 期望场景" oninput="countTa(this)"></textarea>
+            <button class="ai-write-btn" onclick="vdoAiSellingPoints()">🪄 AI 帮写</button>
+          </div>
+        </div>
+
+        <!-- 基础配置 -->
+        <div class="sec-block">
+          <div class="sec-hd"><h3>基础参数</h3></div>
+          <div class="opt-row" style="margin-bottom:12px;">
+            <div class="opt-label" style="font-size:12px; color:var(--text-sub); margin-bottom:6px;">选择模型</div>
+            <select class="opt-select" id="vdoModelSelect" style="width:100%; height:38px; border-radius:10px; border:1px solid var(--border-light); padding:0 12px; font-size:12px; background:var(--bg-main); font-family:inherit;">
+              <option value="gen2">GPT-Video Pro (质感电影级)</option>
+              <option value="gen1">Sora-Fast (快节奏营销)</option>
+              <option value="vdo-v3">Design-Video V3 (电商定制)</option>
+            </select>
+          </div>
+          <div class="opt-row">
+            <div class="opt-label" style="font-size:12px; color:var(--text-sub); margin-bottom:6px;">视频语言</div>
+            <select class="opt-select" id="vdoLang" style="width:100%; height:38px; border-radius:10px; border:1px solid var(--border-light); padding:0 12px; font-size:12px; background:var(--bg-main); font-family:inherit;">
+              <option value="zh">中文 (普通话)</option>
+              <option value="en">英语 (美式/英式自适应)</option>
+              <option value="jp">日语</option>
+              <option value="kr">韩语</option>
+              <option value="es">西班牙语</option>
+              <option value="bgm">纯音乐 (无口播)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 生成要求 -->
+        <div class="sec-block">
+          <div class="sec-hd"><h3>生成要求</h3></div>
+          <textarea class="vdo-ta" id="vdoGenRequirement" placeholder="输入具体生成要求，如：背景需要白色简约，模特动作自然..." style="height:80px;"></textarea>
+        </div>
+
+        <!-- 卖点与脚本 -->
+        <div class="sec-block">
+          <div class="vdo-tab-wrap">
+            <div class="vdo-tab active" id="vdoStyleTab" onclick="switchVdoMode('style')">视频类型</div>
+            <div class="vdo-tab" id="vdoScriptTab" onclick="switchVdoMode('script')">自定义脚本</div>
+          </div>
+          
+          <div id="vdoStylePanel">
+            <div class="vdo-type-grid" id="vdoTypeGrid">
+              <!-- JS 填充 -->
+            </div>
+          </div>
+
+          <div id="vdoScriptPanel" style="display:none;">
+            <div style="position:relative;">
+              <textarea class="vdo-ta" id="vdoCustomScript" placeholder="编辑视频分镜脚本或输入您的创意方案..." style="height:180px;"></textarea>
+              <button class="vdo-ai-btn" onclick="vdoAiScript()">🪄 AI 编写脚本</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI 模特 -->
+        <div class="sec-block">
+          <div class="sec-hd"><h3>AI 模特</h3></div>
+          <div style="display:flex; background:var(--bg-main); padding:3px; border-radius:10px; margin-bottom:12px; border:1px solid var(--border-light);">
+            <div class="vdo-model-mode-btn active" id="vdoModelModeNone" onclick="setVdoModelMode('none', this)">智能模特</div>
+            <div class="vdo-model-mode-btn" id="vdoModelModeCustom" onclick="setVdoModelMode('custom', this)">自定义模特</div>
+          </div>
+          
+          <div id="vdoModelPanel" class="vdo-model-panel" style="display:none;">
+            <div id="vdoModelCustomFields">
+              <div class="vdo-model-row">
+                <div class="vdo-model-field">
+                  <span class="vdo-model-label">性别</span>
+                  <select class="vdo-model-select">
+                    <option>女</option>
+                    <option>男</option>
+                  </select>
+                </div>
+                <div class="vdo-model-field">
+                  <span class="vdo-model-label">年龄段</span>
+                  <select class="vdo-model-select">
+                    <option>青少年</option>
+                    <option>青年</option>
+                    <option>中年</option>
+                    <option>老年</option>
+                  </select>
+                </div>
+              </div>
+              <div class="vdo-model-row">
+                <div class="vdo-model-field">
+                  <span class="vdo-model-label">外观特征</span>
+                  <select class="vdo-model-select">
+                    <option>欧美白人</option>
+                    <option>东亚人</option>
+                    <option>拉美裔</option>
+                    <option>非洲裔</option>
+                  </select>
+                </div>
+                <div class="vdo-model-field">
+                  <span class="vdo-model-label">体型</span>
+                  <select class="vdo-model-select">
+                    <option>纤细</option>
+                    <option>健壮</option>
+                    <option>匀称</option>
+                    <option>丰满</option>
+                  </select>
+                </div>
+              </div>
+              <div class="vdo-model-field">
+                <span class="vdo-model-label">外貌细节</span>
+                <textarea class="vdo-model-ta" placeholder="例如：小麦色皮肤、齐刘海、眼角有泪痣..."></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 底部按钮 -->
+      <div class="left-foot" style="padding:20px 24px; border-top:1px solid var(--border-light); background:#fff; flex-shrink:0;">
+        <button class="btn-gen" id="vdoGenBtn" onclick="startVdoGen()" style="width:100%; height:50px; border-radius:14px; background:var(--primary-gradient); color:#fff; border:none; font-size:15px; font-weight:800; cursor:pointer; box-shadow:0 8px 20px rgba(99,102,241,0.25); transition:all .2s; display:flex; align-items:center; justify-content:center; gap:8px;">
+          <span id="vdoGenBtnTxt">✦ 生成爆款视频</span>
+        </button>
+      </div>
+    </div>
 
     <!-- ═══ LEFT ═══ -->
     <div class="left" id="leftAplus">
@@ -3995,8 +4455,8 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
     <!-- ═══ RIGHT ═══ -->
     <div class="right">
       <div class="right-head">
-        <button class="rtab active">生成结果</button>
-        <button class="rtab">优秀案例</button>
+        <button class="rtab active" onclick="switchRightTab(this, 'result')">生成结果</button>
+        <button class="rtab" onclick="switchRightTab(this, 'cases')">优秀案例</button>
         <div class="rh-r">
           <div class="search-box">
             <span style="color:var(--muted)">🔍</span>
@@ -4012,7 +4472,7 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
         <!-- 进度 -->
         <div class="prog-card" id="progCard">
           <div class="prog-head">
-            <span class="prog-lbl">🔄 AI 正在生成详情页…</span>
+            <span class="prog-lbl" id="progLbl">🔄 AI 正在生成详情页…</span>
             <span class="prog-pct" id="progPct">35%</span>
           </div>
           <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
@@ -4029,7 +4489,7 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
         <div class="task-card" id="taskCard">
           <div class="task-thumb">📄</div>
           <div class="task-info">
-            <h3>A+ 详情页生成</h3>
+            <h3 id="taskTitle">A+ 详情页生成</h3>
             <div class="task-meta"><span>2026-05-19 14:48</span><span>任务 ID: 410289</span></div>
             <div class="tid">DET-20260519-B7C2</div>
             <div class="task-params" id="taskParams"></div>
@@ -4044,19 +4504,33 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
         <!-- 结果区 -->
         <div class="result-area" id="resultArea">
           <div class="result-head">
-            <h3>生成结果 · <span id="resMods">3 个模块</span></h3>
+            <h3 id="resultTitle">生成结果 · <span id="resMods">3 个模块</span></h3>
             <div class="result-acts">
               <button class="btn-act btn-re">⟳ 重新生成</button>
               <button class="btn-act btn-dl">⬇ 打包下载</button>
             </div>
           </div>
           <div class="detail-modules" id="detailModules"></div>
+          <div id="resultGrid" class="module-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:16px;"></div>
+        </div>
+
+        <!-- 优秀案例区 -->
+        <div class="result-area" id="casesArea" style="display:none;">
+          <div class="result-head">
+            <h3>优秀案例 · <span id="caseCount">8 个精选</span></h3>
+          </div>
+          <div class="module-grid" id="casesGrid" style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <div style="background:#f5f6ff; border-radius:12px; height:180px; display:flex; align-items:center; justify-content:center; color:#6366F1; font-weight:600; border:1px dashed #d0d4ff;">案例载入中...</div>
+            <div style="background:#f5f6ff; border-radius:12px; height:180px; display:flex; align-items:center; justify-content:center; color:#6366F1; font-weight:600; border:1px dashed #d0d4ff;">案例载入中...</div>
+            <div style="background:#f5f6ff; border-radius:12px; height:180px; display:flex; align-items:center; justify-content:center; color:#6366F1; font-weight:600; border:1px dashed #d0d4ff;">案例载入中...</div>
+            <div style="background:#f5f6ff; border-radius:12px; height:180px; display:flex; align-items:center; justify-content:center; color:#6366F1; font-weight:600; border:1px dashed #d0d4ff;">案例载入中...</div>
+          </div>
         </div>
 
         <!-- 空态 -->
         <div class="empty-state" id="emptyState">
-          <div class="empty-title">AI+ 详情页</div>
-          <div class="empty-sub">上传商品图，AI 即刻生成<br><strong>符合多电商平台规范</strong> 的专业详情页</div>
+          <div class="empty-title" id="emptyTitle">AI+ 详情页</div>
+          <div class="empty-sub" id="emptySub">上传商品图，AI 即刻生成<br><strong>符合多电商平台规范</strong> 的专业详情页</div>
           <div class="flow">
             <div class="flow-col">
               <div class="flow-imgs">
@@ -4073,7 +4547,7 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
                 <div class="fr-card">🌟</div>
                 <div class="fr-card">📐</div>
               </div>
-              <div class="fr-lbl">生成详情页</div>
+              <div class="fr-lbl" id="emptyFlowLbl">生成详情页</div>
             </div>
           </div>
           <div class="platform-row">
@@ -7995,16 +8469,294 @@ function confirmSuiteAdd(){
 }
 
 /* ── 侧边栏场景切换 ── */
+var _vdoRatio = '9:16';
+var _vdoStyle = 'ugc';
+
 function switchScene(scene, el){
   document.querySelectorAll('.sidebar .si').forEach(s=>s.classList.remove('active'));
   el.classList.add('active');
   var aplus    = document.getElementById('leftAplus');
   var aplusAdv = document.getElementById('leftAplusAdv');
   var copy     = document.getElementById('leftCopy');
-  aplus.style.display    = scene==='aplus'    ? '' : 'none';
-  aplusAdv.style.display = scene==='aplusAdv' ? '' : 'none';
-  copy.style.display     = scene==='copy'     ? '' : 'none';
+  var vdoProd  = document.getElementById('leftVdoProd');
+  
+  if(aplus) aplus.style.display    = scene==='aplus'    ? '' : 'none';
+  if(aplusAdv) aplusAdv.style.display = scene==='aplusAdv' ? '' : 'none';
+  if(copy) copy.style.display     = scene==='copy'     ? '' : 'none';
+  if(vdoProd) vdoProd.style.display  = (scene==='vdoProd'||scene==='vdoReplicate') ? '' : 'none';
+
+  // 更新空态内容
+  const emptyTitle = document.getElementById('emptyTitle');
+  const emptySub = document.getElementById('emptySub');
+  const emptyFlowLbl = document.getElementById('emptyFlowLbl');
+
+  if(scene === 'vdoProd' || scene === 'vdoReplicate') {
+    if(emptyTitle) emptyTitle.textContent = 'AI+ 商品视频';
+    if(emptySub) emptySub.innerHTML = '上传产品图，AI 自动规划脚本并生成<br><strong>高转化、符合市场审美</strong> 的爆款短视频';
+    if(emptyFlowLbl) emptyFlowLbl.textContent = '生成短视频';
+  } else {
+    if(emptyTitle) emptyTitle.textContent = 'AI+ 详情页';
+    if(emptySub) emptySub.innerHTML = '上传商品图，AI 即刻生成<br><strong>符合多电商平台规范</strong> 的专业详情页';
+    if(emptyFlowLbl) emptyFlowLbl.textContent = '生成详情页';
+  }
+
   if(scene === 'aplusAdv') _initBgGrid();
+}
+
+function switchRightTab(el, key) {
+  document.querySelectorAll('.rtab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  
+  const resultArea = document.getElementById('resultArea');
+  const casesArea = document.getElementById('casesArea');
+  const emptyState = document.getElementById('emptyState');
+  const taskCard = document.getElementById('taskCard');
+  const progCard = document.getElementById('progCard');
+
+  if (key === 'result') {
+    casesArea.style.display = 'none';
+    if (taskCard.style.display === 'flex' || progCard.style.display === 'block') {
+       resultArea.style.display = 'block';
+       emptyState.style.display = 'none';
+    } else {
+       resultArea.style.display = 'none';
+       emptyState.style.display = 'block';
+    }
+  } else {
+    resultArea.style.display = 'none';
+    emptyState.style.display = 'none';
+    casesArea.style.display = 'block';
+    
+    // 自定义案例内容
+    const isVideo = document.getElementById('sideVideo').style.display === 'block';
+    const casesGrid = document.getElementById('casesGrid');
+    if (isVideo) {
+      document.getElementById('caseCount').textContent = '6 个短视频案例';
+      casesGrid.innerHTML = `
+        <div style="background:#000; border-radius:12px; height:240px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:11px; flex-direction:column; gap:8px; border:1px solid #333;">🎬 爆款 UGC 案例</div>
+        <div style="background:#000; border-radius:12px; height:240px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:11px; flex-direction:column; gap:8px; border:1px solid #333;">🎬 剧情反转案例</div>
+        <div style="background:#000; border-radius:12px; height:240px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:11px; flex-direction:column; gap:8px; border:1px solid #333;">🎬 沉浸 ASMR 案例</div>
+        <div style="background:#000; border-radius:12px; height:240px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:11px; flex-direction:column; gap:8px; border:1px solid #333;">🎬 暴力测试案例</div>
+      `;
+    } else {
+      document.getElementById('caseCount').textContent = '8 个详情页案例';
+      casesGrid.innerHTML = `
+        <div style="background:#f5f6ff; border-radius:12px; height:180px; display:flex; align-items:center; justify-content:center; color:#6366F1; font-weight:600; border:1px dashed #d0d4ff;">亚马逊 A+ 案例</div>
+        <div style="background:#f5f6ff; border-radius:12px; height:180px; display:flex; align-items:center; justify-content:center; color:#6366F1; font-weight:600; border:1px dashed #d0d4ff;">淘宝详情案例</div>
+        <div style="background:#f5f6ff; border-radius:12px; height:180px; display:flex; align-items:center; justify-content:center; color:#6366F1; font-weight:600; border:1px dashed #d0d4ff;">TikTok Listing</div>
+        <div style="background:#f5f6ff; border-radius:12px; height:180px; display:flex; align-items:center; justify-content:center; color:#6366F1; font-weight:600; border:1px dashed #d0d4ff;">独立站详情案例</div>
+      `;
+    }
+  }
+}
+
+/* ── 商品视频逻辑 ── */
+var _vdoRatio = '9:16';
+var _vdoDuration = 10;
+var _vdoTypes = [
+  { id: 'ugc', title: 'UGC 种草', desc: '用户视角真实分享体验 / TikTok-Reels 高转化格式', sel: true, def: true },
+  { id: 'drama', title: '带货短剧 🔥', desc: '短剧带货情节植入 / 宫廷港片霸总', sel: false, def: true },
+  { id: 'demo', title: '产品演示', desc: '多角度展示 + 使用演示 / 通用型', sel: false, def: true },
+  { id: 'oral', title: '产品口播', desc: '面对镜头讲解产品卖点 / 社媒投放首选', sel: false, def: true },
+  { id: 'tvc', title: 'TVC 广告', desc: '品牌广告片质感 / 高级产品展示', sel: false, def: true },
+  { id: 'pain', title: '痛点解决', desc: '痛点场景 → 产品解决 / 功能型产品', sel: false, def: true },
+  { id: 'unboxing', title: '开箱种草', desc: '第一视角拆包惊喜体验 / 新品礼盒类', sel: false, def: true },
+  { id: 'reaction', title: '反应展示', desc: '首次使用惊喜反应 / 美妆食品科技', sel: false, def: true },
+  { id: 'before_after', title: '效果前后对比', desc: '直观展示产品使用前后差异，强化功效说服力。', sel: false, def: true },
+  { id: 'ingredients', title: '核心成分拆解', desc: '3D爆炸图拆解成分或结构，体现硬核专业感。', sel: false, def: true },
+  { id: 'sensory', title: '沉浸感官体验', desc: '放大材质纹理与微距声效，激发感官购买欲。', sel: false, def: true },
+  { id: 'runway', title: '动态穿搭走秀', desc: '静态服饰转化为走秀视频，还原真实上身效果。', sel: false, def: true },
+  { id: 'seasonal', title: '全时令换场景', desc: '产品主体不变，一键切换节日或特定营销背景。', sel: false, def: true },
+  { id: 'surreal', title: '超现实创意片', desc: '打破物理常识的视觉奇观，极具社交传播力。', sel: false, def: true },
+  { id: 'music_cut', title: '卡点快剪视频', desc: '自动匹配热门音乐卡点，适合短视频极速推流。', sel: false, def: true },
+  { id: 'origin', title: '产地溯源模拟', desc: '模拟原材料产地或发货现场，建立深度信任感。', sel: false, def: true },
+  { id: 'mystery_box', title: '互动盲盒抽奖', desc: '动态模拟盲盒开启过程，增加私域营销趣味性。', sel: false, def: true },
+  { id: 'review', title: '极速测评播报', desc: 'AI主播快速拆解产品核心参数与横向对比。', sel: false, def: true },
+  { id: 'lifestyle', title: '生活场景植入', desc: '将产品无缝嵌入日常办公、家居、运动等真实场景。', sel: false, def: true },
+  { id: 'global', title: '多语言全球化', desc: '一键生成适配全球20+主流语言的营销短片。', sel: false, def: true }
+];
+
+function renderVdoDurationGrid() {
+  const grid = document.getElementById('vdoDurationGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  for (let i = 4; i <= 15; i++) {
+    const item = document.createElement('div');
+    item.className = 'vdo-duration-item' + (i === _vdoDuration ? ' active' : '');
+    item.textContent = i + 's';
+    item.onclick = function() { setVdoDuration(i, this); };
+    grid.appendChild(item);
+  }
+}
+
+function renderVdoTypeGrid() {
+  const grid = document.getElementById('vdoTypeGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  _vdoTypes.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'vdo-type-card' + (item.sel ? ' active' : '');
+    card.onclick = function() { toggleVdoType(item.id); };
+    
+    card.innerHTML = `
+      <div class="vdo-type-check">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="4"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div class="vdo-type-title">${item.title}</div>
+      <div class="vdo-type-desc">${item.desc}</div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function setVdoDuration(v, el) {
+  _vdoDuration = v;
+  document.querySelectorAll('.vdo-duration-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function toggleVdoType(id) {
+  _vdoTypes.forEach(t => {
+    if(t.id === id) {
+      t.sel = !t.sel;
+    } else {
+      t.sel = false;
+    }
+  });
+  renderVdoTypeGrid();
+}
+
+function setVdoModelMode(mode, el) {
+  document.querySelectorAll('.vdo-model-mode-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  const panel = document.getElementById('vdoModelPanel');
+  panel.style.display = mode === 'custom' ? 'block' : 'none';
+}
+
+function setVdoRatio(ratio, el){
+  _vdoRatio = ratio;
+  el.parentNode.querySelectorAll('.vdo-ratio-item').forEach(i=>i.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function switchVdoMode(mode){
+  const styleTab = document.getElementById('vdoStyleTab');
+  const scriptTab = document.getElementById('vdoScriptTab');
+  const stylePanel = document.getElementById('vdoStylePanel');
+  const scriptPanel = document.getElementById('vdoScriptPanel');
+  
+  if(mode === 'style'){
+    styleTab.classList.add('active');
+    scriptTab.classList.remove('active');
+    stylePanel.style.display = 'block';
+    scriptPanel.style.display = 'none';
+  } else {
+    styleTab.classList.remove('active');
+    scriptTab.classList.add('active');
+    stylePanel.style.display = 'none';
+    scriptPanel.style.display = 'block';
+  }
+}
+
+function vdoAiSellingPoints(){
+  const ta = document.getElementById('vdoSellingTa');
+  ta.value = "【AI 规划中...】\n1. 核心卖点：极致轻便，仅重 150g\n2. 适用场景：户外露营、办公室午休\n3. 目标人群：精致白领、户外爱好者";
+}
+
+function vdoAiScript(){
+  const ta = document.getElementById('vdoCustomScript');
+  ta.value = "【开场】模特自然走入镜头，展示产品轻巧外观\n【产品展示】近景拍摄产品材质，强调极致触感\n【痛点解决】展示产品在不同场景下的使用便利性\n【CTA】限时优惠，点击下方链接购买";
+}
+
+function startVdoGen(){
+  var btn = document.getElementById('vdoGenBtn');
+  var txt = document.getElementById('vdoGenBtnTxt');
+  if(btn.classList.contains('disabled')) return;
+  
+  const m = document.getElementById('vdoModelSelect').options[document.getElementById('vdoModelSelect').selectedIndex].text;
+  const l = document.getElementById('vdoLang').options[document.getElementById('vdoLang').selectedIndex].text;
+  const count = 3; // 默认 3 条
+  const types = _vdoTypes.filter(t => t.sel).map(t => t.title).join(', ') || '未选';
+
+  document.getElementById('taskTitle').textContent = '爆款视频生成';
+  document.getElementById('taskParams').innerHTML = 
+    `比例: ${_vdoRatio} · 类型: ${types} · 时长: ${_vdoDuration}s<br>模型: ${m} · 语言: ${l} · AI 模特: 智能匹配`;
+
+  txt.textContent = '✦ 视频分析生成中...';
+  btn.classList.add('disabled');
+  
+  var prog = document.getElementById('progCard');
+  var progLbl = document.getElementById('progLbl');
+  var empty = document.getElementById('emptyState');
+  var result = document.getElementById('resultArea');
+  var task = document.getElementById('taskCard');
+  
+  if(progLbl) progLbl.textContent = '🔄 AI 正在生成爆款视频...';
+  if(empty) empty.style.display = 'none';
+  if(result) result.style.display = 'none';
+  if(task) task.style.display = 'none';
+  if(prog) prog.style.display = 'block';
+
+  document.querySelectorAll('.rtab')[0].click(); // 确保切换到生成结果 Tab
+
+  setTimeout(()=>{
+    if(prog) prog.style.display = 'none';
+    if(task) task.style.display = 'flex';
+    
+    document.getElementById('resultTitle').innerHTML = `生成结果 · <span>${count} 条视频</span>`;
+    document.getElementById('resultGrid').innerHTML = `
+      <div style="grid-column: span 2; background:#000; border-radius:12px; height:420px; display:flex; align-items:center; justify-content:center; color:#fff; flex-direction:column; gap:16px; border:2px solid var(--primary); position:relative; overflow:hidden;">
+        <div style="font-size:54px; animation: pulse 2s infinite;">🎬</div>
+        <div style="font-size:18px; font-weight:700;">爆款视频生成成功</div>
+        <div style="font-size:12px; color:rgba(255,255,255,0.6); text-align:center; line-height:1.6;">已为您生成 ${count} 条视频<br>类型: ${types} | 时长: ${_vdoDuration}s<br>匹配 ${m} 审美偏好 & ${l} 语音</div>
+        <div style="display:flex; gap:12px; margin-top:8px;">
+          <button class="gen-btn" style="width:110px;height:34px;font-size:11px;background:#fff;color:var(--primary);">预览视频</button>
+          <button class="gen-btn" style="width:110px;height:34px;font-size:11px;">下载高清包</button>
+        </div>
+      </div>
+    `;
+    if(result) result.style.display = 'block';
+    btn.classList.remove('disabled');
+    txt.textContent = '✦ 生成爆款视频';
+  }, 3000);
+}
+
+// 页面加载后初始化
+window.addEventListener('DOMContentLoaded', function() {
+  renderVdoDurationGrid();
+  renderVdoTypeGrid();
+});
+
+function switchNav(el, key) {
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  el.classList.add('active');
+  
+  const dashboard = document.getElementById('mainDashboard');
+  const other = document.getElementById('otherPagePlaceholder');
+  const sideHome = document.getElementById('sideHome');
+  const sideVideo = document.getElementById('sideVideo');
+  
+  if (key === 'home') {
+    dashboard.style.display = 'flex';
+    other.style.display = 'none';
+    if(sideHome) sideHome.style.display = 'block';
+    if(sideVideo) sideVideo.style.display = 'none';
+    // 默认切换到第一个场景
+    var firstSi = sideHome ? sideHome.querySelector('.si') : null;
+    if(firstSi) switchScene('aplus', firstSi);
+  } else if (key === 'video') {
+    dashboard.style.display = 'flex';
+    other.style.display = 'none';
+    if(sideHome) sideHome.style.display = 'none';
+    if(sideVideo) sideVideo.style.display = 'block';
+    // 默认切换到商品视频
+    var firstSi = sideVideo ? sideVideo.querySelector('.si') : null;
+    if(firstSi) switchScene('vdoProd', firstSi);
+  } else {
+    dashboard.style.display = 'none';
+    other.style.display = 'flex';
+    document.getElementById('otherPageTitle').textContent = el.textContent;
+  }
 }
 
 /* ════════════════════════════════
@@ -8217,22 +8969,6 @@ var _advItems = [];
 var _advActiveIdx = 0;
 var _advMode = 'detail'; // 'main' or 'detail'
 
-function switchNav(el, key) {
-  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-  el.classList.add('active');
-  
-  const dashboard = document.getElementById('mainDashboard');
-  const other = document.getElementById('otherPagePlaceholder');
-  
-  if (key === 'home') {
-    dashboard.style.display = 'flex';
-    other.style.display = 'none';
-  } else {
-    dashboard.style.display = 'none';
-    other.style.display = 'flex';
-    document.getElementById('otherPageTitle').textContent = el.textContent;
-  }
-}
 
 function openMenuPop(e, el, mode) {
   e.stopPropagation();
