@@ -3189,7 +3189,7 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
         <span class="si-badge">New</span>
       </div>
       <div class="si" onclick="switchScene('vdoReplicate',this)">
-        <span class="si-ic">⟳</span>爆款复刻
+        <span class="si-ic">⟳</span>视频复刻
       </div>
     </div>
 
@@ -3247,6 +3247,18 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
           <div id="vdoImgList" class="img-list" style="display:none"></div>
         </div>
 
+        <!-- 商品卖点&要求 -->
+        <div class="sec-block">
+          <div class="sec-hd">
+            <h3>商品卖点&amp;要求</h3>
+            <div class="tip">?</div>
+          </div>
+          <div class="ta-wrap" style="position:relative;">
+            <textarea id="vdoSellingTa" placeholder="建议包含以下信息生成更精准：&#10;1. 产品名称&#10;2. 核心卖点&#10;3. 适用人群&#10;4. 期望场景" oninput="countTa(this)"></textarea>
+            <button class="ai-write-btn" onclick="vdoAiSellingPoints()">🪄 AI 帮写</button>
+          </div>
+        </div>
+
         <!-- 画布比例 & 时长 -->
         <div class="sec-block">
           <div class="sec-hd"><h3>画布比例 & 时长</h3></div>
@@ -3272,18 +3284,6 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
             <div class="vdo-duration-grid" id="vdoDurationGrid">
               <!-- JS 填充 4s-15s -->
             </div>
-          </div>
-        </div>
-
-        <!-- 商品卖点&要求 -->
-        <div class="sec-block">
-          <div class="sec-hd">
-            <h3>商品卖点&amp;要求</h3>
-            <div class="tip">?</div>
-          </div>
-          <div class="ta-wrap" style="position:relative;">
-            <textarea id="vdoSellingTa" placeholder="建议包含以下信息生成更精准：&#10;1. 产品名称&#10;2. 核心卖点&#10;3. 适用人群&#10;4. 期望场景" oninput="countTa(this)"></textarea>
-            <button class="ai-write-btn" onclick="vdoAiSellingPoints()">🪄 AI 帮写</button>
           </div>
         </div>
 
@@ -3438,6 +3438,125 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
       <div class="left-foot" style="padding:20px 24px; border-top:1px solid var(--border-light); background:#fff; flex-shrink:0;">
         <button class="btn-gen" id="vdoGenBtn" onclick="startVdoGen()" style="width:100%; height:50px; border-radius:14px; background:var(--primary-gradient); color:#fff; border:none; font-size:15px; font-weight:800; cursor:pointer; box-shadow:0 8px 20px rgba(99,102,241,0.25); transition:all .2s; display:flex; align-items:center; justify-content:center; gap:8px;">
           <span id="vdoGenBtnTxt">✦ 生成爆款视频</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ═══ LEFT · 视频复刻 ═══ -->
+    <div class="left" id="leftVdoReplicate" style="display:none">
+      <div class="left-scroll">
+        <!-- 爆款原视频 -->
+        <div class="sec-block">
+          <div class="sec-hd">
+            <h3>爆款原视频</h3>
+            <div class="tip">?</div>
+          </div>
+          <div class="upload-wrap" style="margin-bottom:12px;">
+            <div class="upload-zone" style="height:100px; padding:12px; border-style:dashed; background:var(--bg-main);">
+              <div class="uz-ic" style="font-size:24px; margin-bottom:8px;">🔗</div>
+              <div class="uz-lbl" style="font-size:12px; font-weight:600;">粘贴视频链接或上传视频文件</div>
+              <div class="uz-sub" style="font-size:10px;">支持 TikTok / Reels / 抖音链接</div>
+            </div>
+          </div>
+          <input type="text" class="opt-select" placeholder="https://..." style="width:100%; margin-top:0; border-radius:10px; border:1px solid var(--border-light); height:38px; padding:0 12px; font-size:12px;">
+        </div>
+
+        <!-- 商品原图 -->
+        <div class="sec-block">
+          <div class="sec-hd">
+            <h3>商品原图</h3>
+            <div class="tip">?</div>
+          </div>
+          <div class="upload-wrap">
+            <div class="upload-zone" onclick="addImg()">
+              <div class="uz-ic">↑</div>
+              <div class="uz-lbl">上传您的商品图片</div>
+              <div class="uz-sub">AI 将自动替换原视频中的商品</div>
+              <div class="uz-entries" onclick="event.stopPropagation()">
+                <button class="uz-icon-btn" onclick="openQr()">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                    <rect x="3" y="14" width="7" height="7"/>
+                    <rect x="14" y="14" width="3" height="3"/><rect x="19" y="14" width="2" height="2"/>
+                    <rect x="14" y="19" width="2" height="2"/><rect x="19" y="19" width="2" height="2"/>
+                  </svg>
+                  手机扫码
+                </button>
+                <div class="uz-div"></div>
+                <button class="uz-icon-btn" onclick="openLib()">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <polyline points="21 15 16 10 5 21"/>
+                  </svg>
+                  图片库
+                </button>
+              </div>
+            </div>
+          </div>
+          <div id="vdoRepImgList" class="img-list" style="display:none"></div>
+        </div>
+
+        <!-- 商品卖点&要求 -->
+        <div class="sec-block">
+          <div class="sec-hd">
+            <h3>商品卖点&amp;要求</h3>
+            <div class="tip">?</div>
+          </div>
+          <div class="ta-wrap" style="position:relative;">
+            <textarea id="vdoRepSellingTa" placeholder="建议包含以下信息生成更精准：&#10;1. 产品名称&#10;2. 核心卖点&#10;3. 适用人群&#10;4. 期望场景" oninput="countTa(this)"></textarea>
+            <button class="ai-write-btn" onclick="vdoAiSellingPoints()">🪄 AI 帮写</button>
+          </div>
+        </div>
+
+        <!-- 基础配置 -->
+        <div class="sec-block">
+          <div class="sec-hd"><h3>复刻配置</h3></div>
+          <div style="display:flex; flex-direction:column; gap:12px;">
+             <div class="opt-row">
+                <div class="opt-label" style="font-size:12px; color:var(--text-sub); margin-bottom:6px;">选择模型</div>
+                <select id="vdoRepModelSelect" class="opt-select" style="width:100%; height:38px; border-radius:10px; border:1px solid var(--border-light); padding:0 12px; font-size:12px; background:var(--bg-main); font-family:inherit;">
+                  <option value="gen2">GPT-Video Pro (质感电影级)</option>
+                  <option value="gen1">Sora-Fast (快节奏营销)</option>
+                </select>
+             </div>
+             <div class="opt-row">
+                <div class="opt-label" style="font-size:12px; color:var(--text-sub); margin-bottom:6px;">目标语言</div>
+                <select id="vdoRepLangSelect" class="opt-select" style="width:100%; height:38px; border-radius:10px; border:1px solid var(--border-light); padding:0 12px; font-size:12px; background:var(--bg-main); font-family:inherit;">
+                  <option>中文 (普通话)</option>
+                  <option>英语 (美式)</option>
+                  <option>日语</option>
+                </select>
+             </div>
+          </div>
+        </div>
+
+        <!-- 复刻策略 -->
+        <div class="sec-block">
+          <div class="sec-hd"><h3>复刻策略</h3></div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+            <div class="vdo-ratio-item active" style="flex-direction:column; padding:12px; height:auto; text-align:center; gap:4px;">
+              <span style="font-size:12px; font-weight:700;">1:1 核心复刻</span>
+              <span style="font-size:10px; color:var(--text-muted);">还原原视频脚本与分镜</span>
+            </div>
+            <div class="vdo-ratio-item" style="flex-direction:column; padding:12px; height:auto; text-align:center; gap:4px;">
+              <span style="font-size:12px; font-weight:700;">风格化二创</span>
+              <span style="font-size:10px; color:var(--text-muted);">保留爆款逻辑，生成新创意</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 生成要求 -->
+        <div class="sec-block">
+          <div class="sec-hd"><h3>补充要求</h3></div>
+          <textarea class="vdo-ta" placeholder="输入额外要求，如：背景颜色调整、增加字幕..." style="height:60px;"></textarea>
+        </div>
+      </div>
+
+      <!-- 底部按钮 -->
+      <div class="left-foot" style="padding:20px 24px; border-top:1px solid var(--border-light); background:#fff; flex-shrink:0;">
+        <button class="btn-gen" onclick="startVdoGen()" style="width:100%; height:50px; border-radius:14px; background:var(--primary-gradient); color:#fff; border:none; font-size:15px; font-weight:800; cursor:pointer; box-shadow:0 8px 20px rgba(99,102,241,0.25); transition:all .2s; display:flex; align-items:center; justify-content:center; gap:8px;">
+          <span>✦ 立即复刻爆款</span>
         </button>
       </div>
     </div>
@@ -8599,21 +8718,27 @@ function switchScene(scene, el){
   var aplusAdv = document.getElementById('leftAplusAdv');
   var copy     = document.getElementById('leftCopy');
   var vdoProd  = document.getElementById('leftVdoProd');
+  var vdoRep   = document.getElementById('leftVdoReplicate');
   
   if(aplus) aplus.style.display    = scene==='aplus'    ? '' : 'none';
   if(aplusAdv) aplusAdv.style.display = scene==='aplusAdv' ? '' : 'none';
   if(copy) copy.style.display     = scene==='copy'     ? '' : 'none';
-  if(vdoProd) vdoProd.style.display  = (scene==='vdoProd'||scene==='vdoReplicate') ? '' : 'none';
+  if(vdoProd) vdoProd.style.display  = scene==='vdoProd' ? '' : 'none';
+  if(vdoRep) vdoRep.style.display   = scene==='vdoReplicate' ? '' : 'none';
 
   // 更新空态内容
   const emptyTitle = document.getElementById('emptyTitle');
   const emptySub = document.getElementById('emptySub');
   const emptyFlowLbl = document.getElementById('emptyFlowLbl');
 
-  if(scene === 'vdoProd' || scene === 'vdoReplicate') {
+  if(scene === 'vdoProd') {
     if(emptyTitle) emptyTitle.textContent = 'AI+ 商品视频';
     if(emptySub) emptySub.innerHTML = '上传产品图，AI 自动规划脚本并生成<br><strong>高转化、符合市场审美</strong> 的爆款短视频';
     if(emptyFlowLbl) emptyFlowLbl.textContent = '生成短视频';
+  } else if(scene === 'vdoReplicate') {
+    if(emptyTitle) emptyTitle.textContent = 'AI+ 视频复刻';
+    if(emptySub) emptySub.innerHTML = '输入爆款视频链接，AI 深度拆解其脚本、镜头与节奏<br>并结合您的商品图 <strong>1:1 还原或风格化二创</strong>';
+    if(emptyFlowLbl) emptyFlowLbl.textContent = '复刻爆款视频';
   } else {
     if(emptyTitle) emptyTitle.textContent = 'AI+ 详情页';
     if(emptySub) emptySub.innerHTML = '上传商品图，AI 即刻生成<br><strong>符合多电商平台规范</strong> 的专业详情页';
@@ -8818,23 +8943,34 @@ function vdoAiScript(){
 }
 
 function startVdoGen(){
-  var btn = document.getElementById('vdoGenBtn');
-  var txt = document.getElementById('vdoGenBtnTxt');
+  const isRep = document.getElementById('leftVdoReplicate').style.display !== 'none';
+  var btn = isRep ? event.currentTarget : document.getElementById('vdoGenBtn');
+  var txt = isRep ? btn.querySelector('span') : document.getElementById('vdoGenBtnTxt');
+  
   if(btn.classList.contains('disabled')) return;
   
-  const m = document.getElementById('vdoModelSelect').options[document.getElementById('vdoModelSelect').selectedIndex].text;
-  const l = document.getElementById('vdoLang').options[document.getElementById('vdoLang').selectedIndex].text;
-  const count = 3; // 默认 3 条
-  const types = _vdoTypes.filter(t => t.sel).map(t => t.title).join(', ') || '未选';
+  let m, l, title, params;
+  
+  if(isRep) {
+    m = document.getElementById('vdoRepModelSelect').options[document.getElementById('vdoRepModelSelect').selectedIndex].text;
+    l = document.getElementById('vdoRepLangSelect').options[document.getElementById('vdoRepLangSelect').selectedIndex].text;
+    title = '视频复刻生成';
+    params = `模型: ${m} · 语言: ${l} · 策略: 1:1 核心复刻`;
+  } else {
+    m = document.getElementById('vdoModelSelect').options[document.getElementById('vdoModelSelect').selectedIndex].text;
+    l = document.getElementById('vdoLang').options[document.getElementById('vdoLang').selectedIndex].text;
+    const types = _vdoTypes.filter(t => t.sel).map(t => t.title).join(', ') || '未选';
+    const mode = document.querySelector('.vdo-model-mode-btn.active').textContent;
+    const modelInfo = mode === '智能模特' ? '智能匹配' : '我的模特 (已选)';
+    title = '爆款视频生成';
+    params = `比例: ${_vdoRatio} · 类型: ${types} · 时长: ${_vdoDuration}s<br>模型: ${m} · 语言: ${l} · AI 模特: ${modelInfo}`;
+  }
 
-  const mode = document.querySelector('.vdo-model-mode-btn.active').textContent;
-  const modelInfo = mode === '智能模特' ? '智能匹配' : '我的模特 (已选)';
+  document.getElementById('taskTitle').textContent = title;
+  document.getElementById('taskParams').innerHTML = params;
 
-  document.getElementById('taskTitle').textContent = '爆款视频生成';
-  document.getElementById('taskParams').innerHTML = 
-    `比例: ${_vdoRatio} · 类型: ${types} · 时长: ${_vdoDuration}s<br>模型: ${m} · 语言: ${l} · AI 模特: ${modelInfo}`;
-
-  txt.textContent = '✦ 视频分析生成中...';
+  const oldTxt = txt.textContent;
+  txt.textContent = isRep ? '✦ 正在拆解并复刻...' : '✦ 视频分析生成中...';
   btn.classList.add('disabled');
   
   var prog = document.getElementById('progCard');
@@ -8843,24 +8979,27 @@ function startVdoGen(){
   var result = document.getElementById('resultArea');
   var task = document.getElementById('taskCard');
   
-  if(progLbl) progLbl.textContent = '🔄 AI 正在生成爆款视频...';
+  if(progLbl) progLbl.textContent = isRep ? '🔄 AI 正在拆解视频并执行复刻...' : '🔄 AI 正在生成爆款视频...';
   if(empty) empty.style.display = 'none';
   if(result) result.style.display = 'none';
   if(task) task.style.display = 'none';
   if(prog) prog.style.display = 'block';
 
-  document.querySelectorAll('.rtab')[0].click(); // 确保切换到生成结果 Tab
+  document.querySelectorAll('.rtab')[0].click(); 
 
   setTimeout(()=>{
     if(prog) prog.style.display = 'none';
     if(task) task.style.display = 'flex';
     
+    const count = isRep ? 1 : 3;
+    const resultSub = isRep ? `基于爆款原视频复刻<br>还原度: 1:1 核心复刻 | 模型: ${m} | 语言: ${l}` : `已为您生成 ${count} 条视频<br>类型: 爆款预设 | 时长: ${_vdoDuration}s<br>匹配 ${m} 审美偏好 & ${l} 语音`;
+
     document.getElementById('resultTitle').innerHTML = `生成结果 · <span>${count} 条视频</span>`;
     document.getElementById('resultGrid').innerHTML = `
       <div style="grid-column: span 2; background:#000; border-radius:12px; height:420px; display:flex; align-items:center; justify-content:center; color:#fff; flex-direction:column; gap:16px; border:2px solid var(--primary); position:relative; overflow:hidden;">
         <div style="font-size:54px; animation: pulse 2s infinite;">🎬</div>
-        <div style="font-size:18px; font-weight:700;">爆款视频生成成功</div>
-        <div style="font-size:12px; color:rgba(255,255,255,0.6); text-align:center; line-height:1.6;">已为您生成 ${count} 条视频<br>类型: ${types} | 时长: ${_vdoDuration}s<br>匹配 ${m} 审美偏好 & ${l} 语音</div>
+        <div style="font-size:18px; font-weight:700;">${isRep ? '视频复刻成功' : '爆款视频生成成功'}</div>
+        <div style="font-size:12px; color:rgba(255,255,255,0.6); text-align:center; line-height:1.6;">${resultSub}</div>
         <div style="display:flex; gap:12px; margin-top:8px;">
           <button class="gen-btn" style="width:110px;height:34px;font-size:11px;background:#fff;color:var(--primary);">预览视频</button>
           <button class="gen-btn" style="width:110px;height:34px;font-size:11px;">下载高清包</button>
@@ -8869,7 +9008,7 @@ function startVdoGen(){
     `;
     if(result) result.style.display = 'block';
     btn.classList.remove('disabled');
-    txt.textContent = '✦ 生成爆款视频';
+    txt.textContent = oldTxt;
   }, 3000);
 }
 
