@@ -89,6 +89,308 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
 .sidebar{width:150px; background:var(--bg-panel); border-right:1px solid var(--border-light);
   display:flex; flex-direction:column; align-items:flex-start; padding:20px 8px; flex-shrink:0; gap:4px;}
 .sidebar-label{font-size:10px; font-weight:700; color:var(--text-muted); padding:8px 12px 4px; text-transform:uppercase; letter-spacing:0.8px; opacity:0.6;}
+.sidebar-sub-hd{
+  padding: 14px 16px 6px; font-size: 11px; color: var(--text-muted); font-weight: 700; 
+  letter-spacing: 0.5px; text-transform: uppercase; display: flex; align-items: center; 
+  justify-content: space-between; cursor: pointer; user-select: none; transition: color 0.2s;
+}
+.sidebar-sub-hd:hover{color:var(--primary);}
+/* ══ 垂直工具栏 (图片批处理) ══ */
+.batch-toolbar {
+  width: 60px;
+  background: #fff;
+  border-right: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 0;
+  gap: 16px;
+  flex-shrink: 0;
+}
+.bt-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  width: 100%;
+  color: var(--text-sub);
+  transition: all 0.2s;
+}
+.bt-item:hover, .bt-item.active {
+  color: var(--primary);
+}
+.bt-ic {
+  font-size: 18px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+}
+.bt-item:hover .bt-ic, .bt-item.active .bt-ic {
+  background: var(--bg-main);
+}
+.bt-txt {
+  font-size: 10px;
+  font-weight: 600;
+}
+
+/* ══ 批处理网格 ══ */
+.batch-container {
+  flex: 1;
+  background: #f8f9fa;
+  padding: 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+.batch-hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.batch-title{font-size:16px; font-weight:700; color:var(--text);}
+.img-edit-feat-grid{
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-top: 24px; width: 100%; max-width: 600px;
+}
+.feat-item{
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+}
+.feat-ic{
+  width: 40px; height: 40px; background: #fff; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  font-size: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--border-light);
+}
+.feat-lbl{ font-size: 11px; color: var(--text-sub); font-weight: 600; }
+.batch-card.batch-add-card{ background: #fdfdff; border: 2px dashed #d0d4ff; }
+.batch-add-card .batch-add-ic{ color: var(--primary); }
+.batch-add-card:hover{ border-color: var(--primary); background: var(--bg-main); }
+.batch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+.batch-card {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border-light);
+  aspect-ratio: 3/4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.batch-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+.batch-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.batch-add-card {
+  border: 2px dashed var(--border-light);
+  background: #fff;
+  cursor: pointer;
+  flex-direction: column;
+  gap: 8px;
+}
+.batch-add-card:hover {
+  border-color: var(--primary);
+  background: var(--bg-main);
+}
+.batch-add-ic { font-size: 24px; color: var(--text-muted); }
+.batch-card-del{
+  position: absolute; top: 8px; right: 8px; width: 22px; height: 22px; 
+  background: rgba(255,255,255,0.9); border-radius: 50%; display: flex; 
+  align-items: center; justify-content: center; font-size: 10px; 
+  color: var(--text-sub); cursor: pointer; opacity: 0; transition: opacity 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid var(--border-light);
+}
+.batch-card:hover .batch-card-del{ opacity: 1; }
+.batch-card-del:hover{ color: #ff4d4f; background: #fff; }
+
+/* ══ 批量编辑侧边配置面板 ══ */
+.batch-side-panel {
+  width: 260px;
+  background: #fff;
+  border-right: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  animation: slideInLeft .2s ease-out;
+}
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-10px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.bsp-hd { padding: 16px 20px; font-size: 15px; font-weight: 700; color: var(--text); border-bottom: 1px solid #f0f0f5; }
+.bsp-body { flex: 1; overflow-y: auto; padding: 16px; }
+.bsp-ft { padding: 16px; border-top: 1px solid #f0f0f5; display: flex; gap: 10px; }
+.bsp-btn {
+  flex: 1; height: 36px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+}
+.bsp-btn-cancel { background: #f3f4f6; color: var(--text-sub); border: none; }
+.bsp-btn-confirm { background: var(--primary); color: #fff; border: none; }
+
+/* 比例选项网格 */
+.ratio-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.ratio-item {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 8px 4px; border: 1px solid #f0f0f5; border-radius: 8px; cursor: pointer;
+  transition: all 0.2s; min-height: 64px; text-align: center;
+}
+.ratio-item:hover { background: #f8f9ff; border-color: var(--primary-light); }
+.ratio-item.active { border-color: var(--primary); background: #f5f6ff; }
+.ratio-ic { font-size: 18px; margin-bottom: 4px; }
+.ratio-lbl { font-size: 10px; font-weight: 600; color: var(--text); line-height: 1.2; }
+.ratio-sub { font-size: 8px; color: var(--text-muted); margin-top: 2px; transform: scale(0.9); }
+
+/* 裁剪预览覆盖层 */
+.crop-overlay {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4); pointer-events: none; display: none;
+}
+.crop-box {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  border: 2px solid var(--primary); box-shadow: 0 0 0 9999px rgba(0,0,0,0.4);
+  background: transparent;
+}
+/* 裁剪参考线 */
+.crop-box::after {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background-image: 
+    linear-gradient(to right, rgba(255,255,255,0.4) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.4) 1px, transparent 1px);
+  background-size: 33.33% 33.33%;
+}
+.batch-container.mode-adjust .crop-overlay { display: block; }
+.batch-container.mode-adjust .batch-card img { filter: brightness(0.8); }
+
+/* 语言选择样式 */
+.lang-group-title { font-size: 11px; color: var(--text); font-weight: 700; margin: 16px 0 10px; }
+.lang-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.lang-item { 
+  padding: 6px 10px; font-size: 12px; border-radius: 6px; cursor: pointer; 
+  transition: all 0.2s; background: #f8f9fa; color: var(--text-sub); border: 1px solid transparent;
+}
+.lang-item:hover { background: #f0f1f5; }
+.lang-item.active { background: #f5f6ff; color: var(--primary); font-weight: 700; border-color: rgba(99,102,241,0.2); }
+
+/* 下拉列表风格 (用于长语言列表) */
+.lang-list-v { display: flex; flex-direction: column; gap: 2px; }
+.lang-item-v {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 12px; font-size: 12px; border-radius: 6px; cursor: pointer; transition: all 0.1s;
+}
+.lang-item-v:hover { background: #f8f9fa; }
+.lang-item-v.active { color: var(--primary); font-weight: 700; }
+.lang-item-v.active::after { content: '✓'; font-size: 10px; }
+
+/* 开关样式 */
+.toggle-row { 
+  display: flex; align-items: center; justify-content: space-between; margin-top: 20px; padding-top: 16px; border-top: 1px solid #f0f0f5; 
+}
+.toggle-info { display: flex; flex-direction: column; gap: 4px; }
+.toggle-lbl { font-size: 12px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 4px; }
+.toggle-sub { font-size: 10px; color: var(--text-muted); }
+
+.switch {
+  position: relative; display: inline-block; width: 34px; height: 18px;
+}
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+  position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #e4e4e7; transition: .4s; border-radius: 20px;
+}
+.slider:before {
+  position: absolute; content: ""; height: 14px; width: 14px; left: 2px; bottom: 2px;
+  background-color: white; transition: .4s; border-radius: 50%;
+}
+input:checked + .slider { background-color: var(--primary); }
+input:checked + .slider:before { transform: translateX(16px); }
+
+/* ══ Toast 轻提示 ══ */
+.toast-container {
+  position: fixed; top: 32px; left: 50%; transform: translateX(-50%);
+  z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none;
+}
+.toast {
+  background: rgba(0,0,0,0.8); color: #fff; padding: 10px 20px; border-radius: 10px;
+  font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2); animation: toastIn .3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+  backdrop-filter: blur(8px);
+}
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(-20px) scale(0.9); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.toast.out {
+  animation: toastOut .3s forwards;
+}
+@keyframes toastOut {
+  to { opacity: 0; transform: translateY(-10px) scale(0.95); }
+}
+.toast-ic { font-size: 16px; }
+
+/* 水印选择样式 */
+.watermark-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.wm-item {
+  aspect-ratio: 1.2/1; border-radius: 6px; border: 1.5px solid #f0f0f5; 
+  cursor: pointer; position: relative; overflow: hidden; transition: all 0.2s;
+  background: #fff; display: flex; align-items: center; justify-content: center;
+}
+.wm-item:hover { border-color: var(--primary-light); background: #f8f9ff; }
+.wm-item.active { border-color: var(--primary); background: #f5f6ff; }
+.wm-preview { width: 100%; height: 100%; background-size: contain; background-repeat: no-repeat; background-position: center; padding: 4px; opacity: 0.6; }
+.wm-vip {
+  position: absolute; top: 0; right: 0; background: #ff7a45; color: #fff; 
+  font-size: 8px; padding: 1px 4px; border-bottom-left-radius: 6px; font-weight: 700;
+}
+
+/* 水印文案输入 */
+.wm-text-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.wm-input {
+  flex: 1; height: 32px; background: #f3f4f6; border: none; border-radius: 6px;
+  padding: 0 10px; font-size: 11px; color: var(--text); outline: none;
+}
+.wm-del-btn { color: var(--text-muted); cursor: pointer; font-size: 14px; transition: color 0.2s; }
+.wm-del-btn:hover { color: #ff4d4f; }
+
+/* 定位网格 */
+.pos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; width: 100px; }
+.pos-btn {
+  height: 24px; border-radius: 4px; border: 1px solid #e4e4e7; background: #fff;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 12px; color: var(--text-sub); transition: all 0.2s;
+}
+.pos-btn:hover { border-color: var(--primary-light); color: var(--primary); }
+.pos-btn.active { background: #f5f6ff; border-color: var(--primary); color: var(--primary); }
+
+/* 滑块增强 */
+.range-wrap { display: flex; align-items: center; gap: 10px; }
+.range-input { flex: 1; accent-color: var(--primary); height: 4px; cursor: pointer; }
+.range-val { 
+  width: 32px; height: 20px; background: #f3f4f6; border-radius: 4px; 
+  font-size: 10px; display: flex; align-items: center; justify-content: center;
+  font-weight: 700; color: var(--text-sub);
+}
+
+/* 预览图中的水印图层 */
+.wm-overlay {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none; display: none; z-index: 5;
+  background-size: 40%; background-repeat: no-repeat; background-position: center;
+  opacity: 0.5;
+}
+.batch-container.mode-watermark .wm-overlay { display: block; }
+
 .si{width:100%; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:flex-start; padding:0 12px; gap:6px; cursor:pointer; transition:all .2s; color:var(--text-sub); font-size:13px; font-weight:600; position:relative; white-space:nowrap;}
 .si:hover{background:rgba(99,102,241,0.04); color:var(--primary);}
 .si.active{background:rgba(99,102,241,0.08); color:var(--primary); font-weight:800; border-right:3px solid var(--primary); border-radius:10px 0 0 10px; box-shadow:none;}
@@ -3229,6 +3531,28 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
       </div>
     </div>
 
+    <div id="sideTools" style="display:none">
+      <div class="sidebar-label">AI工具 <span style="margin-left:auto; opacity:0.5; font-size:10px;">︿</span></div>
+      
+      <!-- 二级菜单：图片处理 (支持收缩) -->
+      <div class="sidebar-sub-group">
+        <div class="sidebar-sub-hd" onclick="toggleSidebarSubGroup(this)">
+          图片处理
+          <span class="sub-hd-arrow">︿</span>
+        </div>
+        
+        <div class="sidebar-sub-body">
+          <!-- 三级菜单项目 -->
+          <div class="si active" onclick="switchScene('imgEdit',this)">
+            <span class="si-ic">✂️</span>图片编辑
+          </div>
+          <div class="si" onclick="switchScene('imgTrans',this)">
+            <span class="si-ic">🌍</span>图片翻译
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div style="margin-top:auto; width:100%; border-top:1px solid var(--border-light); padding-top:12px; display:flex; flex-direction:column; gap:4px;">
       <div class="si" style="height:36px; font-size:12px; color:var(--text-muted);">
         <span class="si-ic">🎧</span>联系客服
@@ -3604,8 +3928,14 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
 
         <!-- 生成要求 -->
         <div class="sec-block">
-          <div class="sec-hd"><h3>补充要求</h3></div>
-          <textarea class="vdo-ta" placeholder="输入额外要求，如：背景颜色调整、增加字幕..." style="height:60px;"></textarea>
+          <div class="sec-hd"><h3>待编辑图片</h3></div>
+          <div class="upload-wrap">
+            <div class="upload-zone" onclick="uploadBatchImgs()">
+              <div class="uz-ic">↑</div>
+              <div class="uz-lbl">点击上传 / 批量拖拽图片 (最多30张)</div>
+              <div class="uz-sub">支持 jpg / png / webp</div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -4748,21 +5078,424 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
     </div>
 
     <!-- ═══ RIGHT ═══ -->
-    <div class="right">
-      <div class="right-head">
-        <button class="rtab active" onclick="switchRightTab(this, 'result')">生成结果</button>
-        <button class="rtab" onclick="switchRightTab(this, 'cases')">优秀案例</button>
-        <div class="rh-r">
-          <div class="search-box">
-            <span style="color:var(--muted)">🔍</span>
-            <input placeholder="搜索任务…">
+    <div class="right" id="rightContent">
+      <!-- 批量编辑专用界面 (图片批处理) -->
+      <div id="batchEditWrap" style="display:none; height:100%; width:100%; position:relative; background:#f8f9fa;">
+        <div style="display:flex; height:100%;">
+          <div class="batch-toolbar">
+            <div class="bt-item" onclick="toggleBtItem(this, 'adjust')">
+              <div class="bt-ic">📐</div>
+              <div class="bt-txt">调整</div>
+            </div>
+            <div class="bt-item" onclick="toggleBtItem(this, 'color')">
+              <div class="bt-ic">🎨</div>
+              <div class="bt-txt">调色</div>
+            </div>
+            <div class="bt-item" onclick="toggleBtItem(this, 'removeBg')">
+              <div class="bt-ic">✨</div>
+              <div class="bt-txt">抠图</div>
+            </div>
+            <div class="bt-item" onclick="toggleBtItem(this, 'changeBg')">
+              <div class="bt-ic">🖼️</div>
+              <div class="bt-txt">换背景</div>
+            </div>
+            <div class="bt-item" onclick="toggleBtItem(this, 'hd')">
+              <div class="bt-ic">🔍</div>
+              <div class="bt-txt">变清晰</div>
+            </div>
+            <div class="bt-item" onclick="toggleBtItem(this, 'erase')">
+              <div class="bt-ic">🧼</div>
+              <div class="bt-txt">消除</div>
+            </div>
+            <div class="bt-item" onclick="toggleBtItem(this, 'translate')">
+              <div class="bt-ic">🌐</div>
+              <div class="bt-txt">翻译</div>
+            </div>
+            <div class="bt-item" onclick="toggleBtItem(this, 'text')">
+              <div class="bt-ic">T</div>
+              <div class="bt-txt">文字</div>
+            </div>
+            <div class="bt-item" onclick="toggleBtItem(this, 'watermark')">
+              <div class="bt-ic">💧</div>
+              <div class="bt-txt">水印</div>
+            </div>
+            <div class="bt-item active" style="margin-top:auto; padding-bottom:20px;" onclick="toggleBtItem(this, 'whiteBg')">
+              <div class="bt-ic" style="background:var(--primary); color:#fff;">⬜</div>
+              <div class="bt-txt" style="color:var(--primary);">白底图</div>
+            </div>
           </div>
-          <button class="btn-flat">重置</button>
-          <button class="btn-flat">时间 ↓</button>
+          
+          <!-- 二级配置面板 (调整) -->
+          <div id="batchAdjustPanel" class="batch-side-panel" style="display:none;">
+            <div class="bsp-hd">比例</div>
+            <div class="bsp-body">
+              <div class="ratio-grid">
+                <div class="ratio-item active" onclick="setBatchRatio('free', this)">
+                  <div class="ratio-ic">📐</div>
+                  <div class="ratio-lbl">自由</div>
+                </div>
+                <div class="ratio-item" onclick="setBatchRatio('raw', this)">
+                  <div class="ratio-ic">🖼️</div>
+                  <div class="ratio-lbl">原始</div>
+                </div>
+                <div class="ratio-item" onclick="setBatchRatio('edge', this)">
+                  <div class="ratio-ic">🔳</div>
+                  <div class="ratio-lbl">裁剪到边缘</div>
+                </div>
+                <div class="ratio-item" onclick="setBatchRatio('1:1', this)">
+                  <div class="ratio-ic">⬜</div>
+                  <div class="ratio-lbl">1:1</div>
+                </div>
+                <div class="ratio-item" onclick="setBatchRatio('4:3', this)">
+                  <div class="ratio-ic">▭</div>
+                  <div class="ratio-lbl">4:3</div>
+                </div>
+                <div class="ratio-item" onclick="setBatchRatio('3:4', this)">
+                  <div class="ratio-ic">▯</div>
+                  <div class="ratio-lbl">3:4</div>
+                </div>
+                <div class="ratio-item" onclick="setBatchRatio('3:2', this)">
+                  <div class="ratio-ic">▭</div>
+                  <div class="ratio-lbl">3:2</div>
+                </div>
+                <div class="ratio-item" onclick="setBatchRatio('2:3', this)">
+                  <div class="ratio-ic">▯</div>
+                  <div class="ratio-lbl">2:3</div>
+                </div>
+                <div class="ratio-item" onclick="setBatchRatio('16:9', this)">
+                  <div class="ratio-ic">▭</div>
+                  <div class="ratio-lbl">16:9</div>
+                </div>
+                <div class="ratio-item" onclick="setBatchRatio('9:16', this)">
+                  <div class="ratio-ic">▯</div>
+                  <div class="ratio-lbl">9:16</div>
+                </div>
+                <div class="ratio-item" onclick="setBatchRatio('wechat_cover', this)">
+                  <div class="ratio-ic">📱</div>
+                  <div class="ratio-lbl">公众号首图</div>
+                  <div class="ratio-sub">900x383</div>
+                </div>
+                <div class="ratio-item" onclick="setBatchRatio('wechat_sub', this)">
+                  <div class="ratio-ic">📰</div>
+                  <div class="ratio-lbl">公众号次图</div>
+                  <div class="ratio-sub">200x200</div>
+                </div>
+                <div class="ratio-item" onclick="setBatchRatio('pyq_cover', this)">
+                  <div class="ratio-ic">📸</div>
+                  <div class="ratio-lbl">朋友圈封面</div>
+                  <div class="ratio-sub">1080x1080</div>
+                </div>
+                <div class="ratio-item" onclick="setBatchRatio('wallpaper', this)">
+                  <div class="ratio-ic">💻</div>
+                  <div class="ratio-lbl">电脑壁纸</div>
+                  <div class="ratio-sub">1920x1080</div>
+                </div>
+                <div class="ratio-item" onclick="setBatchRatio('logo', this)">
+                  <div class="ratio-ic">🎯</div>
+                  <div class="ratio-lbl">Logo设计</div>
+                  <div class="ratio-sub">500x500</div>
+                </div>
+                <div class="ratio-item" onclick="setBatchRatio('square_main', this)">
+                  <div class="ratio-ic">🖼️</div>
+                  <div class="ratio-lbl">方形主图</div>
+                  <div class="ratio-sub">800x800</div>
+                </div>
+                <div class="ratio-item" onclick="setBatchRatio('vertical_main', this)">
+                  <div class="ratio-ic">📱</div>
+                  <div class="ratio-lbl">竖版主图</div>
+                  <div class="ratio-sub">800x1200</div>
+                </div>
+                <div class="ratio-item" onclick="setBatchRatio('pdd', this)">
+                  <div class="ratio-ic">拼</div>
+                  <div class="ratio-lbl">拼多多店</div>
+                  <div class="ratio-sub">750x1000</div>
+                </div>
+                <div class="ratio-item" onclick="setBatchRatio('id1', this)">
+                  <div class="ratio-ic">👤</div>
+                  <div class="ratio-lbl">标准1寸/1R</div>
+                  <div class="ratio-sub">295x413</div>
+                </div>
+                <div class="ratio-item" onclick="setBatchRatio('id2', this)">
+                  <div class="ratio-ic">👤</div>
+                  <div class="ratio-lbl">标准2寸</div>
+                  <div class="ratio-sub">413x626</div>
+                </div>
+                <div class="ratio-item" onclick="setBatchRatio('id_card', this)">
+                  <div class="ratio-ic">🪪</div>
+                  <div class="ratio-lbl">二代身份证</div>
+                  <div class="ratio-sub">358x441</div>
+                </div>
+              </div>
+            </div>
+            <div class="bsp-ft">
+              <button class="bsp-btn bsp-btn-cancel" onclick="closeBatchSidePanel()">取消</button>
+              <button class="bsp-btn bsp-btn-confirm" onclick="applyBatchAdjust()">确定</button>
+            </div>
+          </div>
+
+          <!-- 调色面板 -->
+          <div id="batchColorPanel" class="batch-side-panel" style="display:none;">
+            <div class="bsp-hd">调整颜色</div>
+            <div class="bsp-body">
+              <div class="lang-group-title">基础调整</div>
+              <div style="margin-bottom:16px;">
+                <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:6px;">
+                  <span>亮度</span><span>0</span>
+                </div>
+                <div class="range-wrap">
+                  <input type="range" class="range-input" min="-100" max="100" value="0">
+                </div>
+              </div>
+              <div style="margin-bottom:16px;">
+                <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:6px;">
+                  <span>对比度</span><span>0</span>
+                </div>
+                <div class="range-wrap">
+                  <input type="range" class="range-input" min="-100" max="100" value="0">
+                </div>
+              </div>
+              <div style="margin-bottom:16px;">
+                <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:6px;">
+                  <span>饱和度</span><span>0</span>
+                </div>
+                <div class="range-wrap">
+                  <input type="range" class="range-input" min="-100" max="100" value="0">
+                </div>
+              </div>
+            </div>
+            <div class="bsp-ft">
+              <button class="bsp-btn bsp-btn-confirm">应用调色</button>
+            </div>
+          </div>
+
+          <!-- 抠图面板 -->
+          <div id="batchRemoveBgPanel" class="batch-side-panel" style="display:none;">
+            <div class="bsp-hd">智能抠图</div>
+            <div class="bsp-body">
+              <div class="lang-group-title">选择模式</div>
+              <div class="ratio-grid">
+                <div class="ratio-item active">
+                  <div class="ratio-ic">✨</div>
+                  <div class="ratio-lbl">通用</div>
+                </div>
+                <div class="ratio-item">
+                  <div class="ratio-ic">👤</div>
+                  <div class="ratio-lbl">人像</div>
+                </div>
+                <div class="ratio-item">
+                  <div class="ratio-ic">💎</div>
+                  <div class="ratio-lbl">商品</div>
+                </div>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <div class="toggle-lbl">高清抠图</div>
+                  <div class="toggle-sub">支持大图超清细节</div>
+                </div>
+                <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+              </div>
+            </div>
+            <div class="bsp-ft">
+              <button class="bsp-btn bsp-btn-confirm">开始抠图</button>
+            </div>
+          </div>
+
+          <!-- 变清晰面板 -->
+          <div id="batchHdPanel" class="batch-side-panel" style="display:none;">
+            <div class="bsp-hd">变清晰</div>
+            <div class="bsp-body">
+              <div class="lang-group-title">增强倍数</div>
+              <div class="ratio-grid">
+                <div class="ratio-item active">
+                  <div class="ratio-ic">🔍</div>
+                  <div class="ratio-lbl">2倍</div>
+                  <div class="ratio-sub">高清修复</div>
+                </div>
+                <div class="ratio-item">
+                  <div class="ratio-ic">🔬</div>
+                  <div class="ratio-lbl">4倍</div>
+                  <div class="ratio-sub">超清重构</div>
+                </div>
+              </div>
+            </div>
+            <div class="bsp-ft">
+              <button class="bsp-btn bsp-btn-confirm">开始增强</button>
+            </div>
+          </div>
+
+          <!-- 消除面板 -->
+          <div id="batchErasePanel" class="batch-side-panel" style="display:none;">
+            <div class="bsp-hd">智能消除</div>
+            <div class="bsp-body">
+              <div class="lang-group-title">消除设置</div>
+              <div style="margin-bottom:16px;">
+                <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:6px;">
+                  <span>画笔大小</span><span>20</span>
+                </div>
+                <div class="range-wrap">
+                  <input type="range" class="range-input" min="5" max="100" value="20">
+                  <div class="range-val">20</div>
+                </div>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <div class="toggle-lbl">开始涂抹</div>
+                  <div class="toggle-sub">在图片上涂抹要消除的区域</div>
+                </div>
+                <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+              </div>
+            </div>
+            <div class="bsp-ft">
+              <button class="bsp-btn bsp-btn-confirm">执行消除</button>
+            </div>
+          </div>
+
+          <!-- 二级配置面板 (翻译) -->
+          <div id="batchTranslatePanel" class="batch-side-panel" style="display:none;">
+            <div class="bsp-hd">图片翻译</div>
+            <div class="bsp-body">
+              <div class="lang-group-title">请选择原文语言:</div>
+              <div class="lang-list">
+                <div class="lang-item active" onclick="setLang(this,'src')">中文 (简体)</div>
+                <div class="lang-item" onclick="setLang(this,'src')">中文 (繁体)</div>
+                <div class="lang-item" onclick="setLang(this,'src')">英语</div>
+                <div class="lang-item" onclick="setLang(this,'src')">日语</div>
+                <div class="lang-item" onclick="setLang(this,'src')">韩语</div>
+              </div>
+
+              <div class="lang-group-title">请选择译文语言:</div>
+              <div class="lang-list-v">
+                <div class="lang-item-v" onclick="setLang(this,'target')">英语</div>
+                <div class="lang-item-v" onclick="setLang(this,'target')">中文 (简体)</div>
+                <div class="lang-item-v" onclick="setLang(this,'target')">中文 (繁体)</div>
+                <div class="lang-item-v" onclick="setLang(this,'target')">西班牙语</div>
+                <div class="lang-item-v" onclick="setLang(this,'target')">葡萄牙语</div>
+                <div class="lang-item-v" onclick="setLang(this,'target')">俄语</div>
+                <div class="lang-item-v active" onclick="setLang(this,'target')">日语</div>
+                <div class="lang-item-v" onclick="setLang(this,'target')">韩语</div>
+                <div class="lang-item-v" onclick="setLang(this,'target')">德语</div>
+                <div class="lang-item-v" onclick="setLang(this,'target')">法语</div>
+                <div class="lang-item-v" onclick="setLang(this,'target')">意大利语</div>
+                <div class="lang-item-v" onclick="setLang(this,'target')">阿拉伯语</div>
+                <div class="lang-item-v" onclick="setLang(this,'target')">马来西亚语</div>
+                <div class="lang-item-v" onclick="setLang(this,'target')">印度尼西亚语</div>
+                <div class="lang-item-v" onclick="setLang(this,'target')">土耳其语</div>
+                <div class="lang-item-v" onclick="setLang(this,'target')">泰语</div>
+                <div class="lang-item-v" onclick="setLang(this,'target')">越南语</div>
+                <div class="lang-item-v" onclick="setLang(this,'target')">匈牙利语</div>
+                <div class="lang-item-v" onclick="setLang(this,'target')">荷兰语</div>
+                <div class="lang-item-v" onclick="setLang(this,'target')">波兰语</div>
+                <div class="lang-item-v" onclick="setLang(this,'target')">瑞典语</div>
+                <div class="lang-item-v" onclick="setLang(this,'target')">罗马尼亚语</div>
+              </div>
+
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <div class="toggle-lbl">商品主体保护 <span style="font-size:10px; opacity:0.5;">ⓘ</span></div>
+                  <div class="toggle-sub">开启后，不再对商品主体上的文字进行翻译。</div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+            <div class="bsp-ft">
+              <button class="bsp-btn bsp-btn-confirm" style="height:40px;" onclick="startBatchTranslate()">开始翻译</button>
+            </div>
+          </div>
+
+          <!-- 水印面板 (增强版) -->
+          <div id="batchWatermarkPanel" class="batch-side-panel" style="display:none;">
+            <div class="bsp-hd">设置水印</div>
+            <div class="bsp-body">
+              <div class="lang-group-title">水印模版</div>
+              <div class="watermark-grid">
+                <div class="wm-item active" onclick="setWatermark(this, 'none')"><div class="wm-preview">🚫</div></div>
+                <div class="wm-item" onclick="setWatermark(this, 'w1')"><div class="wm-preview" style="background-image:url('https://api.dicebear.com/7.x/initials/svg?seed=Brand')"></div></div>
+                <div class="wm-item" onclick="setWatermark(this, 'w2')"><div class="wm-preview" style="background-image:url('https://api.dicebear.com/7.x/identicon/svg?seed=Shop')"></div></div>
+                <div class="wm-item" onclick="setWatermark(this, 'w3')"><div class="wm-preview" style="background-image:url('https://api.dicebear.com/7.x/shapes/svg?seed=Seal')"></div></div>
+              </div>
+
+              <div class="lang-group-title">文字内容</div>
+              <div id="wmTextContainer">
+                <div class="wm-text-row">
+                  <input type="text" class="wm-input" value="品牌名称" oninput="updateWmOverlay()">
+                </div>
+                <div class="wm-text-row">
+                  <input type="text" class="wm-input" value="138-xxxx-xxxx" oninput="updateWmOverlay()">
+                </div>
+              </div>
+              <button class="btn-gen-sub" style="width:100%; margin-top:4px; height:28px; font-size:10px;" onclick="addWmText()">+ 添加一行</button>
+
+              <div class="lang-group-title">样式设置</div>
+              <div style="margin-bottom:12px;">
+                <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:6px;">
+                  <span>不透明度</span><span>50%</span>
+                </div>
+                <div class="range-wrap">
+                  <input type="range" class="range-input" min="0" max="100" value="50" oninput="updateWmOverlay()">
+                  <div class="range-val">50%</div>
+                </div>
+              </div>
+              
+              <div class="toggle-row" style="margin-top:12px; border:none; padding:0;">
+                <div class="toggle-info"><div class="toggle-lbl">全屏铺满</div></div>
+                <label class="switch"><input type="checkbox" onchange="updateWmOverlay()"><span class="slider"></span></label>
+              </div>
+
+              <div class="lang-group-title">水印位置</div>
+              <div class="pos-grid" id="wmPosGrid">
+                <div class="pos-btn" onclick="setWmPos(this, 'tl')">↖</div>
+                <div class="pos-btn" onclick="setWmPos(this, 'tc')">↑</div>
+                <div class="pos-btn" onclick="setWmPos(this, 'tr')">↗</div>
+                <div class="pos-btn" onclick="setWmPos(this, 'ml')">←</div>
+                <div class="pos-btn active" onclick="setWmPos(this, 'mc')">·</div>
+                <div class="pos-btn" onclick="setWmPos(this, 'mr')">→</div>
+                <div class="pos-btn" onclick="setWmPos(this, 'bl')">↙</div>
+                <div class="pos-btn" onclick="setWmPos(this, 'bc')">↓</div>
+                <div class="pos-btn" onclick="setWmPos(this, 'br')">↘</div>
+              </div>
+            </div>
+            <div class="bsp-ft">
+              <button class="bsp-btn bsp-btn-confirm" onclick="applyWatermark()">确认添加</button>
+            </div>
+          </div>
+          
+          <!-- 主体图片展示区 -->
+          <div id="batchMainContainer" class="batch-container">
+            <div class="batch-hd">
+              <div class="batch-title">图片批处理 <span id="batchCount" style="color:var(--primary);">0 / 30</span></div>
+              <div style="display:flex; gap:12px;">
+                <button class="btn-gen-sub" style="width:100px; height:32px; font-size:11px;" onclick="uploadBatchImgs()">上传更多</button>
+                <button class="btn-gen-sub" style="width:100px; height:32px; font-size:11px; background:var(--primary); color:#fff; border:none;">保存全部</button>
+              </div>
+            </div>
+            <div class="batch-grid" id="batchGrid">
+              <div class="batch-card batch-add-card" onclick="uploadBatchImgs()">
+                <div class="batch-add-ic">↑</div>
+                <div class="batch-add-txt">上传更多</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="right-body">
+      <div id="standardRightArea" style="height:100%; display:flex; flex-direction:column;">
+        <div class="right-head">
+          <button class="rtab active" onclick="switchRightTab(this, 'result')" id="rtabResult">生成结果</button>
+          <button class="rtab" onclick="switchRightTab(this, 'cases')" id="rtabCases">优秀案例</button>
+          <div class="rh-r">
+            <div class="search-box">
+              <span style="color:var(--muted)">🔍</span>
+              <input placeholder="搜索任务…">
+            </div>
+            <button class="btn-flat">重置</button>
+            <button class="btn-flat">时间 ↓</button>
+          </div>
+        </div>
+
+        <div class="right-body">
 
         <!-- 进度 -->
         <div class="prog-card" id="progCard">
@@ -4850,6 +5583,24 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
             <span class="plat-tag pt2">淘宝详情</span>
             <span class="plat-tag pt3">TikTok</span>
             <span class="plat-tag pt4">独立站</span>
+          </div>
+
+          <!-- 图片编辑功能介绍 (仅在图片编辑场景显示) -->
+          <div id="imgEditFeats" style="display:none; flex-direction:column; align-items:center;">
+            <div style="font-size:13px; font-weight:700; color:var(--text); margin: 30px 0 16px;">支持以下 AI 处理功能</div>
+            <div class="img-edit-feat-grid">
+              <div class="feat-item"><div class="feat-ic">📐</div><div class="feat-lbl">调整</div></div>
+              <div class="feat-item"><div class="feat-ic">🎨</div><div class="feat-lbl">调色</div></div>
+              <div class="feat-item"><div class="feat-ic">✨</div><div class="feat-lbl">抠图</div></div>
+              <div class="feat-item"><div class="feat-ic">🖼️</div><div class="feat-lbl">换背景</div></div>
+              <div class="feat-item"><div class="feat-ic">⬜</div><div class="feat-lbl">白底图</div></div>
+              <div class="feat-item"><div class="feat-ic">🔍</div><div class="feat-lbl">变清晰</div></div>
+              <div class="feat-item"><div class="feat-ic">🧼</div><div class="feat-lbl">消除</div></div>
+              <div class="feat-item"><div class="feat-ic">🌐</div><div class="feat-lbl">翻译</div></div>
+              <div class="feat-item"><div class="feat-ic">T</div><div class="feat-lbl">文字</div></div>
+              <div class="feat-item"><div class="feat-ic">💧</div><div class="feat-lbl">水印</div></div>
+            </div>
+            <button class="btn-gen" style="margin-top:30px; width:200px; height:46px;" onclick="uploadBatchImgs()">上传图片 / 批量处理</button>
           </div>
         </div>
 
@@ -8775,27 +9526,76 @@ function switchScene(scene, el){
   var copy     = document.getElementById('leftCopy');
   var vdoProd  = document.getElementById('leftVdoProd');
   var vdoRep   = document.getElementById('leftVdoReplicate');
+  var imgEdit  = document.getElementById('leftImgEdit');
+  var imgTrans = document.getElementById('leftImgTrans');
   
   if(aplus) aplus.style.display    = scene==='aplus'    ? '' : 'none';
   if(aplusAdv) aplusAdv.style.display = scene==='aplusAdv' ? '' : 'none';
   if(copy) copy.style.display     = scene==='copy'     ? '' : 'none';
   if(vdoProd) vdoProd.style.display  = scene==='vdoProd' ? '' : 'none';
   if(vdoRep) vdoRep.style.display   = scene==='vdoReplicate' ? '' : 'none';
+  if(imgEdit) imgEdit.style.display  = scene==='imgEdit' ? '' : 'none';
+  if(imgTrans) imgTrans.style.display = scene==='imgTrans' ? '' : 'none';
+
+  // 针对图片编辑场景调整 Tab 标签
+  const rtabResult = document.getElementById('rtabResult');
+  const rtabCases = document.getElementById('rtabCases');
+  if(rtabResult && rtabCases) {
+    if(scene === 'imgEdit') {
+      rtabResult.textContent = '上传图片';
+      rtabCases.textContent = '历史记录';
+    } else {
+      rtabResult.textContent = '生成结果';
+      rtabCases.textContent = '优秀案例';
+    }
+  }
+
+  // 初始隐藏批量编辑区
+  const batchWrap = document.getElementById('batchEditWrap');
+  const stdArea = document.getElementById('standardRightArea');
+  if(batchWrap) batchWrap.style.display = 'none';
+  if(stdArea) stdArea.style.display = 'flex';
 
   // 更新空态内容
   const emptyTitle = document.getElementById('emptyTitle');
   const emptySub = document.getElementById('emptySub');
   const emptyFlowLbl = document.getElementById('emptyFlowLbl');
+  const imgEditFeats = document.getElementById('imgEditFeats');
+  const emptyFlow = document.querySelector('.empty-state .flow');
+  const platformRow = document.querySelector('.empty-state .platform-row');
 
   if(scene === 'vdoProd') {
+    if(imgEditFeats) imgEditFeats.style.display = 'none';
+    if(emptyFlow) emptyFlow.style.display = 'flex';
+    if(platformRow) platformRow.style.display = 'flex';
     if(emptyTitle) emptyTitle.textContent = 'AI+ 商品视频';
     if(emptySub) emptySub.innerHTML = '上传产品图，AI 自动规划脚本并生成<br><strong>高转化、符合市场审美</strong> 的爆款短视频';
     if(emptyFlowLbl) emptyFlowLbl.textContent = '生成短视频';
   } else if(scene === 'vdoReplicate') {
+    if(imgEditFeats) imgEditFeats.style.display = 'none';
+    if(emptyFlow) emptyFlow.style.display = 'flex';
+    if(platformRow) platformRow.style.display = 'flex';
     if(emptyTitle) emptyTitle.textContent = 'AI+ 视频复刻';
     if(emptySub) emptySub.innerHTML = '输入爆款视频链接，AI 深度拆解其脚本、镜头与节奏<br>并结合您的商品图 <strong>1:1 还原或风格化二创</strong>';
     if(emptyFlowLbl) emptyFlowLbl.textContent = '复刻爆款视频';
+  } else if(scene === 'imgEdit') {
+    if(imgEditFeats) imgEditFeats.style.display = 'flex';
+    if(emptyFlow) emptyFlow.style.display = 'none';
+    if(platformRow) platformRow.style.display = 'none';
+    if(emptyTitle) emptyTitle.textContent = 'AI 图片编辑';
+    if(emptySub) emptySub.innerHTML = '上传图片并输入指令，AI 深度理解需求<br><strong>精准执行</strong> 背景替换、消除、重绘等高级编辑任务';
+    if(emptyFlowLbl) emptyFlowLbl.textContent = '开始编辑';
+  } else if(scene === 'imgTrans') {
+    if(imgEditFeats) imgEditFeats.style.display = 'none';
+    if(emptyFlow) emptyFlow.style.display = 'flex';
+    if(platformRow) platformRow.style.display = 'flex';
+    if(emptyTitle) emptyTitle.textContent = 'AI 图片翻译';
+    if(emptySub) emptySub.innerHTML = '自动识别图片中的文字并保留原风格翻译<br><strong>一键生成</strong> 多语言版本的商品图';
+    if(emptyFlowLbl) emptyFlowLbl.textContent = '立即翻译';
   } else {
+    if(imgEditFeats) imgEditFeats.style.display = 'none';
+    if(emptyFlow) emptyFlow.style.display = 'flex';
+    if(platformRow) platformRow.style.display = 'flex';
     if(emptyTitle) emptyTitle.textContent = 'AI+ 详情页';
     if(emptySub) emptySub.innerHTML = '上传商品图，AI 即刻生成<br><strong>符合多电商平台规范</strong> 的专业详情页';
     if(emptyFlowLbl) emptyFlowLbl.textContent = '生成详情页';
@@ -8808,47 +9608,284 @@ function switchRightTab(el, key) {
   document.querySelectorAll('.rtab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
   
-  const resultArea = document.getElementById('resultArea');
-  const casesArea = document.getElementById('casesArea');
-  const emptyState = document.getElementById('emptyState');
-  const taskCard = document.getElementById('taskCard');
-  const progCard = document.getElementById('progCard');
+  const res = document.getElementById('resultArea');
+  const cas = document.getElementById('casesArea');
+  const empty = document.getElementById('emptyState');
+  const batchWrap = document.getElementById('batchEditWrap');
+  const stdArea = document.getElementById('standardRightArea');
+  
+  const isImgEdit = document.getElementById('leftImgEdit').style.display !== 'none';
 
-  if (key === 'result') {
-    casesArea.style.display = 'none';
-    if (taskCard.style.display === 'flex' || progCard.style.display === 'block') {
-       resultArea.style.display = 'block';
-       emptyState.style.display = 'none';
+  if(key === 'result') {
+    if(isImgEdit) {
+      const hasImgs = document.querySelectorAll('.batch-card:not(.batch-add-card)').length > 0;
+      if(hasImgs) {
+        batchWrap.style.display = 'block';
+        stdArea.style.display = 'none';
+      } else {
+        batchWrap.style.display = 'none';
+        stdArea.style.display = 'flex';
+        if(res) res.style.display = 'block';
+        if(cas) cas.style.display = 'none';
+      }
     } else {
-       resultArea.style.display = 'none';
-       emptyState.style.display = 'block';
+      batchWrap.style.display = 'none';
+      stdArea.style.display = 'flex';
+      if(res) res.style.display = 'block';
+      if(cas) cas.style.display = 'none';
     }
   } else {
-    resultArea.style.display = 'none';
-    emptyState.style.display = 'none';
-    casesArea.style.display = 'block';
+    batchWrap.style.display = 'none';
+    stdArea.style.display = 'flex';
+    if(res) res.style.display = 'none';
+    if(empty) empty.style.display = 'none';
+    if(cas) cas.style.display = 'block';
     
-    // 自定义案例内容
+    // 优秀案例内容填充
     const isVideo = document.getElementById('sideVideo').style.display === 'block';
     const casesGrid = document.getElementById('casesGrid');
-    if (isVideo) {
-      document.getElementById('caseCount').textContent = '6 个短视频案例';
-      casesGrid.innerHTML = `
-        <div style="background:#000; border-radius:12px; height:240px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:11px; flex-direction:column; gap:8px; border:1px solid #333;">🎬 爆款 UGC 案例</div>
-        <div style="background:#000; border-radius:12px; height:240px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:11px; flex-direction:column; gap:8px; border:1px solid #333;">🎬 剧情反转案例</div>
-        <div style="background:#000; border-radius:12px; height:240px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:11px; flex-direction:column; gap:8px; border:1px solid #333;">🎬 沉浸 ASMR 案例</div>
-        <div style="background:#000; border-radius:12px; height:240px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:11px; flex-direction:column; gap:8px; border:1px solid #333;">🎬 暴力测试案例</div>
-      `;
-    } else {
-      document.getElementById('caseCount').textContent = '8 个详情页案例';
-      casesGrid.innerHTML = `
-        <div style="background:#f5f6ff; border-radius:12px; height:180px; display:flex; align-items:center; justify-content:center; color:#6366F1; font-weight:600; border:1px dashed #d0d4ff;">亚马逊 A+ 案例</div>
-        <div style="background:#f5f6ff; border-radius:12px; height:180px; display:flex; align-items:center; justify-content:center; color:#6366F1; font-weight:600; border:1px dashed #d0d4ff;">淘宝详情案例</div>
-        <div style="background:#f5f6ff; border-radius:12px; height:180px; display:flex; align-items:center; justify-content:center; color:#6366F1; font-weight:600; border:1px dashed #d0d4ff;">TikTok Listing</div>
-        <div style="background:#f5f6ff; border-radius:12px; height:180px; display:flex; align-items:center; justify-content:center; color:#6366F1; font-weight:600; border:1px dashed #d0d4ff;">独立站详情案例</div>
-      `;
+    if (casesGrid) {
+      if (isVideo) {
+        document.getElementById('caseCount').textContent = '6 个短视频案例';
+        casesGrid.innerHTML = `
+          <div style="background:#000; border-radius:12px; height:240px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:11px; flex-direction:column; gap:8px; border:1px solid #333;">🎬 爆款 UGC 案例</div>
+          <div style="background:#000; border-radius:12px; height:240px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:11px; flex-direction:column; gap:8px; border:1px solid #333;">🎬 剧情反转案例</div>
+          <div style="background:#000; border-radius:12px; height:240px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:11px; flex-direction:column; gap:8px; border:1px solid #333;">🎬 沉浸 ASMR 案例</div>
+          <div style="background:#000; border-radius:12px; height:240px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:11px; flex-direction:column; gap:8px; border:1px solid #333;">🎬 暴力测试案例</div>
+        `;
+      } else {
+        document.getElementById('caseCount').textContent = '8 个详情页案例';
+        casesGrid.innerHTML = `
+          <div style="background:#f5f6ff; border-radius:12px; height:180px; display:flex; align-items:center; justify-content:center; color:#6366F1; font-weight:600; border:1px dashed #d0d4ff;">亚马逊 A+ 案例</div>
+          <div style="background:#f5f6ff; border-radius:12px; height:180px; display:flex; align-items:center; justify-content:center; color:#6366F1; font-weight:600; border:1px dashed #d0d4ff;">淘宝详情案例</div>
+          <div style="background:#f5f6ff; border-radius:12px; height:180px; display:flex; align-items:center; justify-content:center; color:#6366F1; font-weight:600; border:1px dashed #d0d4ff;">TikTok Listing</div>
+          <div style="background:#f5f6ff; border-radius:12px; height:180px; display:flex; align-items:center; justify-content:center; color:#6366F1; font-weight:600; border:1px dashed #d0d4ff;">独立站详情案例</div>
+        `;
+      }
     }
   }
+}
+
+function showToast(msg, icon = '✨') {
+  let container = document.querySelector('.toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.className = 'toast-container';
+    document.body.appendChild(container);
+  }
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.innerHTML = `<span class="toast-ic">${icon}</span><span>${msg}</span>`;
+  container.appendChild(toast);
+  
+  setTimeout(() => {
+    toast.classList.add('out');
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
+function toggleBtItem(el, mode) {
+  document.querySelectorAll('.bt-item').forEach(item => {
+    item.classList.remove('active');
+    const ic = item.querySelector('.bt-ic');
+    if(ic) { ic.style.background = ''; ic.style.color = ''; }
+    const txt = item.querySelector('.bt-txt');
+    if(txt) { txt.style.color = ''; }
+  });
+  el.classList.add('active');
+  const ic = el.querySelector('.bt-ic');
+  if(ic) { ic.style.background = 'var(--primary)'; ic.style.color = '#fff'; }
+  const txt = el.querySelector('.bt-txt');
+  if(txt) { txt.style.color = 'var(--primary)'; }
+
+  // 处理所有批处理面板
+  const panels = ['Adjust', 'Color', 'RemoveBg', 'Hd', 'Erase', 'Translate', 'Watermark'];
+  panels.forEach(p => {
+    const panel = document.getElementById('batch' + p + 'Panel');
+    if(panel) panel.style.display = 'none';
+  });
+  
+  const targetId = 'batch' + mode.charAt(0).toUpperCase() + mode.slice(1) + 'Panel';
+  const targetPanel = document.getElementById(targetId);
+  if(targetPanel) targetPanel.style.display = 'flex';
+
+  const batchContainer = document.getElementById('batchMainContainer');
+  if (batchContainer) {
+    batchContainer.classList.toggle('mode-adjust', mode === 'adjust');
+    batchContainer.classList.toggle('mode-watermark', mode === 'watermark');
+  }
+}
+
+function updateWmOverlay() {
+  const activeWm = document.querySelector('.wm-item.active');
+  if (!activeWm) return;
+  
+  const isNone = activeWm.onclick.toString().includes('none');
+  const inputs = document.querySelectorAll('#wmTextContainer .wm-input');
+  const opacity = document.querySelector('#batchWatermarkPanel .range-input').value / 100;
+  const isTiled = document.querySelector('#batchWatermarkPanel .switch input').checked;
+  
+  const overlays = document.querySelectorAll('.wm-overlay');
+  overlays.forEach(o => {
+    if (isNone) {
+      o.style.display = 'none';
+      return;
+    }
+    o.style.display = 'block';
+    o.style.opacity = opacity;
+    o.style.backgroundRepeat = isTiled ? 'repeat' : 'no-repeat';
+    o.style.backgroundSize = isTiled ? '25%' : '40%';
+    
+    // 如果没有真实背景图，用文字生成一个 DataURL 模拟
+    const canvas = document.createElement('canvas');
+    canvas.width = 200; canvas.height = 100;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = 'white';
+    ctx.shadowColor = 'rgba(0,0,0,0.5)';
+    ctx.shadowBlur = 4;
+    ctx.font = 'bold 20px sans-serif';
+    ctx.textAlign = 'center';
+    let y = 40;
+    inputs.forEach(input => {
+      ctx.fillText(input.value, 100, y);
+      y += 30;
+    });
+    o.style.backgroundImage = `url(${canvas.toDataURL()})`;
+  });
+}
+
+function setWmPos(el, pos) {
+  document.querySelectorAll('#wmPosGrid .pos-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  
+  const posMap = {
+    tl: 'top left', tc: 'top center', tr: 'top right',
+    ml: 'center left', mc: 'center', mr: 'center right',
+    bl: 'bottom left', bc: 'bottom center', br: 'bottom right'
+  };
+  
+  const overlays = document.querySelectorAll('.wm-overlay');
+  overlays.forEach(o => {
+    o.style.backgroundPosition = posMap[pos] || 'center';
+  });
+}
+
+function addWmText() {
+  const container = document.getElementById('wmTextContainer');
+  const row = document.createElement('div');
+  row.className = 'wm-text-row';
+  row.innerHTML = `
+    <input type="text" class="wm-input" value="新水印文本" oninput="updateWmOverlay()">
+    <div class="wm-del-btn" onclick="this.parentElement.remove(); updateWmOverlay();">✕</div>
+  `;
+  container.appendChild(row);
+  updateWmOverlay();
+}
+
+function setWatermark(el, id) {
+  document.querySelectorAll('.wm-item').forEach(item => item.classList.remove('active'));
+  el.classList.add('active');
+  updateWmOverlay();
+}
+
+function applyWatermark() {
+  showToast('水印已成功应用至所有图片', '💧');
+}
+
+function uploadWatermark() {
+  showToast('正在打开本地文件...', '📁');
+}
+
+function setLang(el, type) {
+  const cls = type === 'src' ? '.lang-item' : '.lang-item-v';
+  el.parentElement.querySelectorAll(cls).forEach(item => item.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function startBatchTranslate() {
+  const btn = event.currentTarget;
+  const oldTxt = btn.textContent;
+  btn.textContent = '✨ 正在分析并翻译图片...';
+  btn.disabled = true;
+  
+  setTimeout(() => {
+    showToast('批量翻译完成！', '✅');
+    btn.textContent = oldTxt;
+    btn.disabled = false;
+  }, 2000);
+}
+
+function setBatchRatio(ratio, el) {
+  document.querySelectorAll('.ratio-item').forEach(r => r.classList.remove('active'));
+  el.classList.add('active');
+  
+  // 更新所有裁剪框的比例 (模拟)
+  const boxes = document.querySelectorAll('.crop-box');
+  boxes.forEach(box => {
+    if (ratio === '1:1' || ratio === 'wechat_sub' || ratio === 'pyq_cover' || ratio === 'logo' || ratio === 'square_main') {
+      box.style.width = '80%'; box.style.height = '80%';
+    } else if (ratio === '4:3' || ratio === 'wechat_cover') {
+      box.style.width = '90%'; box.style.height = '67%';
+    } else if (ratio === '3:4' || ratio === '竖版主图') {
+      box.style.width = '60%'; box.style.height = '80%';
+    } else if (ratio === '16:9' || ratio === 'wallpaper') {
+      box.style.width = '95%'; box.style.height = '53%';
+    } else if (ratio === '9:16') {
+      box.style.width = '50%'; box.style.height = '90%';
+    } else {
+      box.style.width = '80%'; box.style.height = '80%';
+    }
+  });
+}
+
+function closeBatchSidePanel() {
+  document.getElementById('batchAdjustPanel').style.display = 'none';
+  document.getElementById('batchMainContainer').classList.remove('mode-adjust');
+  // 恢复到白底图状态 (模拟)
+  const whiteBgItem = document.querySelector('.bt-item:last-child');
+  if (whiteBgItem) toggleBtItem(whiteBgItem, 'whiteBg');
+}
+
+function applyBatchAdjust() {
+  showToast('已应用裁剪设置到所有图片', '📏');
+  closeBatchSidePanel();
+}
+
+function uploadBatchImgs() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.multiple = true;
+  input.accept = 'image/*';
+  input.onchange = e => {
+    const files = Array.from(e.target.files).slice(0, 30);
+    const grid = document.getElementById('batchGrid');
+    const countEl = document.getElementById('batchCount');
+    
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = event => {
+        const card = document.createElement('div');
+        card.className = 'batch-card';
+        card.innerHTML = `
+          <img src="${event.target.result}">
+          <div class="crop-overlay">
+            <div class="crop-box" style="width:80%; height:80%;"></div>
+          </div>
+          <div class="wm-overlay"></div>
+          <div class="batch-card-del" onclick="removeBatchImg(this)">✕</div>
+        `;
+        grid.insertBefore(card, grid.querySelector('.batch-add-card'));
+        
+        const total = document.querySelectorAll('.batch-card:not(.batch-add-card)').length;
+        if(countEl) countEl.textContent = `${total} / 30`;
+        
+        document.getElementById('batchEditWrap').style.display = 'block';
+        document.getElementById('standardRightArea').style.display = 'none';
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+  input.click();
 }
 
 /* ── 商品视频逻辑 ── */
@@ -8976,7 +10013,7 @@ function uploadUserModel() {
         
         // 插入到按钮组之前
         grid.insertBefore(card, grid.querySelector('div[style*="grid-template-columns"]'));
-        alert('模特图片上传成功！已自动设为当前使用。');
+        showToast('模特图片上传成功！已自动设为当前使用。', '👤');
       };
       reader.readAsDataURL(file);
     }
@@ -9058,6 +10095,19 @@ function fillScriptReq(val) {
   document.getElementById('vdoScriptReq').value = val;
 }
 
+function removeBatchImg(el) {
+  const card = el.parentElement;
+  card.remove();
+  const total = document.querySelectorAll('.batch-card:not(.batch-add-card)').length;
+  const countEl = document.getElementById('batchCount');
+  if(countEl) countEl.textContent = `${total} / 30`;
+  
+  if(total === 0) {
+    document.getElementById('batchEditWrap').style.display = 'none';
+    document.getElementById('standardRightArea').style.display = 'flex';
+  }
+}
+
 function startVdoGen(){
   const isRep = document.getElementById('leftVdoReplicate').style.display !== 'none';
   var btn = isRep ? event.currentTarget : document.getElementById('vdoGenBtn');
@@ -9134,6 +10184,11 @@ window.addEventListener('DOMContentLoaded', function() {
   renderVdoTypeGrid();
 });
 
+function toggleSidebarSubGroup(el) {
+  const group = el.parentElement;
+  group.classList.toggle('collapsed');
+}
+
 function switchNav(el, key) {
   document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
   el.classList.add('active');
@@ -9142,12 +10197,14 @@ function switchNav(el, key) {
   const other = document.getElementById('otherPagePlaceholder');
   const sideHome = document.getElementById('sideHome');
   const sideVideo = document.getElementById('sideVideo');
+  const sideTools = document.getElementById('sideTools');
   
   if (key === 'home') {
     dashboard.style.display = 'flex';
     other.style.display = 'none';
     if(sideHome) sideHome.style.display = 'block';
     if(sideVideo) sideVideo.style.display = 'none';
+    if(sideTools) sideTools.style.display = 'none';
     // 默认切换到第一个场景
     var firstSi = sideHome ? sideHome.querySelector('.si') : null;
     if(firstSi) switchScene('aplus', firstSi);
@@ -9156,9 +10213,19 @@ function switchNav(el, key) {
     other.style.display = 'none';
     if(sideHome) sideHome.style.display = 'none';
     if(sideVideo) sideVideo.style.display = 'block';
+    if(sideTools) sideTools.style.display = 'none';
     // 默认切换到商品视频
     var firstSi = sideVideo ? sideVideo.querySelector('.si') : null;
     if(firstSi) switchScene('vdoProd', firstSi);
+  } else if (key === 'tools') {
+    dashboard.style.display = 'flex';
+    other.style.display = 'none';
+    if(sideHome) sideHome.style.display = 'none';
+    if(sideVideo) sideVideo.style.display = 'none';
+    if(sideTools) sideTools.style.display = 'block';
+    // 默认切换到图片编辑
+    var firstSi = sideTools ? sideTools.querySelector('.si') : null;
+    if(firstSi) switchScene('imgEdit', firstSi);
   } else {
     dashboard.style.display = 'none';
     other.style.display = 'flex';
