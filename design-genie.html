@@ -529,12 +529,17 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
   background:#fff;transition:all .13s;user-select:none;white-space:nowrap;
 }
 .ta-opt-chip:hover{border-color:var(--pp2);color:var(--pp);}
-.ta-opt-chip.active{border-color:var(--pp);background:var(--soft);color:var(--pp);font-weight:600;}
+/* 选中品牌logo、背景效果（在位置处展示） */
+.ta-opt-chip.active{border-color:var(--primary); background:rgba(99,102,241,0.1); color:var(--primary); font-weight:700;}
+.ta-opt-chip .chip-check{display:none; color:var(--primary); margin-left:-2px;}
+.ta-opt-chip.active .chip-check{display:inline-block;}
+
+.img-cfg-row .mod-del-btn{opacity:1; visibility:visible; background:rgba(0,0,0,0.03); border:none; color:var(--text-muted);}
+.img-cfg-row .mod-del-btn:hover{background:#FF4D4F; color:#fff;}
 .ta-opt-chip svg{flex-shrink:0;}
 /* 右上角已选标记（绝对定位在 ta-wrap 内） */
 .ta-sel-badges{
-  position:absolute;top:8px;left:10px;
-  display:flex;gap:5px;align-items:center;pointer-events:none;
+  display:none;
 }
 .ta-badge{
   display:flex;align-items:center;gap:3px;
@@ -2866,12 +2871,20 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
           <div class="ta-foot">
             <div class="ta-opt-row">
               <!-- 品牌 LOGO -->
-              <div class="ta-opt-chip" id="logoChip" onclick="toggleLogoOpt()">
+              <div class="ta-opt-chip" id="logoChipAdv" onclick="toggleLogoOpt()">
+                <svg class="chip-check" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="12" cy="10" r="3"/><path d="M7 20c0-2.76 2.24-5 5-5s5 2.24 5 5"/></svg>
                 品牌 LOGO
               </div>
               <!-- 选择背景 -->
+              <div class="ta-opt-chip" id="bgChipAdv" onclick="toggleBgPicker(event)">
+                <svg class="chip-check" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                选择背景
+              </div>
+              <!-- 选择背景 -->
               <div class="ta-opt-chip" id="bgChip" onclick="toggleBgPicker(event)">
+                <svg class="chip-check" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                 选择背景
               </div>
@@ -2935,11 +2948,11 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
           </div>
           <div class="img-cfg-list" id="mainCfgList">
             <!-- 卖点图 -->
-            <div class="img-cfg-row row-checked" ondblclick="openCardEdit(event,this,'main')" title="双击编辑">
-              <div class="img-cfg-check checked" onclick="toggleImgCfg(this)">
+            <div class="img-cfg-row" ondblclick="openCardEdit(event,this,'main')" title="双击编辑">
+              <div class="img-cfg-check" onclick="toggleImgCfg(this)">
                 <svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="#fff" stroke-width="2.8"><polyline points="1.5 5 4 7.5 8.5 2.5"/></svg>
               </div>
-              <span onclick="openCardEdit(event,this,'main')" class="img-cfg-name checked">卖点图</span>
+              <span onclick="openCardEdit(event,this,'main')" class="img-cfg-name">卖点图</span>
               <div class="img-stepper">
                 <button onclick="stepImg(this,-1)">−</button>
                 <span>1</span>
@@ -3042,35 +3055,35 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
           <!-- 14格：前13张普通板块 + 最后1格「更多」卡 -->
           <div class="module-grid" id="modGrid">
 
-            <div class="mod-card sel" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
+            <div class="mod-card" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
               <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
               <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
               <span onclick="openCardEdit(event,this,'detail')" class="mod-name">首屏主视觉</span>
               <span class="mod-desc">传递核心价值</span>
             </div>
 
-            <div class="mod-card sel" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
+            <div class="mod-card" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
               <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
               <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
               <span onclick="openCardEdit(event,this,'detail')" class="mod-name">核心卖点图</span>
               <span class="mod-desc">突出差异优势</span>
             </div>
 
-            <div class="mod-card sel" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
+            <div class="mod-card" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
               <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
               <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
               <span onclick="openCardEdit(event,this,'detail')" class="mod-name">使用场景图</span>
               <span class="mod-desc">呈现真实使用场景</span>
             </div>
 
-            <div class="mod-card sel" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
+            <div class="mod-card" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
               <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
               <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
               <span onclick="openCardEdit(event,this,'detail')" class="mod-name">多角度图</span>
               <span class="mod-desc">多角度呈现外观</span>
             </div>
 
-            <div class="mod-card sel" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
+            <div class="mod-card" draggable="true" ondblclick="openCardEdit(event,this,'detail')">
               <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
               <div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
               <span onclick="openCardEdit(event,this,'detail')" class="mod-name">场景氛围图</span>
@@ -3603,10 +3616,12 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
           <div class="ta-foot">
             <div class="ta-opt-row">
               <div class="ta-opt-chip" id="logoChipAdv" onclick="toggleLogoOpt()">
+                <svg class="chip-check" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="12" cy="10" r="3"/><path d="M7 20c0-2.76 2.24-5 5-5s5 2.24 5 5"/></svg>
                 品牌 LOGO
               </div>
               <div class="ta-opt-chip" id="bgChipAdv" onclick="toggleBgPicker(event)">
+                <svg class="chip-check" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                 选择背景
               </div>
@@ -5622,7 +5637,10 @@ function _initBgGrid(){
 
 function toggleLogoOpt(){
   _logoActive = !_logoActive;
-  document.getElementById('logoChip').classList.toggle('active', _logoActive);
+  var chip1 = document.getElementById('logoChip');
+  var chip2 = document.getElementById('logoChipAdv');
+  if(chip1) chip1.classList.toggle('active', _logoActive);
+  if(chip2) chip2.classList.toggle('active', _logoActive);
   _renderBadges();
 }
 
@@ -5650,7 +5668,10 @@ function pickBgColor(color){
     s.classList.toggle('picked', s.style.background === color || (color && _normalizeColor(s.style.background)===_normalizeColor(color)));
   });
   // chip 激活态
-  document.getElementById('bgChip').classList.toggle('active', !!color);
+  var chip1 = document.getElementById('bgChip');
+  var chip2 = document.getElementById('bgChipAdv');
+  if(chip1) chip1.classList.toggle('active', !!color);
+  if(chip2) chip2.classList.toggle('active', !!color);
   _closeBgPop();
   _renderBadges();
 }
@@ -6869,11 +6890,11 @@ function addNewModAdv(){
 
 /* ── ··· 菜单 ── */
 var _DEFAULT_MODS = [
-  {name:'首屏主视觉',desc:'传递核心价值',sel:true},
-  {name:'核心卖点图',desc:'突出差异优势',sel:true},
-  {name:'使用场景图',desc:'呈现真实使用场景',sel:true},
-  {name:'多角度图',desc:'多角度呈现外观',sel:true},
-  {name:'场景氛围图',desc:'展示使用场景',sel:true},
+  {name:'首屏主视觉',desc:'传递核心价值',sel:false},
+  {name:'核心卖点图',desc:'突出差异优势',sel:false},
+  {name:'使用场景图',desc:'呈现真实使用场景',sel:false},
+  {name:'多角度图',desc:'多角度呈现外观',sel:false},
+  {name:'场景氛围图',desc:'展示使用场景',sel:false},
   {name:'商品细节图',desc:'放大材质与工艺',sel:false},
   {name:'品牌故事图',desc:'传达品牌理念',sel:false},
   {name:'尺寸/容量/尺码图',desc:'展示规格信息',sel:false},
@@ -6926,7 +6947,7 @@ function closeModMenu(){
 
 /* ── 主图配置：重置 ── */
 var _mainCfgDefault = [
-  { name:'卖点图', checked:true  },
+  { name:'卖点图', checked:false },
   { name:'场景图', checked:false },
   { name:'细节图', checked:false },
   { name:'白底图', checked:false }
