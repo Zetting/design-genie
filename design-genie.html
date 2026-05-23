@@ -62,6 +62,33 @@
   .j-overlay-item.active {
     border-color: var(--primary);
   }
+  /* 旋转手柄 */
+  .j-rotator {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: #fff;
+    border: 2px solid var(--primary);
+    border-radius: 50%;
+    left: 50%;
+    top: -30px;
+    transform: translateX(-50%);
+    cursor: grab;
+    display: none;
+    z-index: 10;
+  }
+  .j-rotator::after {
+    content: '';
+    position: absolute;
+    width: 2px;
+    height: 10px;
+    background: var(--primary);
+    bottom: -10px;
+    left: 7px;
+  }
+  .j-overlay-item.active .j-rotator {
+    display: block;
+  }
   .j-overlay-item img {
     width: 100%;
     height: 100%;
@@ -3759,19 +3786,86 @@ input:checked + .slider:before { transform: translateX(16px); }
 
         <!-- 模特选择 -->
         <div class="sec-block">
-          <div class="sec-hd">
-            <h3>模特库</h3>
+          <div class="vdo-tab-wrap" style="margin-bottom:12px;">
+            <div class="vdo-tab active" onclick="switchJewelryModelTab(this, 'lib')">官方模特</div>
+            <div class="vdo-tab" onclick="switchJewelryModelTab(this, 'mine')">我的模特</div>
           </div>
-          <div class="jewelry-cat-tabs" style="display:flex; gap:12px; margin-bottom:16px; border-bottom:1px solid #f0f0f5; padding-bottom:8px;">
-            <div class="jewelry-cat-tab active" onclick="switchJewelryCat(this, 'ring')" style="cursor:pointer; font-weight:700; color:var(--primary);">戒指</div>
-            <div class="jewelry-cat-tab" onclick="switchJewelryCat(this, 'neck')" style="cursor:pointer; color:var(--text-sub);">项链</div>
-            <div class="jewelry-cat-tab" onclick="switchJewelryCat(this, 'ear')" style="cursor:pointer; color:var(--text-sub);">耳环</div>
-            <div class="jewelry-cat-tab" onclick="switchJewelryCat(this, 'wrist')" style="cursor:pointer; color:var(--text-sub);">手镯/表</div>
-            <div class="jewelry-cat-tab" onclick="switchJewelryCat(this, 'foot')" style="cursor:pointer; color:var(--text-sub);">脚链</div>
+
+          <div id="jewelryModelLibPanel">
+            <div class="jewelry-cat-tabs" style="display:flex; gap:12px; margin-bottom:12px; border-bottom:1px solid #f0f0f5; padding-bottom:8px;">
+              <div class="jewelry-cat-tab active" onclick="switchJewelryCat(this, 'ring')" style="cursor:pointer; font-weight:700; color:var(--primary);">戒指</div>
+              <div class="jewelry-cat-tab" onclick="switchJewelryCat(this, 'neck')" style="cursor:pointer; color:var(--text-sub);">项链</div>
+              <div class="jewelry-cat-tab" onclick="switchJewelryCat(this, 'ear')" style="cursor:pointer; color:var(--text-sub);">耳环</div>
+              <div class="jewelry-cat-tab" onclick="switchJewelryCat(this, 'wrist')" style="cursor:pointer; color:var(--text-sub);">手镯/表</div>
+              <div class="jewelry-cat-tab" onclick="switchJewelryCat(this, 'foot')" style="cursor:pointer; color:var(--text-sub);">脚链</div>
+            </div>
+
+            <!-- 二级筛选：全部、男、女 -->
+            <div style="display:flex; gap:8px; margin-bottom:12px;">
+              <div class="tag-mini active" onclick="filterJewelryModels(this, 'all')">全部</div>
+              <div class="tag-mini" onclick="filterJewelryModels(this, 'male')">男</div>
+              <div class="tag-mini" onclick="filterJewelryModels(this, 'female')">女</div>
+            </div>
+
+            <!-- 模特网格 (3列，支持滚动，固定展示3行高度) -->
+            <div id="jewelryModelGrid" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px; max-height:360px; overflow-y:auto; padding-right:4px;">
+              <!-- 内容由 JS 动态生成 -->
+            </div>
           </div>
-          <!-- 模特网格 (3列) -->
-          <div id="jewelryModelGrid" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px;">
-            <!-- 内容由 JS 动态生成 -->
+
+          <!-- 我的模特面板 -->
+          <div id="jewelryMyModelPanel" style="display:none;">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-bottom:12px;">
+              <button class="btn-gen-sub" onclick="jewelryAddMyModel()" style="height:36px; font-size:11px;">自定义上传</button>
+              <button class="btn-gen-sub" onclick="showJewelryAiGen()" style="height:36px; font-size:11px; background:var(--primary); color:#fff; border:none;">AI 生成模特</button>
+            </div>
+            
+            <!-- AI 生成模特配置 -->
+            <div id="jewelryAiGenForm" style="display:none; background:#f9fafb; padding:12px; border-radius:12px; border:1px solid var(--border-light); margin-bottom:12px;">
+              <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-bottom:8px;">
+                <select id="jGenRace" class="opt-select" style="height:32px; font-size:11px;">
+                  <option value="asian">东亚人</option>
+                  <option value="white">白种人</option>
+                  <option value="black">黑种人</option>
+                  <option value="latin">拉美/混血</option>
+                </select>
+                <select id="jGenGender" class="opt-select" style="height:32px; font-size:11px;">
+                  <option value="female">女性</option>
+                  <option value="male">男性</option>
+                </select>
+              </div>
+              <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-bottom:8px;">
+                <select id="jGenAge" class="opt-select" style="height:32px; font-size:11px;">
+                  <option value="20s">青年 (18-30)</option>
+                  <option value="40s">中年 (35-50)</option>
+                  <option value="60s">老年 (60+)</option>
+                </select>
+                <select id="jGenCat" class="opt-select" style="height:32px; font-size:11px;">
+                  <option value="ring">戒指部位</option>
+                  <option value="neck">项链部位</option>
+                  <option value="ear">耳部/侧脸</option>
+                  <option value="wrist">手腕/全身</option>
+                </select>
+              </div>
+              <textarea id="jGenOther" placeholder="其他要求 (如：背景、光效、动作等)" style="width:100%; height:40px; border:1px solid var(--border-light); border-radius:6px; padding:6px; font-size:11px; margin-bottom:8px; font-family:inherit;"></textarea>
+              <button class="btn-primary" onclick="genJewelryModel()" style="width:100%; height:32px; font-size:11px;">立即生成</button>
+            </div>
+
+            <div id="jewelryMyModelGrid" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px;">
+              <div class="j-model-item" style="border:1px dashed #d1d5db; display:flex; align-items:center; justify-content:center; color:#9ca3af; font-size:20px;" onclick="jewelryAddMyModel()">+</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 穿戴位置 (新增) -->
+        <div class="sec-block">
+          <div class="sec-hd"><h3>穿戴位置</h3></div>
+          <div style="display:flex; background:var(--bg-main); padding:3px; border-radius:10px; margin-bottom:12px; border:1px solid var(--border-light);">
+            <div class="vdo-model-mode-btn active" id="jewelryPosAuto" onclick="setJewelryPosMode('auto', this)">自动吸附</div>
+            <div class="vdo-model-mode-btn" id="jewelryPosManual" onclick="setJewelryPosMode('manual', this)">手动微调</div>
+          </div>
+          <div id="manualPosTips" style="display:none; font-size:10px; color:var(--text-muted); background:#fffbeb; padding:8px; border-radius:8px; border:1px solid #fef3c7;">
+            💡 手动模式下，您可以在右侧画布自由移动、旋转、缩放珠宝图片。
           </div>
         </div>
 
@@ -10624,6 +10718,55 @@ function setActiveJOverlay(el) {
   }
 }
 
+function switchJewelryModelTab(el, key) {
+  el.parentElement.querySelectorAll('.vdo-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('jewelryModelLibPanel').style.display = key === 'lib' ? 'block' : 'none';
+  document.getElementById('jewelryMyModelPanel').style.display = key === 'mine' ? 'block' : 'none';
+}
+
+function filterJewelryModels(el, gender) {
+  el.parentElement.querySelectorAll('.tag-mini').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderJewelryModels(jewelrySelectedCat, gender);
+}
+
+function showJewelryAiGen() {
+  const form = document.getElementById('jewelryAiGenForm');
+  form.style.display = form.style.display === 'none' ? 'block' : 'none';
+}
+
+function genJewelryModel() {
+  showToast('AI 正在为您生成定制模特...', '🪄');
+  setTimeout(() => {
+    const grid = document.getElementById('jewelryMyModelGrid');
+    const newItem = document.createElement('div');
+    newItem.className = 'j-model-item';
+    const randomUrl = `https://picsum.photos/400/533?random=${Math.random()}`;
+    newItem.innerHTML = `
+      <div style="background:url('${randomUrl}') center/cover; width:100%; height:100%;"></div>
+      <div class="j-check-overlay"></div>
+    `;
+    newItem.onclick = () => selectJewelryModel(newItem, randomUrl);
+    grid.insertBefore(newItem, grid.firstChild);
+    showToast('模特生成成功', '✨');
+    selectJewelryModel(newItem, randomUrl);
+  }, 2000);
+}
+
+function setJewelryPosMode(mode, el) {
+  el.parentElement.querySelectorAll('.vdo-model-mode-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('manualPosTips').style.display = mode === 'manual' ? 'block' : 'none';
+  if(mode === 'auto') {
+    autoZoomCat(jewelrySelectedCat);
+  } else {
+    // 手动模式下取消缩放限制
+    const bg = document.getElementById('jModelBg');
+    if(bg) bg.style.transform = 'scale(1)';
+  }
+}
+
 function addJewelryToCanvas(url) {
   const item = document.createElement('div');
   item.className = 'j-overlay-item';
@@ -10631,13 +10774,15 @@ function addJewelryToCanvas(url) {
   item.style.height = '100px';
   item.style.left = '50px';
   item.style.top = '50px';
+  item.dataset.rotate = 0;
   item.innerHTML = `
     <img src="${url}">
     <div class="j-resizer"></div>
+    <div class="j-rotator"></div>
   `;
   
   item.onmousedown = function(e) {
-    if(e.target.className === 'j-resizer') return;
+    if(e.target.className === 'j-resizer' || e.target.className === 'j-rotator') return;
     setActiveJOverlay(item);
     let startX = e.clientX;
     let startY = e.clientY;
@@ -10678,64 +10823,33 @@ function addJewelryToCanvas(url) {
     window.addEventListener('mousemove', move);
     window.addEventListener('mouseup', stop);
   };
+
+  const rotator = item.querySelector('.j-rotator');
+  rotator.onmousedown = function(e) {
+    e.stopPropagation();
+    const rect = item.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    
+    function move(ee) {
+      const angle = Math.atan2(ee.clientY - centerY, ee.clientX - centerX) * 180 / Math.PI + 90;
+      item.dataset.rotate = angle;
+      item.style.transform = `rotate(${angle}deg)`;
+    }
+    function stop() {
+      window.removeEventListener('mousemove', move);
+      window.removeEventListener('mouseup', stop);
+    }
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', stop);
+  };
   
   document.getElementById('jOverlayContainer').appendChild(item);
   setActiveJOverlay(item);
 }
 
-function jewelryAddImg() {
-  var inp=document.createElement('input');
-  inp.type='file'; inp.accept='image/*';
-  inp.onchange=function(){
-    const file = inp.files[0];
-    if(!file) return;
-    const url = URL.createObjectURL(file);
-    addJewelryToCanvas(url);
-  };
-  inp.click();
-}
-
-function flipJewelry(dir) {
-  if(!activeJOverlay) return;
-  const img = activeJOverlay.querySelector('img');
-  let scaleX = img.style.transform.includes('scaleX(-1)') ? 1 : -1;
-  let scaleY = img.style.transform.includes('scaleY(-1)') ? 1 : -1;
-  if(dir === 'h') img.style.transform = `scaleX(${scaleX})`;
-  if(dir === 'v') img.style.transform = `scaleY(${scaleY})`;
-}
-
-function removeJewelry() {
-  if(!activeJOverlay) return;
-  activeJOverlay.remove();
-  setActiveJOverlay(null);
-}
-
-const JEWELRY_DATA = {
-  ring: [
-    'https://sc01.alicdn.com/kf/A31cb120e0749445d8185cf16abdf16d5f.png',
-    'https://sc01.alicdn.com/kf/A23de92a4dce7473ab9ca70c955cd7b34s.png',
-    'https://sc01.alicdn.com/kf/A5a137d6359ac4757963406c0da65c9cbq.png'
-  ],
-  neck: [
-    'https://sc01.alicdn.com/kf/A782fda6103d441fea26aca3880c0abe4b.png',
-    'https://sc01.alicdn.com/kf/Aa5cbb14087a64bb8a13268d6e86741bbQ.png',
-    'https://sc01.alicdn.com/kf/A13a52a95127c4fedb72e6f7c6aae6653Z.png'
-  ],
-  ear: [
-    'https://sc01.alicdn.com/kf/A696dc8b68a204c669013969e04f97513m.png'
-  ],
-  wrist: [
-    'https://sc01.alicdn.com/kf/A23de92a4dce7473ab9ca70c955cd7b34s.png',
-    'https://sc01.alicdn.com/kf/A5a137d6359ac4757963406c0da65c9cbq.png'
-  ],
-  foot: [
-    'https://sc01.alicdn.com/kf/A5d0c1208456a4885918fc16d557671fbf.png'
-  ]
-};
-
-let jewelrySelectedCat = 'ring';
-
 function switchJewelryCat(el, cat) {
+
   document.querySelectorAll('.jewelry-cat-tab').forEach(t => {
     t.classList.remove('active');
     t.style.fontWeight = '400';
@@ -10747,19 +10861,53 @@ function switchJewelryCat(el, cat) {
   renderJewelryModels(cat);
 }
 
-function renderJewelryModels(cat) {
+function renderJewelryModels(cat, genderFilter = 'all') {
   jewelrySelectedCat = cat;
   const grid = document.getElementById('jewelryModelGrid');
   if (!grid) return;
-  grid.innerHTML = (JEWELRY_DATA[cat] || []).map(url => `
-    <div class="j-model-item" onclick="selectJewelryModel(this, '${url}')">
-      <div style="background:url('${url}') center/cover; width:100%; height:100%;"></div>
+  
+  // 模拟50张模特图片的数据 (基于原始素材进行性别标记扩展)
+  let baseData = JEWELRY_DATA[cat] || [];
+  let displayData = [];
+  for(let i=0; i<50; i++) {
+    const url = baseData[i % baseData.length];
+    const gender = (i % 3 === 0) ? 'male' : 'female';
+    if(genderFilter === 'all' || genderFilter === gender) {
+      displayData.push({url, gender});
+    }
+  }
+
+  grid.innerHTML = displayData.map(item => `
+    <div class="j-model-item" onclick="selectJewelryModel(this, '${item.url}')">
+      <div style="background:url('${item.url}') center/cover; width:100%; height:100%;"></div>
       <div class="j-check-overlay"></div>
+      <div style="position:absolute; top:4px; right:4px; font-size:9px; background:rgba(0,0,0,0.3); color:#fff; padding:2px 4px; border-radius:4px;">${item.gender==='male'?'男':'女'}</div>
     </div>
   `).join('');
   
   const first = grid.querySelector('.j-model-item');
-  if(first) selectJewelryModel(first, JEWELRY_DATA[cat][0]);
+  if(first && genderFilter === 'all') selectJewelryModel(first, displayData[0].url);
+}
+
+function jewelryAddMyModel() {
+  var inp=document.createElement('input');
+  inp.type='file'; inp.accept='image/*';
+  inp.onchange=function(){
+    const file = inp.files[0];
+    if(!file) return;
+    const url = URL.createObjectURL(file);
+    const grid = document.getElementById('jewelryMyModelGrid');
+    const newItem = document.createElement('div');
+    newItem.className = 'j-model-item';
+    newItem.innerHTML = `
+      <div style="background:url('${url}') center/cover; width:100%; height:100%;"></div>
+      <div class="j-check-overlay"></div>
+    `;
+    newItem.onclick = () => selectJewelryModel(newItem, url);
+    grid.insertBefore(newItem, grid.firstChild);
+    selectJewelryModel(newItem, url);
+  };
+  inp.click();
 }
 
 function selectJewelryModel(el, url) {
