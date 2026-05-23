@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>设计精灵.pro · 极致电商AI视觉专家</title>
+<title>设计精灵.pro · SJJL.PRO</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
@@ -251,6 +251,17 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
 .ratio-ic { font-size: 18px; margin-bottom: 4px; }
 .ratio-lbl { font-size: 10px; font-weight: 600; color: var(--text); line-height: 1.2; }
 .ratio-sub { font-size: 8px; color: var(--text-muted); margin-top: 2px; transform: scale(0.9); }
+
+/* 自定义尺寸录入 */
+.custom-size-row { display: flex; align-items: center; gap: 8px; margin-top: 16px; padding-top: 16px; border-top: 1px solid #f0f0f5; }
+.custom-input-group { flex: 1; position: relative; }
+.custom-input { 
+  width: 100%; height: 32px; background: #f3f4f6; border: 1.5px solid transparent; 
+  border-radius: 6px; padding: 0 8px 0 24px; font-size: 11px; font-weight: 700; outline: none; transition: all 0.2s;
+}
+.custom-input:focus { border-color: var(--primary); background: #fff; }
+.custom-label { position: absolute; left: 8px; top: 50%; transform: translateY(-50%); font-size: 10px; color: var(--text-muted); font-weight: 800; }
+.custom-x { font-size: 10px; color: var(--text-muted); font-weight: 800; }
 
 /* 裁剪预览覆盖层 */
 .crop-overlay {
@@ -3457,7 +3468,7 @@ input:checked + .slider:before { transform: translateX(16px); }
         <span class="logo-name">设计精灵</span>
         <span style="background:linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%); color:#fff; font-size:11px; font-weight:900; padding:1px 6px; border-radius:6px; letter-spacing:0.5px; transform:translateY(-1px); box-shadow: 0 2px 4px rgba(99,102,241,0.2);">PRO</span>
       </div>
-      <span class="logo-subtext">SJJL.PRO · 极致电商AI视觉专家</span>
+      <span class="logo-subtext" style="letter-spacing:1px; font-weight:700; opacity:0.8;">SJJL.PRO</span>
     </div>
   </div>
   
@@ -3548,9 +3559,6 @@ input:checked + .slider:before { transform: translateX(16px); }
           <!-- 三级菜单项目 -->
           <div class="si active" onclick="switchScene('imgEdit',this)">
             <span class="si-ic">✂️</span>图片编辑
-          </div>
-          <div class="si" onclick="switchScene('imgTrans',this)">
-            <span class="si-ic">🌍</span>图片翻译
           </div>
         </div>
       </div>
@@ -5084,7 +5092,24 @@ input:checked + .slider:before { transform: translateX(16px); }
     <div class="right" id="rightContent">
       <!-- 批量编辑专用界面 (图片批处理) -->
       <div id="batchEditWrap" style="display:none; height:100%; width:100%; position:relative; background:#f8f9fa;">
-        <div style="display:flex; height:100%;">
+        <!-- 顶部操作栏 -->
+        <div style="position:absolute; top:0; left:0; right:0; height:50px; background:#fff; border-bottom:1px solid var(--border-light); display:flex; align-items:center; justify-content:space-between; padding:0 20px; z-index:100;">
+          <div style="font-size:14px; font-weight:700; color:var(--text);" id="batchTitle">图片批处理 1/30</div>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <button class="bsp-btn" style="height:32px; background:#fff; border:1px solid var(--border-light); color:var(--text-sub); padding:0 12px; font-size:12px;" onclick="closeBatchEdit()">退出编辑</button>
+          <div style="width:1px; height:16px; background:var(--border-light); margin:0 4px;"></div>
+          <button class="bsp-btn" style="height:32px; background:#fff; border:1px solid var(--border-light); color:var(--text); padding:0 12px; font-size:12px; display:flex; align-items:center; gap:6px; white-space:nowrap;" onclick="uploadBatchImgs()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            上传更多
+          </button>
+          <button class="bsp-btn bsp-btn-confirm" style="height:32px; padding:0 16px; font-size:12px; display:flex; align-items:center; gap:6px; white-space:nowrap;" onclick="downloadBatchImages()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            批量下载
+          </button>
+        </div>
+        </div>
+
+        <div style="display:flex; height:100%; padding-top:50px;">
           <div class="batch-toolbar">
             <div class="bt-item" onclick="toggleBtItem(this, 'adjust')">
               <div class="bt-ic">📐</div>
@@ -5109,10 +5134,6 @@ input:checked + .slider:before { transform: translateX(16px); }
             <div class="bt-item" onclick="toggleBtItem(this, 'erase')">
               <div class="bt-ic">🧼</div>
               <div class="bt-txt">消除</div>
-            </div>
-            <div class="bt-item" onclick="toggleBtItem(this, 'translate')">
-              <div class="bt-ic">🌐</div>
-              <div class="bt-txt">翻译</div>
             </div>
             <div class="bt-item" onclick="toggleBtItem(this, 'text')">
               <div class="bt-ic">T</div>
@@ -5170,63 +5191,21 @@ input:checked + .slider:before { transform: translateX(16px); }
                   <div class="ratio-lbl">16:9</div>
                 </div>
                 <div class="ratio-item" onclick="setBatchRatio('9:16', this)">
-                  <div class="ratio-ic">▯</div>
+                  <div class="ratio-ic">📱</div>
                   <div class="ratio-lbl">9:16</div>
                 </div>
-                <div class="ratio-item" onclick="setBatchRatio('wechat_cover', this)">
-                  <div class="ratio-ic">📱</div>
-                  <div class="ratio-lbl">公众号首图</div>
-                  <div class="ratio-sub">900x383</div>
+              </div>
+
+              <!-- 自定义尺寸 -->
+              <div class="custom-size-row">
+                <div class="custom-input-group">
+                  <span class="custom-label">宽</span>
+                  <input type="number" class="custom-input" placeholder="px" id="batchCustomW" oninput="applyCustomRatio()">
                 </div>
-                <div class="ratio-item" onclick="setBatchRatio('wechat_sub', this)">
-                  <div class="ratio-ic">📰</div>
-                  <div class="ratio-lbl">公众号次图</div>
-                  <div class="ratio-sub">200x200</div>
-                </div>
-                <div class="ratio-item" onclick="setBatchRatio('pyq_cover', this)">
-                  <div class="ratio-ic">📸</div>
-                  <div class="ratio-lbl">朋友圈封面</div>
-                  <div class="ratio-sub">1080x1080</div>
-                </div>
-                <div class="ratio-item" onclick="setBatchRatio('wallpaper', this)">
-                  <div class="ratio-ic">💻</div>
-                  <div class="ratio-lbl">电脑壁纸</div>
-                  <div class="ratio-sub">1920x1080</div>
-                </div>
-                <div class="ratio-item" onclick="setBatchRatio('logo', this)">
-                  <div class="ratio-ic">🎯</div>
-                  <div class="ratio-lbl">Logo设计</div>
-                  <div class="ratio-sub">500x500</div>
-                </div>
-                <div class="ratio-item" onclick="setBatchRatio('square_main', this)">
-                  <div class="ratio-ic">🖼️</div>
-                  <div class="ratio-lbl">方形主图</div>
-                  <div class="ratio-sub">800x800</div>
-                </div>
-                <div class="ratio-item" onclick="setBatchRatio('vertical_main', this)">
-                  <div class="ratio-ic">📱</div>
-                  <div class="ratio-lbl">竖版主图</div>
-                  <div class="ratio-sub">800x1200</div>
-                </div>
-                <div class="ratio-item" onclick="setBatchRatio('pdd', this)">
-                  <div class="ratio-ic">拼</div>
-                  <div class="ratio-lbl">拼多多店</div>
-                  <div class="ratio-sub">750x1000</div>
-                </div>
-                <div class="ratio-item" onclick="setBatchRatio('id1', this)">
-                  <div class="ratio-ic">👤</div>
-                  <div class="ratio-lbl">标准1寸/1R</div>
-                  <div class="ratio-sub">295x413</div>
-                </div>
-                <div class="ratio-item" onclick="setBatchRatio('id2', this)">
-                  <div class="ratio-ic">👤</div>
-                  <div class="ratio-lbl">标准2寸</div>
-                  <div class="ratio-sub">413x626</div>
-                </div>
-                <div class="ratio-item" onclick="setBatchRatio('id_card', this)">
-                  <div class="ratio-ic">🪪</div>
-                  <div class="ratio-lbl">二代身份证</div>
-                  <div class="ratio-sub">358x441</div>
+                <div class="custom-x">×</div>
+                <div class="custom-input-group">
+                  <span class="custom-label">高</span>
+                  <input type="number" class="custom-input" placeholder="px" id="batchCustomH" oninput="applyCustomRatio()">
                 </div>
               </div>
             </div>
@@ -5303,21 +5282,74 @@ input:checked + .slider:before { transform: translateX(16px); }
             </div>
           </div>
 
+          <!-- 换背景面板 -->
+          <div id="batchChangeBgPanel" class="batch-side-panel" style="display:none;">
+            <div class="bsp-hd">换背景</div>
+            <div class="bsp-body">
+              <div class="lang-group-title">推荐场景</div>
+              <div class="ratio-grid" style="grid-template-columns: 1fr 1fr;">
+                <div class="ratio-item active">
+                  <div class="ratio-ic">🏠</div>
+                  <div class="ratio-lbl">家居场景</div>
+                </div>
+                <div class="ratio-item">
+                  <div class="ratio-ic">🌳</div>
+                  <div class="ratio-lbl">户外自然</div>
+                </div>
+                <div class="ratio-item">
+                  <div class="ratio-ic">🏢</div>
+                  <div class="ratio-lbl">极简办公</div>
+                </div>
+                <div class="ratio-item">
+                  <div class="ratio-ic">🎨</div>
+                  <div class="ratio-lbl">艺术背板</div>
+                </div>
+              </div>
+              <div style="margin-top:16px;">
+                <button class="btn-gen-sub" style="width:100%; height:32px;">上传自定义背景</button>
+              </div>
+            </div>
+            <div class="bsp-ft">
+              <button class="bsp-btn bsp-btn-confirm">开始生成</button>
+            </div>
+          </div>
+
           <!-- 变清晰面板 -->
           <div id="batchHdPanel" class="batch-side-panel" style="display:none;">
             <div class="bsp-hd">变清晰</div>
             <div class="bsp-body">
-              <div class="lang-group-title">增强倍数</div>
-              <div class="ratio-grid">
+              <div class="lang-group-title">通用模式</div>
+              <div class="ratio-grid" style="grid-template-columns: repeat(3, 1fr);">
                 <div class="ratio-item active">
                   <div class="ratio-ic">🔍</div>
-                  <div class="ratio-lbl">2倍</div>
-                  <div class="ratio-sub">高清修复</div>
+                  <div class="ratio-lbl">HD</div>
+                  <div class="ratio-sub">基础高清</div>
                 </div>
                 <div class="ratio-item">
                   <div class="ratio-ic">🔬</div>
-                  <div class="ratio-lbl">4倍</div>
+                  <div class="ratio-lbl">Ultra</div>
                   <div class="ratio-sub">超清重构</div>
+                </div>
+                <div class="ratio-item">
+                  <div class="ratio-ic">🤖</div>
+                  <div class="ratio-lbl">AI Ultra</div>
+                  <div class="ratio-sub">智能补全</div>
+                </div>
+              </div>
+
+              <div class="lang-group-title" style="margin-top:20px;">场景模式</div>
+              <div class="ratio-grid" style="grid-template-columns: repeat(3, 1fr);">
+                <div class="ratio-item">
+                  <div class="ratio-ic">💎</div>
+                  <div class="ratio-lbl">商品</div>
+                </div>
+                <div class="ratio-item">
+                  <div class="ratio-ic">👤</div>
+                  <div class="ratio-lbl">人像</div>
+                </div>
+                <div class="ratio-item">
+                  <div class="ratio-ic">📄</div>
+                  <div class="ratio-lbl">文字</div>
                 </div>
               </div>
             </div>
@@ -5353,58 +5385,25 @@ input:checked + .slider:before { transform: translateX(16px); }
             </div>
           </div>
 
-          <!-- 二级配置面板 (翻译) -->
-          <div id="batchTranslatePanel" class="batch-side-panel" style="display:none;">
-            <div class="bsp-hd">图片翻译</div>
+          <!-- 文字面板 -->
+          <div id="batchTextPanel" class="batch-side-panel" style="display:none;">
+            <div class="bsp-hd">添加文字</div>
             <div class="bsp-body">
-              <div class="lang-group-title">请选择原文语言:</div>
-              <div class="lang-list">
-                <div class="lang-item active" onclick="setLang(this,'src')">中文 (简体)</div>
-                <div class="lang-item" onclick="setLang(this,'src')">中文 (繁体)</div>
-                <div class="lang-item" onclick="setLang(this,'src')">英语</div>
-                <div class="lang-item" onclick="setLang(this,'src')">日语</div>
-                <div class="lang-item" onclick="setLang(this,'src')">韩语</div>
-              </div>
-
-              <div class="lang-group-title">请选择译文语言:</div>
-              <div class="lang-list-v">
-                <div class="lang-item-v" onclick="setLang(this,'target')">英语</div>
-                <div class="lang-item-v" onclick="setLang(this,'target')">中文 (简体)</div>
-                <div class="lang-item-v" onclick="setLang(this,'target')">中文 (繁体)</div>
-                <div class="lang-item-v" onclick="setLang(this,'target')">西班牙语</div>
-                <div class="lang-item-v" onclick="setLang(this,'target')">葡萄牙语</div>
-                <div class="lang-item-v" onclick="setLang(this,'target')">俄语</div>
-                <div class="lang-item-v active" onclick="setLang(this,'target')">日语</div>
-                <div class="lang-item-v" onclick="setLang(this,'target')">韩语</div>
-                <div class="lang-item-v" onclick="setLang(this,'target')">德语</div>
-                <div class="lang-item-v" onclick="setLang(this,'target')">法语</div>
-                <div class="lang-item-v" onclick="setLang(this,'target')">意大利语</div>
-                <div class="lang-item-v" onclick="setLang(this,'target')">阿拉伯语</div>
-                <div class="lang-item-v" onclick="setLang(this,'target')">马来西亚语</div>
-                <div class="lang-item-v" onclick="setLang(this,'target')">印度尼西亚语</div>
-                <div class="lang-item-v" onclick="setLang(this,'target')">土耳其语</div>
-                <div class="lang-item-v" onclick="setLang(this,'target')">泰语</div>
-                <div class="lang-item-v" onclick="setLang(this,'target')">越南语</div>
-                <div class="lang-item-v" onclick="setLang(this,'target')">匈牙利语</div>
-                <div class="lang-item-v" onclick="setLang(this,'target')">荷兰语</div>
-                <div class="lang-item-v" onclick="setLang(this,'target')">波兰语</div>
-                <div class="lang-item-v" onclick="setLang(this,'target')">瑞典语</div>
-                <div class="lang-item-v" onclick="setLang(this,'target')">罗马尼亚语</div>
-              </div>
-
-              <div class="toggle-row">
-                <div class="toggle-info">
-                  <div class="toggle-lbl">商品主体保护 <span style="font-size:10px; opacity:0.5;">ⓘ</span></div>
-                  <div class="toggle-sub">开启后，不再对商品主体上的文字进行翻译。</div>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" checked>
-                  <span class="slider"></span>
-                </label>
+              <div class="lang-group-title">文本内容</div>
+              <textarea class="wm-input" style="height:80px; width:100%; border:1px solid var(--border-light); border-radius:6px; padding:8px; font-size:12px; resize:none;" placeholder="输入文字..."></textarea>
+              
+              <div class="lang-group-title" style="margin-top:16px;">样式</div>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <select class="custom-input" style="width:100%; font-size:11px;">
+                  <option>阿里巴巴普惠体</option>
+                  <option>思源黑体</option>
+                  <option>HarmonyOS Sans</option>
+                </select>
+                <input type="color" class="custom-input" style="width:100%; height:32px; padding:2px;" value="#6366F1">
               </div>
             </div>
             <div class="bsp-ft">
-              <button class="bsp-btn bsp-btn-confirm" style="height:40px;" onclick="startBatchTranslate()">开始翻译</button>
+              <button class="bsp-btn bsp-btn-confirm">应用文字</button>
             </div>
           </div>
 
@@ -5464,17 +5463,59 @@ input:checked + .slider:before { transform: translateX(16px); }
               <button class="bsp-btn bsp-btn-confirm" onclick="applyWatermark()">确认添加</button>
             </div>
           </div>
+
+          <!-- 白底图面板 -->
+          <div id="batchWhiteBgPanel" class="batch-side-panel" style="display:none;">
+            <div class="bsp-hd">白底图</div>
+            <div class="bsp-body">
+              <div class="lang-group-title">画布比例</div>
+              <div class="ratio-grid">
+                <div class="ratio-item active">
+                  <div class="ratio-ic">⬜</div>
+                  <div class="ratio-lbl">1:1</div>
+                </div>
+                <div class="ratio-item">
+                  <div class="ratio-ic">▯</div>
+                  <div class="ratio-lbl">3:4</div>
+                </div>
+                <div class="ratio-item">
+                  <div class="ratio-ic">▯</div>
+                  <div class="ratio-lbl">4:5</div>
+                </div>
+                <div class="ratio-item">
+                  <div class="ratio-ic">📱</div>
+                  <div class="ratio-lbl">9:16</div>
+                </div>
+                <div class="ratio-item">
+                  <div class="ratio-ic">▯</div>
+                  <div class="ratio-lbl">2:3</div>
+                </div>
+                <div class="ratio-item">
+                  <div class="ratio-ic">▭</div>
+                  <div class="ratio-lbl">16:9</div>
+                </div>
+                <div class="ratio-item">
+                  <div class="ratio-ic">▭</div>
+                  <div class="ratio-lbl">4:3</div>
+                </div>
+              </div>
+
+              <div class="toggle-row" style="margin-top:20px;">
+                <div class="toggle-info">
+                  <div class="toggle-lbl">安全边距</div>
+                  <div class="toggle-sub">预留四周留白空间</div>
+                </div>
+                <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+              </div>
+            </div>
+            <div class="bsp-ft">
+              <button class="bsp-btn bsp-btn-confirm">生成白底图</button>
+            </div>
+          </div>
           
           <!-- 主体图片展示区 -->
           <div id="batchMainContainer" class="batch-container">
-            <div class="batch-hd">
-              <div class="batch-title">图片批处理 <span id="batchCount" style="color:var(--primary);">0 / 30</span></div>
-              <div style="display:flex; gap:12px;">
-                <button class="btn-gen-sub" style="width:100px; height:32px; font-size:11px;" onclick="uploadBatchImgs()">上传更多</button>
-                <button class="btn-gen-sub" style="width:100px; height:32px; font-size:11px; background:var(--primary); color:#fff; border:none;">保存全部</button>
-              </div>
-            </div>
-            <div class="batch-grid" id="batchGrid">
+            <div class="batch-grid" id="batchGrid" style="padding-top:20px;">
               <div class="batch-card batch-add-card" onclick="uploadBatchImgs()">
                 <div class="batch-add-ic">↑</div>
                 <div class="batch-add-txt">上传更多</div>
@@ -9702,7 +9743,7 @@ function toggleBtItem(el, mode) {
   if(txt) { txt.style.color = 'var(--primary)'; }
 
   // 处理所有批处理面板
-  const panels = ['Adjust', 'Color', 'RemoveBg', 'Hd', 'Erase', 'Translate', 'Watermark'];
+  const panels = ['Adjust', 'Color', 'RemoveBg', 'ChangeBg', 'Hd', 'Erase', 'Text', 'Watermark', 'WhiteBg'];
   panels.forEach(p => {
     const panel = document.getElementById('batch' + p + 'Panel');
     if(panel) panel.style.display = 'none';
@@ -9711,6 +9752,16 @@ function toggleBtItem(el, mode) {
   const targetId = 'batch' + mode.charAt(0).toUpperCase() + mode.slice(1) + 'Panel';
   const targetPanel = document.getElementById(targetId);
   if(targetPanel) targetPanel.style.display = 'flex';
+
+  // 比例面板自动回显尺寸
+  if (mode === 'adjust' && _batchFirstImgDims.w) {
+    const wInput = document.getElementById('batchCustomW');
+    const hInput = document.getElementById('batchCustomH');
+    if (wInput && hInput && !wInput.value) {
+      wInput.value = _batchFirstImgDims.w;
+      hInput.value = _batchFirstImgDims.h;
+    }
+  }
 
   const batchContainer = document.getElementById('batchMainContainer');
   if (batchContainer) {
@@ -9818,35 +9869,93 @@ function startBatchTranslate() {
   }, 2000);
 }
 
+/* ── 批量编辑逻辑 ── */
+var _batchFirstImgDims = { w: 0, h: 0 };
+
 function setBatchRatio(ratio, el) {
   document.querySelectorAll('.ratio-item').forEach(r => r.classList.remove('active'));
   el.classList.add('active');
   
+  // 回显原始尺寸 (如果是原始比例)
+  if (ratio === 'raw' && _batchFirstImgDims.w) {
+    document.getElementById('batchCustomW').value = _batchFirstImgDims.w;
+    document.getElementById('batchCustomH').value = _batchFirstImgDims.h;
+  } else {
+    document.getElementById('batchCustomW').value = '';
+    document.getElementById('batchCustomH').value = '';
+  }
+  
   // 更新所有裁剪框的比例 (模拟)
   const boxes = document.querySelectorAll('.crop-box');
   boxes.forEach(box => {
-    if (ratio === '1:1' || ratio === 'wechat_sub' || ratio === 'pyq_cover' || ratio === 'logo' || ratio === 'square_main') {
+    if (ratio === '1:1') {
       box.style.width = '80%'; box.style.height = '80%';
-    } else if (ratio === '4:3' || ratio === 'wechat_cover') {
+    } else if (ratio === '4:3') {
       box.style.width = '90%'; box.style.height = '67%';
-    } else if (ratio === '3:4' || ratio === '竖版主图') {
+    } else if (ratio === '3:4') {
       box.style.width = '60%'; box.style.height = '80%';
-    } else if (ratio === '16:9' || ratio === 'wallpaper') {
+    } else if (ratio === '3:2') {
+      box.style.width = '90%'; box.style.height = '60%';
+    } else if (ratio === '2:3') {
+      box.style.width = '53%'; box.style.height = '80%';
+    } else if (ratio === '16:9') {
       box.style.width = '95%'; box.style.height = '53%';
     } else if (ratio === '9:16') {
       box.style.width = '50%'; box.style.height = '90%';
+    } else if (ratio === 'raw') {
+      box.style.width = '90%'; box.style.height = '90%'; // 原始比例占满
     } else {
       box.style.width = '80%'; box.style.height = '80%';
     }
   });
 }
 
+function applyCustomRatio() {
+  const w = document.getElementById('batchCustomW').value;
+  const h = document.getElementById('batchCustomH').value;
+  
+  if (w && h) {
+    // 取消选中预设比例
+    document.querySelectorAll('.ratio-item').forEach(r => r.classList.remove('active'));
+    
+    // 计算比例并更新预览 (模拟)
+    const ratio = w / h;
+    const boxes = document.querySelectorAll('.crop-box');
+    boxes.forEach(box => {
+      if (ratio > 1) {
+        // 横图
+        box.style.width = '90%';
+        box.style.height = (90 / ratio) + '%';
+      } else {
+        // 竖图
+        box.style.height = '90%';
+        box.style.width = (90 * ratio) + '%';
+      }
+    });
+  }
+}
+
 function closeBatchSidePanel() {
-  document.getElementById('batchAdjustPanel').style.display = 'none';
-  document.getElementById('batchMainContainer').classList.remove('mode-adjust');
-  // 恢复到白底图状态 (模拟)
-  const whiteBgItem = document.querySelector('.bt-item:last-child');
-  if (whiteBgItem) toggleBtItem(whiteBgItem, 'whiteBg');
+  const panels = ['Adjust', 'Color', 'RemoveBg', 'Hd', 'Erase', 'Translate', 'Watermark', 'WhiteBg'];
+  panels.forEach(p => {
+    const panel = document.getElementById('batch' + p + 'Panel');
+    if(panel) panel.style.display = 'none';
+  });
+  document.querySelectorAll('.bt-item').forEach(item => item.classList.remove('active'));
+}
+
+function closeBatchEdit() {
+  document.getElementById('batchEditWrap').style.display = 'none';
+  document.getElementById('rightContent').style.background = '#fff';
+  // 恢复左侧导航选中状态 (假设回到图片处理)
+  showToast('已退出批量编辑模式');
+}
+
+function downloadBatchImages() {
+  showToast('正在准备下载 30 张处理后的图片...', '📦');
+  setTimeout(() => {
+    showToast('下载已开始！', '✅');
+  }, 1500);
 }
 
 function applyBatchAdjust() {
@@ -9864,9 +9973,24 @@ function uploadBatchImgs() {
     const grid = document.getElementById('batchGrid');
     const countEl = document.getElementById('batchCount');
     
-    files.forEach(file => {
+    files.forEach((file, index) => {
       const reader = new FileReader();
       reader.onload = event => {
+        const img = new Image();
+        img.onload = () => {
+          if (index === 0) {
+            _batchFirstImgDims = { w: img.naturalWidth, h: img.naturalHeight };
+            // 如果当前在比例面板，直接回显
+            const wInput = document.getElementById('batchCustomW');
+            const hInput = document.getElementById('batchCustomH');
+            if (wInput && hInput && !wInput.value) {
+               wInput.value = _batchFirstImgDims.w;
+               hInput.value = _batchFirstImgDims.h;
+            }
+          }
+        };
+        img.src = event.target.result;
+        
         const card = document.createElement('div');
         card.className = 'batch-card';
         card.innerHTML = `
@@ -9880,7 +10004,9 @@ function uploadBatchImgs() {
         grid.insertBefore(card, grid.querySelector('.batch-add-card'));
         
         const total = document.querySelectorAll('.batch-card:not(.batch-add-card)').length;
-        if(countEl) countEl.textContent = `${total} / 30`;
+        if(countEl) countEl.textContent = `图片批处理 ${total} / 30`;
+        const topTitle = document.getElementById('batchTitle');
+        if(topTitle) topTitle.textContent = `图片批处理 ${total} / 30`;
         
         document.getElementById('batchEditWrap').style.display = 'block';
         document.getElementById('standardRightArea').style.display = 'none';
