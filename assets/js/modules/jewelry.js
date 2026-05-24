@@ -92,51 +92,7 @@
       this.updateBgPreview(url);
     },
 
-
-    renderModels(cat, genderFilter = 'all') {
-      this.state.selectedCat = cat;
-      const grid = document.getElementById('jewelryModelGrid');
-      if (!grid) return;
-      
-      let baseData = JEWELRY_DATA[cat] || [];
-      let displayData = [];
-      for(let i=0; i<18; i++) {
-        const url = baseData[i % baseData.length];
-        const gender = (i % 3 === 0) ? 'male' : 'female';
-        if(genderFilter === 'all' || genderFilter === gender) {
-          displayData.push({url, gender});
-        }
-      }
-
-      grid.innerHTML = displayData.map(item => `
-        <div class="j-model-item" onclick="window.ModuleManager.dispatch('selectJewelryModel', this, '${item.url}')" style="border-radius:12px; overflow:hidden; position:relative;">
-          <div style="background:url('${item.url}') center/cover no-repeat; background-color:#f8fafc; width:100%; height:100%;"></div>
-          <div class="j-check-overlay"></div>
-          <div style="position:absolute; bottom:8px; left:8px; font-size:10px; background:rgba(0,0,0,0.4); backdrop-filter:blur(4px); color:#fff; padding:4px 8px; border-radius:6px; display:flex; align-items:center; gap:4px;">
-            <span style="font-size:12px;">ⓘ</span> 无需擦除
-          </div>
-        </div>
-      `).join('');
-      
-      const first = grid.querySelector('.j-model-item');
-      if(first && genderFilter === 'all') this.selectModel(first, displayData[0].url);
-    },
-
-    selectJewelryModel(el, url) {
-      const grids = [document.getElementById('jewelryModelGrid'), document.getElementById('jewelryMyModelGrid')];
-      grids.forEach(g => {
-        if(g) g.querySelectorAll('.j-check-overlay').forEach(o => o.style.display = 'none');
-      });
-      
-      const check = el.querySelector('.j-check-overlay');
-      if (check) check.style.display = 'flex';
-      
-      window._selectedModelUrl = url;
-      this.updateBgPreview(url);
-    },
-
     updateBgPreview(url) {
-      const bg = document.getElementById('jModelBg'); // 主预览
       const manualBg = document.getElementById('jManualBg'); // 弹窗预览
       const sideBg = document.getElementById('jewelrySidebarPreviewBg'); // 侧边预览
       
@@ -147,7 +103,6 @@
         }
       };
 
-      updateEl(bg);
       updateEl(manualBg);
       updateEl(sideBg);
     },
@@ -191,11 +146,13 @@
 
     closeManual(e) {
       if(e && e.target !== document.getElementById('jewelryManualMask')) return;
-      document.getElementById('jewelryManualMask').classList.remove('show');
+      const mask = document.getElementById('jewelryManualMask');
+      if (mask) mask.classList.remove('show');
     },
 
     confirmManual() {
-      document.getElementById('jewelryManualMask').classList.remove('show');
+      const mask = document.getElementById('jewelryManualMask');
+      if (mask) mask.classList.remove('show');
       if(window.GenieUI) window.GenieUI.showToast('已保存手动调整位置', '📍');
     },
 
@@ -321,7 +278,7 @@
       this.updateManualOverlay();
     },
 
-    jewelryAddMyModel() {
+    addMyModel() {
       var inp=document.createElement('input');
       inp.type='file'; inp.accept='image/*';
       inp.onchange = () => {
@@ -342,9 +299,9 @@
       newItem.className = 'j-model-item';
       newItem.style = 'border-radius:12px; overflow:hidden; background:#f8fafc; position:relative;';
       newItem.innerHTML = `<div style="background:url('${url}') center/contain no-repeat; width:100%; height:100%;"></div><div class="j-check-overlay"></div>`;
-      newItem.onclick = () => this.selectModel(newItem, url);
+      newItem.onclick = () => this.selectJewelryModel(newItem, url);
       grid.insertBefore(newItem, grid.firstChild);
-      this.selectModel(newItem, url);
+      this.selectJewelryModel(newItem, url);
     },
 
     switchJewelryModelTab(el, key) {
@@ -363,24 +320,24 @@
       el.classList.add('active');
       el.style.fontWeight = '700';
       el.style.color = 'var(--primary)';
-      this.renderModels(cat);
+      this.renderJewelryModels(cat);
     },
 
     filterJewelryModels(el, gender) {
       el.parentElement.querySelectorAll('.tag-mini').forEach(t => t.classList.remove('active'));
       el.classList.add('active');
-      this.renderModels(this.state.selectedCat, gender);
+      this.renderJewelryModels(this.state.selectedCat, gender);
     },
 
     setJModel(m, el) {
       this.state._selectedModel = m;
-      el.parentElement.querySelectorAll('.tag-mini').forEach(t => t.classList.remove('active'));
+      el.parentElement.querySelectorAll('.segment-item').forEach(t => t.classList.remove('active'));
       el.classList.add('active');
     },
 
     setJRes(res, el) {
       this.state._selectedRes = res;
-      el.parentElement.querySelectorAll('.vdo-model-mode-btn').forEach(b => b.classList.remove('active'));
+      el.parentElement.querySelectorAll('.segment-item').forEach(b => b.classList.remove('active'));
       el.classList.add('active');
     },
 
@@ -458,4 +415,3 @@
   window.JewelryModule = JewelryModule;
 
 })();
-

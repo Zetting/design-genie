@@ -4004,13 +4004,27 @@ input:checked + .slider:before { transform: translateX(16px); }
 
         <!-- 穿戴位置 (新增) -->
         <div class="sec-block">
-          <div class="sec-hd"><h3>穿戴位置</h3></div>
-          <div style="display:flex; background:var(--bg-main); padding:3px; border-radius:10px; margin-bottom:12px; border:1px solid var(--border-light);">
-            <div class="vdo-model-mode-btn active" id="jewelryPosAuto" onclick="window.ModuleManager.dispatch('setPosMode', 'auto', this)">自动吸附</div>
-            <div class="vdo-model-mode-btn" id="jewelryPosManual" onclick="window.ModuleManager.dispatch('setPosMode', 'manual', this)">手动微调</div>
+          <div class="sec-hd">
+            <h3>穿戴位置</h3>
+            <div style="display:flex; background:var(--bg-main); padding:3px; border-radius:10px; border:1px solid var(--border-light);">
+              <div class="vdo-model-mode-btn active" id="jewelryPosAuto" onclick="window.ModuleManager.dispatch('setPosMode', 'auto', this)">自动吸附</div>
+              <div class="vdo-model-mode-btn" id="jewelryPosManual" onclick="window.ModuleManager.dispatch('setPosMode', 'manual', this)">手动微调</div>
+            </div>
           </div>
-          <div id="manualPosTips" style="display:none; font-size:10px; color:var(--text-muted); background:#fffbeb; padding:8px; border-radius:8px; border:1px solid #fef3c7;">
-            💡 手动模式下，您可以在右侧画布自由移动、旋转、缩放珠宝图片。
+          <div id="manualPosTips" style="display:none; font-size:11px; color:var(--text-muted); background:#f8fafc; padding:12px; border-radius:12px; border:1px solid #e2e8f0; line-height:1.6;">
+            💡 手动模式下，点击下方预览区进入微调，可自由移动、旋转、缩放。
+          </div>
+
+          <!-- 手动微调预览区 -->
+          <div id="jewelryManualPreviewArea" style="display:none; margin-top:16px;">
+            <div style="font-size:11px; color:var(--text-muted); margin-bottom:8px;">微调效果预览</div>
+            <div id="jewelrySidebarPreview" onclick="window.ModuleManager.dispatch('openManual')" style="width:100%; aspect-ratio:1/1; background:#f8fafc; border-radius:16px; border:1px solid #e2e8f0; position:relative; overflow:hidden; cursor:zoom-in;">
+              <div id="jewelrySidebarPreviewBg" style="width:100%; height:100%; background:center/cover no-repeat; transition:transform 0.3s ease;"></div>
+              <div id="jewelrySidebarPreviewOverlay" style="position:absolute; inset:0; pointer-events:none;"></div>
+              <div style="position:absolute; bottom:12px; right:12px; background:rgba(0,0,0,0.5); backdrop-filter:blur(6px); color:#fff; font-size:10px; padding:4px 10px; border-radius:20px; display:flex; align-items:center; gap:4px;">
+                <span>🔍 点击进入微调</span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -4019,30 +4033,20 @@ input:checked + .slider:before { transform: translateX(16px); }
           <div class="sec-hd"><h3>生成设置</h3></div>
           <div style="display:flex; flex-direction:column; gap:16px;">
             <div>
-              <div style="font-size:11px; color:var(--text-muted); margin-bottom:6px;">选择模型</div>
-              <select id="jGenModel" class="opt-select" style="width:100%; height:34px; font-size:11px;">
-                <option value="gpt-image2">GPT-Image2 (专业级融合)</option>
-                <option value="nanobanano-pro">nanobanano pro (写实级增强)</option>
-              </select>
-            </div>
-            <div>
-              <div style="font-size:11px; color:var(--text-muted); margin-bottom:6px;">生成分辨率</div>
-              <div style="display:flex; gap:6px;">
-                <div class="tag-mini active" onclick="setJRes('1K', this)">1K</div>
-                <div class="tag-mini" onclick="setJRes('2K', this)">2K</div>
-                <div class="tag-mini" onclick="setJRes('4K', this)">4K</div>
+              <div style="font-size:11px; color:var(--text-muted); margin-bottom:8px;">选择模型</div>
+              <div class="segment-control" style="background:var(--bg-main); padding:3px; border-radius:10px; display:flex; border:1px solid var(--border-light);">
+                <div class="segment-item active" onclick="window.ModuleManager.dispatch('setJModel', 'gpt-image2', this)" style="flex:1; text-align:center; padding:6px; font-size:11px; border-radius:8px; cursor:pointer;">GPT-J Pro</div>
+                <div class="segment-item" onclick="window.ModuleManager.dispatch('setJModel', 'nanobanano-pro', this)" style="flex:1; text-align:center; padding:6px; font-size:11px; border-radius:8px; cursor:pointer;">Nano Pro</div>
+                <div class="segment-item" onclick="window.ModuleManager.dispatch('setJModel', 'flux-v1', this)" style="flex:1; text-align:center; padding:6px; font-size:11px; border-radius:8px; cursor:pointer;">Flux Real</div>
               </div>
             </div>
             <div>
-              <div style="font-size:11px; color:var(--text-muted); margin-bottom:6px;">融合强度</div>
-              <input type="range" class="range-input" style="width:100%" value="80">
-            </div>
-            <div class="toggle-row" style="margin-top:0; padding-top:0; border:none;">
-              <div class="toggle-lbl">保持珠宝光泽</div>
-              <label class="switch">
-                <input type="checkbox" checked>
-                <span class="slider"></span>
-              </label>
+              <div style="font-size:11px; color:var(--text-muted); margin-bottom:8px;">生成分辨率</div>
+              <div class="segment-control" style="background:var(--bg-main); padding:3px; border-radius:10px; display:flex; border:1px solid var(--border-light);">
+                <div class="segment-item active" onclick="window.ModuleManager.dispatch('setJRes', '1K', this)" style="flex:1; text-align:center; padding:6px; font-size:11px; border-radius:8px; cursor:pointer;">1K (HD)</div>
+                <div class="segment-item" onclick="window.ModuleManager.dispatch('setJRes', '2K', this)" style="flex:1; text-align:center; padding:6px; font-size:11px; border-radius:8px; cursor:pointer;">2K (QHD)</div>
+                <div class="segment-item" onclick="window.ModuleManager.dispatch('setJRes', '4K', this)" style="flex:1; text-align:center; padding:6px; font-size:11px; border-radius:8px; cursor:pointer;">4K (UHD)</div>
+              </div>
             </div>
           </div>
         </div>
@@ -11816,6 +11820,121 @@ function handleAdvKeyDown(e) {
     </div>
   </div>
 </div>
+
+<!-- ═══ 珠宝手动微调弹窗 ═══ -->
+<div class="jewelry-manual-mask" id="jewelryManualMask" onclick="window.ModuleManager.dispatch('closeManual', event)">
+  <div class="jewelry-manual-modal">
+    <div class="jewelry-manual-hd">
+      <div class="manual-hd-left">
+        <span class="manual-title">手动微调位置</span>
+        <div class="manual-tag">Draft Mode</div>
+      </div>
+      <button class="manual-close-btn" onclick="window.ModuleManager.dispatch('closeManual')">×</button>
+    </div>
+    
+    <div class="jewelry-manual-body">
+      <div class="jewelry-manual-canvas-area">
+        <div class="canvas-zoom-ctrl">
+          <button onclick="window.ModuleManager.dispatch('adjustCanvasZoom', -0.1)">-</button>
+          <span id="jCanvasZoomVal">100%</span>
+          <button onclick="window.ModuleManager.dispatch('adjustCanvasZoom', 0.1)">+</button>
+        </div>
+        
+        <div id="jManualCanvasWrap" class="jewelry-canvas-wrap">
+          <div id="jManualCanvas" class="jewelry-canvas">
+            <div id="jManualBg" class="jewelry-bg"></div>
+            <div id="jManualOverlay" class="jewelry-overlay"></div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="jewelry-manual-sidebar">
+        <div class="manual-side-sec">
+          <div class="manual-side-hd">
+            <span class="manual-side-title">当前素材</span>
+          </div>
+          <div id="jManualThumb" class="manual-thumb">
+            <img src="" alt="">
+          </div>
+        </div>
+        
+        <div class="manual-side-sec">
+          <div class="manual-side-hd">
+            <span class="manual-side-title">精密调节</span>
+          </div>
+          <div class="manual-ctrl-row">
+            <div class="ctrl-label">缩放比例</div>
+            <input type="range" min="10" max="200" value="50" oninput="window.ModuleManager.dispatch('syncManualState', 'scale', this.value)">
+            <span id="jManualScaleVal" class="ctrl-val">50%</span>
+          </div>
+          <div class="manual-ctrl-row">
+            <div class="ctrl-label">旋转角度</div>
+            <input type="range" min="-180" max="180" value="0" oninput="window.ModuleManager.dispatch('syncManualState', 'rotate', this.value)">
+            <span id="jManualRotateVal" class="ctrl-val">0°</span>
+          </div>
+        </div>
+        
+        <div class="manual-side-tips">
+          💡 您可以在画布上直接拖动珠宝图片来改变它的佩戴位置。
+        </div>
+        
+        <button class="btn-primary" onclick="window.ModuleManager.dispatch('confirmManual')" style="width:100%; margin-top:auto;">保存并返回</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+/* 珠宝手动微调弹窗样式 */
+.jewelry-manual-mask {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);
+  z-index: 9999; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s;
+}
+.jewelry-manual-mask.show { display: flex; opacity: 1; }
+.jewelry-manual-modal {
+  width: 900px; height: 600px; background: #fff; border-radius: 24px; display: flex; flex-direction: column; overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+}
+.jewelry-manual-hd {
+  padding: 16px 24px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between;
+}
+.manual-hd-left { display: flex; align-items: center; gap: 12px; }
+.manual-title { font-weight: 700; font-size: 16px; color: #1e293b; }
+.manual-tag { background: #f1f5f9; color: #64748b; font-size: 10px; padding: 2px 8px; border-radius: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.manual-close-btn { font-size: 24px; color: #94a3b8; cursor: pointer; border: none; background: none; }
+.jewelry-manual-body { flex: 1; display: flex; overflow: hidden; }
+.jewelry-manual-canvas-area { flex: 1; background: #f8fafc; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.canvas-zoom-ctrl {
+  position: absolute; top: 16px; right: 16px; background: #fff; border-radius: 12px; border: 1px solid #e2e8f0;
+  display: flex; align-items: center; padding: 4px; gap: 8px; z-index: 10; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+}
+.canvas-zoom-ctrl button { width: 28px; height: 28px; border-radius: 8px; border: none; background: #f1f5f9; cursor: pointer; color: #475569; font-weight: 700; }
+.canvas-zoom-ctrl span { font-size: 12px; color: #475569; font-weight: 600; min-width: 40px; text-align: center; }
+.jewelry-canvas-wrap { cursor: grab; }
+.jewelry-canvas-wrap:active { cursor: grabbing; }
+.jewelry-canvas { position: relative; width: 400px; height: 400px; background: #fff; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden; }
+.jewelry-bg { width: 100%; height: 100%; background-size: cover; background-position: center; }
+.jewelry-overlay { position: absolute; inset: 0; }
+.jewelry-manual-sidebar { width: 260px; border-left: 1px solid #f1f5f9; padding: 24px; display: flex; flex-direction: column; gap: 24px; }
+.manual-side-hd { margin-bottom: 12px; }
+.manual-side-title { font-weight: 700; font-size: 13px; color: #1e293b; }
+.manual-thumb { width: 80px; height: 80px; background: #f1f5f9; border-radius: 12px; display: flex; align-items: center; justify-content: center; padding: 8px; }
+.manual-thumb img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.manual-ctrl-row { margin-bottom: 16px; }
+.ctrl-label { font-size: 12px; color: #64748b; margin-bottom: 8px; }
+.manual-ctrl-row input[type="range"] { width: 100%; height: 6px; border-radius: 3px; background: #e2e8f0; appearance: none; outline: none; }
+.manual-ctrl-row input[type="range"]::-webkit-slider-thumb { appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--primary); cursor: pointer; border: 2px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+.ctrl-val { font-size: 11px; color: #94a3b8; margin-top: 4px; display: block; text-align: right; }
+.manual-side-tips { font-size: 11px; color: #94a3b8; line-height: 1.6; padding: 12px; background: #f8fafc; border-radius: 12px; }
+
+/* Segment Control 样式 */
+.segment-control .segment-item.active {
+  background: #fff; color: var(--primary); font-weight: 700; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.segment-control .segment-item:not(.active) {
+  color: #64748b;
+}
+</style>
 
 </body>
 </html>
