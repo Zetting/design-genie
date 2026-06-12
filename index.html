@@ -261,6 +261,96 @@
     font-weight: 900;
   }
 
+  /* ══ 分步生成弹窗 (Step Modal) ══ */
+  .step-mask {
+    position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(8px); z-index: 1000; display: none;
+    align-items: center; justify-content: center; animation: fadeIn 0.2s;
+  }
+  .step-mask.show { display: flex; }
+  .step-modal {
+    background: #fff; width: 860px; height: 620px; border-radius: 24px;
+    display: flex; flex-direction: column; overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  }
+  .step-hd {
+    padding: 20px 32px; border-bottom: 1px solid var(--border-light);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .step-tabs { display: flex; gap: 32px; }
+  .step-tab {
+    font-size: 16px; font-weight: 700; color: var(--text-muted);
+    cursor: pointer; position: relative; padding-bottom: 8px;
+    transition: all 0.2s;
+  }
+  .step-tab.active { color: var(--primary); }
+  .step-tab.active::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+    height: 3px; background: var(--primary); border-radius: 2px;
+  }
+  .step-bd { flex: 1; overflow: hidden; display: flex; }
+  .step-content { display: none; width: 100%; height: 100%; padding: 24px 32px; overflow-y: auto; }
+  .step-content.active { display: flex; gap: 24px; }
+
+  /* 营销方案样式 */
+  .plan-list { width: 180px; display: flex; flex-direction: column; gap: 12px; }
+  .plan-item {
+    padding: 16px; border-radius: 12px; border: 1.5px solid var(--border-light);
+    cursor: pointer; transition: all 0.2s;
+  }
+  .plan-item:hover { border-color: var(--primary-light); background: var(--bg-main); }
+  .plan-item.active { border-color: var(--primary); background: rgba(99, 102, 241, 0.05); }
+  .plan-item-name { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+  .plan-item-tag { font-size: 10px; color: var(--primary); background: rgba(99, 102, 241, 0.1); padding: 2px 6px; border-radius: 4px; }
+  
+  .plan-detail { flex: 1; display: flex; flex-direction: column; gap: 16px; }
+  .block-card {
+    background: #f8fafc; border-radius: 12px; padding: 16px; border: 1px solid var(--border-light);
+  }
+  .block-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .block-title { font-weight: 700; font-size: 13px; color: var(--text-main); }
+  .block-ai-btn {
+    font-size: 11px; color: var(--primary); cursor: pointer; display: flex; align-items: center; gap: 4px;
+    padding: 4px 8px; border-radius: 6px; background: #fff; border: 1px solid rgba(99, 102, 241, 0.2);
+  }
+  .block-ai-btn:hover { background: var(--primary); color: #fff; }
+  .block-edit {
+    width: 100%; border: none; background: transparent; font-size: 13px; line-height: 1.6;
+    color: var(--text-sub); resize: none; min-height: 60px; outline: none;
+  }
+
+  /* 风格选择样式 */
+  .style-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; width: 100%; }
+  .style-card {
+    border-radius: 16px; border: 2px solid var(--border-light); overflow: hidden;
+    cursor: pointer; transition: all 0.2s; background: #fff;
+  }
+  .style-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.1); }
+  .style-card.active { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1); }
+  .style-previews { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; height: 120px; background: #f1f5f9; }
+  .style-preview-img { width: 100%; height: 100%; object-fit: cover; }
+  .style-info { padding: 16px; }
+  .style-name { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+  .style-desc { font-size: 12px; color: var(--text-muted); }
+
+  .step-ft {
+    padding: 16px 32px; border-top: 1px solid var(--border-light);
+    display: flex; align-items: center; justify-content: flex-end; gap: 16px;
+  }
+  .btn-next {
+    padding: 12px 32px; border-radius: 12px; font-weight: 700; font-size: 14px;
+    background: var(--primary-gradient); color: #fff; border: none; cursor: pointer;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2); transition: all 0.2s;
+  }
+  .btn-next:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(99, 102, 241, 0.3); }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-spinner {
+    width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3);
+    border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite;
+  }
+
   --shadow-sm: 0 1px 2px rgba(99, 102, 241, 0.05);
   --shadow-md: 0 4px 12px rgba(99, 102, 241, 0.04);
   --shadow-lg: 0 8px 24px rgba(99, 102, 241, 0.06);
@@ -5070,9 +5160,9 @@ input:checked + .slider:before { transform: translateX(16px); }
 
       <!-- 底部按钮 -->
       <div class="left-foot">
-        <button class="btn-gen disabled" id="genBtn" onclick="startGen()">
-          <span id="genBtnTxt">请上传产品图</span>
-          <span class="cost-chip" id="genCost" style="display:none">128 灵石</span>
+        <button class="btn-gen" id="genBtn" onclick="openStepModal()">
+          <span id="genBtnTxt">立即生成</span>
+          <span class="cost-chip" id="genCost">715 灵石</span>
         </button>
       </div>
     </div>
@@ -5697,9 +5787,9 @@ input:checked + .slider:before { transform: translateX(16px); }
 
       <!-- 底部按钮 -->
       <div class="left-foot">
-        <button class="btn-gen disabled" id="genBtnAdv" onclick="startGenAdv()">
-          <span id="genBtnTxtAdv">请上传产品图</span>
-          <span class="cost-chip" id="genCostAdv" style="display:none">128 灵石</span>
+        <button class="btn-gen" id="genBtnAdv" onclick="openStepModal()">
+          <span id="genBtnTxtAdv">立即生成</span>
+          <span class="cost-chip" id="genCostAdv">715 灵石</span>
         </button>
       </div>
     </div>
@@ -12053,6 +12143,234 @@ function handleAdvKeyDown(e) {
   color: #64748b;
 }
 </style>
+
+<!-- ══ 分步生成弹窗 (Step Modal) ══ -->
+<div class="step-mask" id="stepMask" onclick="closeStepModal(event)">
+  <div class="step-modal" onclick="event.stopPropagation()">
+    <div class="step-hd">
+      <div class="step-tabs">
+        <div class="step-tab active" id="tabPlan" onclick="switchStepTab('plan')">1. 选择营销方案</div>
+        <div class="step-tab" id="tabStyle" onclick="switchStepTab('style')">2. 选择风格预览</div>
+      </div>
+      <button class="gcfg-close" onclick="closeStepModal()">✕</button>
+    </div>
+    
+    <div class="step-bd">
+      <!-- Step 1: 营销方案 -->
+      <div class="step-content active" id="contentPlan">
+        <div class="plan-list">
+          <div class="plan-item active" onclick="selectPlan(0, this)">
+            <div class="plan-item-name">极简生活家</div>
+            <span class="plan-item-tag">高转化</span>
+          </div>
+          <div class="plan-item" onclick="selectPlan(1, this)">
+            <div class="plan-item-name">科技先锋派</div>
+            <span class="plan-item-tag">硬核参数</span>
+          </div>
+          <div class="plan-item" onclick="selectPlan(2, this)">
+            <div class="plan-item-name">萌系治愈系</div>
+            <span class="plan-item-tag">情感共鸣</span>
+          </div>
+        </div>
+        <div class="plan-detail" id="planDetail">
+          <!-- 动态加载方案板块内容 -->
+        </div>
+      </div>
+
+      <!-- Step 2: 风格选择 -->
+      <div class="step-content" id="contentStyle">
+        <div style="flex:1; display:flex; flex-direction:column; gap:20px;">
+          <div class="style-grid">
+            <div class="style-card active" onclick="selectStyle(0, this)">
+              <div class="style-previews">
+                <img src="https://sc02.alicdn.com/kf/H01effcee75dc4de1803ca443cd7e7309y.png" class="style-preview-img">
+                <img src="https://sc02.alicdn.com/kf/H01effcee75dc4de1803ca443cd7e7309y.png" class="style-preview-img">
+                <img src="https://sc02.alicdn.com/kf/H01effcee75dc4de1803ca443cd7e7309y.png" class="style-preview-img">
+              </div>
+              <div class="style-info">
+                <div class="style-name">清新马卡龙</div>
+                <div class="style-desc">柔和色调，适合宠物、文具类目</div>
+              </div>
+            </div>
+            <div class="style-card" onclick="selectStyle(1, this)">
+              <div class="style-previews">
+                <img src="https://sc01.alicdn.com/kf/A7b2c269127934e089e674f6eda6101b17.png" class="style-preview-img">
+                <img src="https://sc01.alicdn.com/kf/A7b2c269127934e089e674f6eda6101b17.png" class="style-preview-img">
+                <img src="https://sc01.alicdn.com/kf/A7b2c269127934e089e674f6eda6101b17.png" class="style-preview-img">
+              </div>
+              <div class="style-info">
+                <div class="style-name">赛博工业风</div>
+                <div class="style-desc">冷硬金属质感，适合数码、3C</div>
+              </div>
+            </div>
+            <div class="style-card" onclick="selectStyle(2, this)">
+              <div class="style-previews">
+                <img src="https://sc04.alicdn.com/kf/H857be919e13042459146522c0792945d8.png" class="style-preview-img">
+                <img src="https://sc04.alicdn.com/kf/H857be919e13042459146522c0792945d8.png" class="style-preview-img">
+                <img src="https://sc04.alicdn.com/kf/H857be919e13042459146522c0792945d8.png" class="style-preview-img">
+              </div>
+              <div class="style-info">
+                <div class="style-name">极简纸艺</div>
+                <div class="style-desc">光影写实，高质感家居感</div>
+              </div>
+            </div>
+          </div>
+          <div style="background:#f8fafc; border-radius:16px; padding:20px; border:1px dashed #cbd5e1; text-align:center;">
+            <p style="color:var(--text-muted); font-size:13px;">💡 预览图仅供参考布局，AI 将根据您的商品图片进行实时适配渲染</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-ft">
+      <button class="gcfg-cancel" id="btnStepPrev" onclick="switchStepTab('plan')" style="display:none">上一步</button>
+      <button class="btn-next" id="btnStepNext" onclick="switchStepTab('style')">下一步</button>
+      <button class="btn-next" id="btnStepGen" onclick="doFinalGen()" style="display:none">
+        <span id="genText">开始生成</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+const PLAN_DATA = [
+  {
+    name: '极简生活家',
+    blocks: [
+      { title: '首屏主视觉', content: '【高清大图】产品在纯净极简的家居环境下特写，文案强调“生活的诗意”，突出产品材质与自然光的结合。' },
+      { title: '核心卖点图', content: '【功能点特写】利用微距镜头展示细节，配合轻量化的气泡标签，解释产品如何解决日常痛点。' },
+      { title: '使用场景图', content: '【生活化抓拍】模特自然使用的状态，场景虚化，焦点锁定在产品与人的交互上。' }
+    ]
+  },
+  {
+    name: '科技先锋派',
+    blocks: [
+      { title: '首屏主视觉', content: '【3D爆炸视图】展示产品内部结构，深色背景配合霓虹光效，强调“极致工艺”与“硬核性能”。' },
+      { title: '参数解析图', content: '【多维度数据】通过极简的折线图或数据看板，展示产品领先的行业参数。' },
+      { title: '场景氛围图', content: '【极客办公桌面】干净的数字办公场景，展示产品在高端工作环境中的适配度。' }
+    ]
+  },
+  {
+    name: '萌系治愈系',
+    blocks: [
+      { title: '首屏主视觉', content: '【暖色调大片】配合可爱手绘元素，产品呈现出温润亲和的特质，文案极具情感共鸣。' },
+      { title: '细节图', content: '【圆润边角展示】强调安全性与手感，背景使用马卡龙色系的布艺纹理。' },
+      { title: '对比/合辑图', content: '【多样色彩展示】多SKU排开，展示丰富的生活选择，营造“选择困难症的福音”氛围。' }
+    ]
+  }
+];
+
+function openStepModal() {
+  document.getElementById('stepMask').classList.add('show');
+  selectPlan(0, document.querySelector('.plan-item'));
+}
+
+function closeStepModal(e) {
+  if (e && e.target !== document.getElementById('stepMask') && e.type !== 'click') return;
+  document.getElementById('stepMask').classList.remove('show');
+}
+
+function switchStepTab(step) {
+  const tabs = ['plan', 'style'];
+  tabs.forEach(t => {
+    document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle('active', t === step);
+    document.getElementById('content' + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle('active', t === step);
+  });
+
+  const nextBtn = document.getElementById('btnStepNext');
+  const prevBtn = document.getElementById('btnStepPrev');
+  const genBtn = document.getElementById('btnStepGen');
+
+  if (step === 'plan') {
+    nextBtn.style.display = 'block';
+    prevBtn.style.display = 'none';
+    genBtn.style.display = 'none';
+  } else {
+    nextBtn.style.display = 'none';
+    prevBtn.style.display = 'block';
+    genBtn.style.display = 'block';
+  }
+}
+
+function selectPlan(idx, el) {
+  document.querySelectorAll('.plan-item').forEach(item => item.classList.remove('active'));
+  el.classList.add('active');
+
+  const detail = document.getElementById('planDetail');
+  const data = PLAN_DATA[idx];
+  detail.innerHTML = data.blocks.map((b, i) => `
+    <div class="block-card">
+      <div class="block-hd">
+        <span class="block-title">${b.title}</span>
+        <button class="block-ai-btn" onclick="simulateAiWrite(${idx}, ${i}, this)">🪄 AI 优化</button>
+      </div>
+      <textarea class="block-edit" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'">${b.content}</textarea>
+    </div>
+  `).join('');
+  
+  // 初始化自适应高度
+  setTimeout(() => {
+    detail.querySelectorAll('textarea').forEach(ta => {
+      ta.style.height = '';
+      ta.style.height = ta.scrollHeight + 'px';
+    });
+  }, 0);
+}
+
+function simulateAiWrite(pIdx, bIdx, btn) {
+  const originalBtnText = btn.innerHTML;
+  btn.innerHTML = '<div class="loading-spinner"></div>';
+  btn.style.pointerEvents = 'none';
+  
+  const textarea = btn.parentElement.nextElementSibling;
+  
+  setTimeout(() => {
+    textarea.value = "【AI 优化方案】" + textarea.value;
+    textarea.style.height = '';
+    textarea.style.height = textarea.scrollHeight + 'px';
+    btn.innerHTML = originalBtnText;
+    btn.style.pointerEvents = 'auto';
+    showToast('AI 内容已生成');
+  }, 800);
+}
+
+function selectStyle(idx, el) {
+  document.querySelectorAll('.style-card').forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function doFinalGen() {
+  const btn = document.getElementById('btnStepGen');
+  const txt = document.getElementById('genText');
+  txt.innerHTML = '<div style="display:flex; align-items:center; gap:8px;"><div class="loading-spinner"></div> AI 正在计算中...</div>';
+  btn.style.pointerEvents = 'none';
+  btn.style.opacity = '0.8';
+
+  setTimeout(() => {
+    closeStepModal();
+    // 触发原来的生成逻辑（显示进度条）
+    if(window.startGen) window.startGen(true);
+    else if(window.ModuleManager) window.ModuleManager.dispatch('startGen');
+    
+    // 还原按钮
+    txt.innerHTML = '开始生成';
+    btn.style.pointerEvents = 'auto';
+    btn.style.opacity = '1';
+  }, 2000);
+}
+
+function showToast(msg) {
+  const container = document.querySelector('.toast-container') || document.body;
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = `<span class="toast-ic">✨</span> ${msg}`;
+  container.appendChild(t);
+  setTimeout(() => {
+    t.classList.add('out');
+    setTimeout(() => t.remove(), 300);
+  }, 2000);
+}
+</script>
 
 </body>
 </html>
