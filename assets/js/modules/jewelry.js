@@ -262,6 +262,100 @@
           <div style="position:absolute; top:8px; right:8px; background:rgba(0,0,0,0.5); color:#fff; font-size:10px; padding:2px 6px; border-radius:4px;">${item.res}</div>
         </div>
       `).join('');
+    },
+
+    /**
+     * 上传珠宝原图
+     */
+    jewelryAddImg() {
+      if (window.CommonModule) {
+        window.CommonModule.genericUpload(url => {
+          this.setJewelryImage(url);
+        });
+      }
+    },
+
+    setJewelryImage(url) {
+      window._selectedJewelry = url;
+      const zone = document.querySelector('#leftJewelryWear .upload-zone');
+      if (zone) {
+        zone.innerHTML = `
+          <img src="${url}" style="max-width:100%; max-height:100px; object-fit:contain; border-radius:8px; margin-bottom:8px;">
+          <div style="font-size:12px; color:var(--primary); font-weight:700;">已上传珠宝</div>
+          <div style="font-size:10px; color:var(--text-sub); margin-top:2px;">点击更换</div>
+        `;
+        zone.style.borderColor = 'var(--primary)';
+        zone.style.background = '#F5F3FF';
+      }
+      if (window.GenieUI) window.GenieUI.showToast('珠宝上传成功', '💍');
+    },
+
+    updateBgPreview(url) {
+      const bg = document.getElementById('jModelBg');
+      if (bg) bg.style.backgroundImage = `url('${url}')`;
+      
+      const sidePreview = document.getElementById('jewelrySidebarPreview');
+      if (sidePreview) {
+        sidePreview.innerHTML = `<div style="background:url('${url}') center/cover no-repeat; width:100%; height:100%;"></div>`;
+      }
+    },
+
+    switchJewelryCat(el, cat) {
+      if (el && el.parentElement) {
+        el.parentElement.querySelectorAll('.jewelry-cat-tab').forEach(t => {
+          t.classList.remove('active');
+          t.style.fontWeight = '400';
+          t.style.color = 'var(--text-sub)';
+        });
+        el.classList.add('active');
+        el.style.fontWeight = '700';
+        el.style.color = 'var(--primary)';
+      }
+      this.renderJewelryModels(cat);
+    },
+
+    addMyModel() {
+      if (window.CommonModule) {
+        window.CommonModule.genericUpload(url => {
+          this.pushToMyModels(url);
+        });
+      }
+    },
+
+    pushToMyModels(url) {
+      const grid = document.getElementById('jewelryMyModelGrid');
+      if (!grid) return;
+      
+      const div = document.createElement('div');
+      div.className = 'j-model-item';
+      div.onclick = () => this.selectJewelryModel(div, url);
+      div.style = 'border-radius:12px; overflow:hidden; position:relative; cursor:pointer; transition: all 0.2s; aspect-ratio:3/4;';
+      div.innerHTML = `
+        <div style="background:url('${url}') center/cover no-repeat; background-color:#f8fafc; width:100%; height:100%;"></div>
+        <div class="j-check-overlay" style="display:none;"></div>
+      `;
+      grid.prepend(div);
+      this.selectJewelryModel(div, url);
+    },
+
+    setPosMode(mode, el) {
+      this.state._mode = mode;
+      if (el && el.parentElement) {
+        el.parentElement.querySelectorAll('.vdo-model-mode-btn').forEach(b => b.classList.remove('active'));
+        el.classList.add('active');
+      }
+      if (mode === 'manual') this.openManual();
+    },
+
+    openManual() {
+      const mask = document.getElementById('jewelryManualMask');
+      if (mask) mask.style.display = 'flex';
+    },
+
+    closeManual(e) {
+      if (e && e.target.id !== 'jewelryManualMask' && !e.target.classList.contains('btn-primary')) return;
+      const mask = document.getElementById('jewelryManualMask');
+      if (mask) mask.style.display = 'none';
     }
   };
 

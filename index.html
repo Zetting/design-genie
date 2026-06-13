@@ -263,92 +263,214 @@
 
   /* ══ 分步生成弹窗 (Step Modal) ══ */
   .step-mask {
-    position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5);
-    backdrop-filter: blur(8px); z-index: 1000; display: none;
-    align-items: center; justify-content: center; animation: fadeIn 0.2s;
+    position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(15px); z-index: 1000; display: none;
+    align-items: center; justify-content: center; animation: fadeIn 0.3s ease;
   }
   .step-mask.show { display: flex; }
   .step-modal {
-    background: #fff; width: 860px; height: 620px; border-radius: 24px;
+    background: #fff; width: 1000px; height: 740px; border-radius: 32px;
     display: flex; flex-direction: column; overflow: hidden;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.15);
+    position: relative; border: 1px solid rgba(255,255,255,0.8);
   }
+  /* 类似参考图的右上角装饰/切换入口 */
+  .step-modal-corner {
+    position: absolute; top: 0; right: 0; width: 64px; height: 64px;
+    cursor: pointer; z-index: 20;
+  }
+  .step-modal-corner::before {
+    content: ''; position: absolute; top: 0; right: 0;
+    border-style: solid; border-width: 0 64px 64px 0;
+    border-color: transparent #f1f5f9 transparent transparent;
+    transition: border-color 0.2s;
+  }
+  .step-modal-corner:hover::before { border-color: transparent #e2e8f0 transparent transparent; }
+  .step-modal-corner svg {
+    position: absolute; top: 12px; right: 12px; color: var(--primary);
+  }
+
   .step-hd {
-    padding: 20px 32px; border-bottom: 1px solid var(--border-light);
-    display: flex; align-items: center; justify-content: space-between;
+    padding: 40px 48px 24px; display: flex; flex-direction: column; gap: 16px;
+    background: #fff;
   }
-  .step-tabs { display: flex; gap: 32px; }
+  .step-title { font-size: 28px; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; }
+  .step-subtitle { font-size: 14px; color: var(--text-muted); margin-top: -8px; }
+
+  .step-tabs { display: flex; gap: 8px; background: #f1f5f9; padding: 4px; border-radius: 12px; width: fit-content; margin-top: 12px; }
   .step-tab {
-    font-size: 16px; font-weight: 700; color: var(--text-muted);
-    cursor: pointer; position: relative; padding-bottom: 8px;
-    transition: all 0.2s;
+    font-size: 13px; font-weight: 700; color: #64748b;
+    cursor: pointer; padding: 8px 20px; border-radius: 9px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  .step-tab.active { color: var(--primary); }
-  .step-tab.active::after {
-    content: ''; position: absolute; bottom: 0; left: 0; right: 0;
-    height: 3px; background: var(--primary); border-radius: 2px;
-  }
-  .step-bd { flex: 1; overflow: hidden; display: flex; }
-  .step-content { display: none; width: 100%; height: 100%; padding: 24px 32px; overflow-y: auto; }
-  .step-content.active { display: flex; gap: 24px; }
+  .step-tab.active { background: #fff; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
 
-  /* 营销方案样式 */
-  .plan-list { width: 180px; display: flex; flex-direction: column; gap: 12px; }
-  .plan-item {
-    padding: 16px; border-radius: 12px; border: 1.5px solid var(--border-light);
-    cursor: pointer; transition: all 0.2s;
+  .step-bd { flex: 1; overflow: hidden; display: flex; padding: 0 48px 32px; }
+  .step-content { display: none; width: 100%; height: 100%; overflow-y: auto; scrollbar-width: none; }
+  .step-content::-webkit-scrollbar { display: none; }
+  .step-content.active { display: flex; }
+
+  /* 营销方案样式 - 3列并排 */
+  .plan-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; width: 100%; height: 100%; padding-top: 12px; }
+  .plan-col {
+    background: #fdfdfe; border-radius: 32px; border: 2px solid #f1f5f9;
+    display: flex; flex-direction: column; overflow: visible; transition: all 0.5s cubic-bezier(0.2, 1, 0.2, 1);
+    position: relative; cursor: pointer;
   }
-  .plan-item:hover { border-color: var(--primary-light); background: var(--bg-main); }
-  .plan-item.active { border-color: var(--primary); background: rgba(99, 102, 241, 0.05); }
-  .plan-item-name { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
-  .plan-item-tag { font-size: 10px; color: var(--primary); background: rgba(99, 102, 241, 0.1); padding: 2px 6px; border-radius: 4px; }
+  .plan-col:hover { border-color: var(--primary-light); transform: translateY(-12px); box-shadow: 0 30px 60px rgba(0,0,0,0.06); }
+  .plan-col.active { border-color: var(--primary); background: #fff; box-shadow: 0 25px 50px rgba(99, 102, 241, 0.12); }
+  .plan-col.active::before {
+    content: '当前选中'; position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+    background: var(--primary); color: #fff; font-size: 11px; font-weight: 800; padding: 4px 18px; border-radius: 20px; z-index: 10;
+    box-shadow: 0 8px 16px rgba(99, 102, 241, 0.4); border: 2px solid #fff;
+  }
   
-  .plan-detail { flex: 1; display: flex; flex-direction: column; gap: 16px; }
-  .block-card {
-    background: #f8fafc; border-radius: 12px; padding: 16px; border: 1px solid var(--border-light);
+  .plan-col-hd {
+    padding: 36px 28px 24px; display: flex; flex-direction: column; align-items: center; gap: 12px; border-bottom: 1px dashed #eef2f6;
+    background: #fff; border-radius: 32px 32px 0 0;
   }
-  .block-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-  .block-title { font-weight: 700; font-size: 13px; color: var(--text-main); }
-  .block-ai-btn {
-    font-size: 11px; color: var(--primary); cursor: pointer; display: flex; align-items: center; gap: 4px;
-    padding: 4px 8px; border-radius: 6px; background: #fff; border: 1px solid rgba(99, 102, 241, 0.2);
+  .plan-re-gen {
+    position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; border-radius: 50%;
+    background: #f8fafc; border: 1px solid #f1f5f9; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: var(--text-muted); transition: all 0.3s; z-index: 15;
   }
-  .block-ai-btn:hover { background: var(--primary); color: #fff; }
-  .block-edit {
-    width: 100%; border: none; background: transparent; font-size: 13px; line-height: 1.6;
-    color: var(--text-sub); resize: none; min-height: 60px; outline: none;
+  .plan-re-gen:hover { background: var(--primary); color: #fff; transform: rotate(180deg) scale(1.1); border-color: var(--primary); }
+  
+  .plan-col-bd { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 16px; scrollbar-width: none; }
+  .plan-col-bd::-webkit-scrollbar { display: none; }
+  
+  .mini-block {
+    background: #f8fafc; border-radius: 16px; padding: 16px; border: 1px solid #f1f5f9; transition: background 0.3s;
   }
+  .mini-block:hover { background: #fff; border-color: var(--primary-light); }
+  .mini-block-title { font-size: 11px; font-weight: 900; color: #94a3b8; text-transform: uppercase; margin-bottom: 6px; display: block; letter-spacing: 0.5px; }
+  .mini-block-content { font-size: 13px; color: var(--text-main); line-height: 1.6; font-weight: 500; }
 
-  /* 风格选择样式 */
-  .style-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; width: 100%; }
+  /* 风格选择 - 极致通透 */
+  .style-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; width: 100%; padding-top: 12px; }
   .style-card {
-    border-radius: 16px; border: 2px solid var(--border-light); overflow: hidden;
-    cursor: pointer; transition: all 0.2s; background: #fff;
+    border-radius: 32px; border: 2px solid #f1f5f9; overflow: hidden;
+    cursor: pointer; transition: all 0.5s cubic-bezier(0.2, 1, 0.2, 1); background: #fff;
+    position: relative;
   }
-  .style-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.1); }
-  .style-card.active { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1); }
-  .style-previews { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; height: 120px; background: #f1f5f9; }
-  .style-preview-img { width: 100%; height: 100%; object-fit: cover; }
-  .style-info { padding: 16px; }
-  .style-name { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
-  .style-desc { font-size: 12px; color: var(--text-muted); }
+  .style-card:hover { transform: translateY(-12px); box-shadow: 0 40px 80px rgba(0,0,0,0.1); border-color: var(--primary-light); }
+  .style-card.active { border-color: var(--primary); box-shadow: 0 0 0 8px rgba(99, 102, 241, 0.08); }
+  .style-card.active::after {
+    content: '✓'; position: absolute; top: 20px; right: 20px; width: 32px; height: 28px;
+    background: var(--primary); color: #fff; border-radius: 12px; font-size: 16px;
+    display: flex; align-items: center; justify-content: center; font-weight: 900; z-index: 5;
+    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.3);
+  }
+  .style-previews { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; height: 200px; background: #f8fafc; padding: 4px; }
+  .style-preview-img { width: 100%; height: 100%; object-fit: cover; border-radius: 12px; transition: all 0.8s; }
+  .style-card:hover .style-preview-img { transform: scale(1.1); }
+  .style-info { padding: 24px 32px; background: #fff; }
+  .style-name { font-weight: 800; font-size: 18px; margin-bottom: 8px; color: var(--text-main); }
+  .style-desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
 
   .step-ft {
-    padding: 16px 32px; border-top: 1px solid var(--border-light);
-    display: flex; align-items: center; justify-content: flex-end; gap: 16px;
+    padding: 24px 48px 40px; display: flex; align-items: center; justify-content: space-between;
+    background: #fff;
   }
+  /* 类似参考图的底部协议样式 */
+  .step-agreement { font-size: 11px; color: #94a3b8; display: flex; align-items: center; gap: 4px; }
+  .step-agreement a { color: var(--primary); text-decoration: none; font-weight: 600; }
+
   .btn-next {
-    padding: 12px 32px; border-radius: 12px; font-weight: 700; font-size: 14px;
+    padding: 14px 40px; border-radius: 18px; font-weight: 800; font-size: 15px;
     background: var(--primary-gradient); color: #fff; border: none; cursor: pointer;
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2); transition: all 0.2s;
+    box-shadow: 0 10px 25px rgba(99, 102, 241, 0.25); transition: all 0.3s;
+    display: flex; align-items: center; gap: 10px;
   }
-  .btn-next:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(99, 102, 241, 0.3); }
+  .btn-next:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(99, 102, 241, 0.35); }
+  .btn-next:active { transform: translateY(0); }
+  
+  /* 底部生成按钮重构 */
+  .left-foot {
+    padding: 24px; border-top: 1px solid var(--border-light); background: #fff; flex-shrink: 0;
+    position: relative; display: flex; flex-direction: column; gap: 12px;
+  }
+  .btn-gen-wrap { position: relative; width: 100%; height: 56px; }
+  .btn-gen {
+    width: 100%; height: 100%; border-radius: 16px; background: var(--primary-gradient);
+    color: #fff; border: none; font-size: 16px; font-weight: 800; cursor: pointer;
+    box-shadow: 0 10px 25px rgba(99, 102, 241, 0.2); transition: all 0.3s;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    position: relative; overflow: hidden;
+  }
+  .btn-gen:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(99, 102, 241, 0.3); }
+  .btn-gen:active { transform: translateY(0); }
+  
+  /* 按钮斜角切换入口 */
+  .btn-gen-corner {
+    position: absolute; top: 0; right: 0; width: 44px; height: 44px;
+    cursor: pointer; z-index: 10;
+  }
+  .btn-gen-corner::before {
+    content: ''; position: absolute; top: 0; right: 0;
+    border-style: solid; border-width: 0 44px 44px 0;
+    border-color: transparent rgba(255,255,255,0.4) transparent transparent;
+    transition: border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .btn-gen-corner:hover::before { border-color: transparent rgba(255,255,255,0.6) transparent transparent; }
+  .btn-gen-corner svg {
+    position: absolute; top: 5px; right: 5px; color: #fff; width: 14px; height: 14px;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
+    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+  .btn-gen-corner:hover svg { transform: rotate(180deg) scale(1.2); }
+  .btn-gen-corner::after {
+    content: '切换'; position: absolute; top: 12px; right: 2px;
+    font-size: 9px; font-weight: 900; color: #fff;
+    transform: rotate(45deg); pointer-events: none;
+    opacity: 0.9; letter-spacing: 1px; text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  }
+  .btn-gen-mode-label {
+    position: absolute; top: -16px; right: 48px; font-size: 10px; font-weight: 800;
+    color: var(--primary); background: #f5f3ff; padding: 3px 10px; border-radius: 8px;
+    display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(99, 102, 241, 0.12);
+    pointer-events: none; z-index: 5; animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  .btn-gen-mode-label::after {
+    content: ''; position: absolute; bottom: -4px; right: 10px;
+    border-style: solid; border-width: 4px 4px 0 4px;
+    border-color: #f5f3ff transparent transparent transparent;
+  }
+  @keyframes bounceIn {
+    from { opacity: 0; transform: translateY(10px) scale(0.8); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .btn-gen-mode-label::after {
+    content: ''; position: absolute; bottom: -4px; right: 10px;
+    border-style: solid; border-width: 4px 4px 0 4px;
+    border-color: #f5f3ff transparent transparent transparent;
+  }
+  
+  .btn-step-back {
+    background: #f1f5f9; color: #64748b; padding: 14px 28px; border-radius: 18px;
+    font-weight: 700; border: none; cursor: pointer; transition: all 0.2s;
+  }
+  .btn-step-back:hover { background: #e2e8f0; color: #475569; }
 
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   @keyframes spin { to { transform: rotate(360deg); } }
   .loading-spinner {
     width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3);
     border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite;
+  }
+
+  /* 生成模式迷你切换器 */
+  .gen-mode-seg-mini {
+    display: flex; background: #fff; padding: 2px; border-radius: 8px;
+    position: absolute; top: -16px; right: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border: 1px solid var(--border-light); z-index: 10;
+  }
+  .gen-mode-seg-mini button {
+    border: none; background: transparent; padding: 4px 10px; font-size: 11px;
+    font-weight: 600; color: #64748b; cursor: pointer; border-radius: 6px; transition: all 0.2s;
+  }
+  .gen-mode-seg-mini button.active {
+    background: #fff; color: var(--primary); box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   }
 
   --shadow-sm: 0 1px 2px rgba(99, 102, 241, 0.05);
@@ -1949,7 +2071,7 @@ input:checked + .slider:before { transform: translateX(16px); }
 .gcfg-save:hover{opacity:.9;transform:translateY(-1px);}
 
 /* ─── 底部按钮 ─── */
-.left-foot{padding:14px 20px 16px;border-top:1px solid var(--border);flex-shrink:0;}
+.left-foot{padding:14px 20px 16px;border-top:1px solid var(--border);flex-shrink:0; position:relative;}
 .btn-gen{
   width:100%;padding:13px;
   background:var(--primary-gradient);
@@ -3936,7 +4058,7 @@ input:checked + .slider:before { transform: translateX(16px); }
         
         <div class="sidebar-sub-body">
           <!-- 三级菜单：珠宝佩戴 -->
-          <div class="si active" onclick="window.ModuleManager.activate('jewelryWear',this)">
+          <div class="si" onclick="window.ModuleManager.activate('jewelryWear',this)">
             <span class="si-ic">💍</span>珠宝佩戴
           </div>
         </div>
@@ -3945,9 +4067,34 @@ input:checked + .slider:before { transform: translateX(16px); }
 
     <div id="sideVideo" style="display:none">
       <div class="sidebar-label">AI视频 <span style="margin-left:auto; opacity:0.5; font-size:10px;">︿</span></div>
-      <div class="si active" onclick="window.ModuleManager.activate('vdoProd',this)">
+      <div class="si" onclick="window.ModuleManager.activate('vdoProd',this)">
         <span class="si-ic">📹</span>商品视频
         <span class="si-badge">New</span>
+      </div>
+      <div class="si" onclick="window.ModuleManager.activate('vdoReplicate',this)">
+        <span class="si-ic">⟳</span>视频复刻
+      </div>
+    </div>
+
+    <div id="sideTools" style="display:none">
+      <div class="sidebar-label">AI工具 <span style="margin-left:auto; opacity:0.5; font-size:10px;">︿</span></div>
+      
+      <!-- 二级菜单：图片处理 (支持收缩) -->
+      <div class="sidebar-sub-group">
+        <div class="sidebar-sub-hd" onclick="toggleSidebarSubGroup(this)">
+          图片处理
+          <span class="sub-hd-arrow">︿</span>
+        </div>
+        
+        <div class="sidebar-sub-body">
+          <!-- 三级菜单项目 -->
+          <div class="si" onclick="window.ModuleManager.activate('imgEdit',this)">
+            <span class="si-ic">✂️</span>图片编辑
+          </div>
+          <div class="si" onclick="window.ModuleManager.activate('imgTrans',this)">
+            <span class="si-ic">🌐</span>图片翻译
+          </div>
+        </div>
       </div>
       <div class="si" onclick="window.ModuleManager.activate('vdoReplicate',this)">
         <span class="si-ic">⟳</span>视频复刻
@@ -4665,7 +4812,7 @@ input:checked + .slider:before { transform: translateX(16px); }
     </div>
 
     <!-- ═══ LEFT ═══ -->
-    <div class="left" id="leftAplus">
+    <div class="left" id="leftAplus" style="display:none">
       <div class="left-scroll">
 
         <!-- 商品原图 -->
@@ -5160,10 +5307,18 @@ input:checked + .slider:before { transform: translateX(16px); }
 
       <!-- 底部按钮 -->
       <div class="left-foot">
-        <button class="btn-gen" id="genBtn" onclick="openStepModal()">
-          <span id="genBtnTxt">立即生成</span>
-          <span class="cost-chip" id="genCost">715 灵石</span>
-        </button>
+        <div class="btn-gen-wrap">
+          <div class="btn-gen-mode-label" id="genModeLabel">
+            ✨ 直接生成模式
+          </div>
+          <button class="btn-gen" id="genBtn" onclick="window.ModuleManager.dispatch('handleAplusGen')">
+            <span id="genBtnTxt">立即生成</span>
+            <span class="cost-chip" id="genCost">715 灵石</span>
+            <div class="btn-gen-corner" onclick="event.stopPropagation(); window.ModuleManager.dispatch('toggleAplusMode', this)" title="切换生成模式">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7l5-5 5 5M7 17l5 5 5-5"/></svg>
+            </div>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -5787,10 +5942,18 @@ input:checked + .slider:before { transform: translateX(16px); }
 
       <!-- 底部按钮 -->
       <div class="left-foot">
-        <button class="btn-gen" id="genBtnAdv" onclick="openStepModal()">
-          <span id="genBtnTxtAdv">立即生成</span>
-          <span class="cost-chip" id="genCostAdv">715 灵石</span>
-        </button>
+        <div class="btn-gen-wrap">
+          <div class="btn-gen-mode-label" id="genModeLabelAdv">
+            ✨ 直接生成模式
+          </div>
+          <button class="btn-gen" id="genBtnAdv" onclick="window.ModuleManager.dispatch('handleAplusGen')">
+            <span id="genBtnTxtAdv">立即生成</span>
+            <span class="cost-chip" id="genCostAdv">715 灵石</span>
+            <div class="btn-gen-corner" onclick="event.stopPropagation(); window.ModuleManager.dispatch('toggleAplusMode', this)" title="切换生成模式">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7l5-5 5 5M7 17l5 5 5-5"/></svg>
+            </div>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -12147,87 +12310,58 @@ function handleAdvKeyDown(e) {
 <!-- ══ 分步生成弹窗 (Step Modal) ══ -->
 <div class="step-mask" id="stepMask" onclick="closeStepModal(event)">
   <div class="step-modal" onclick="event.stopPropagation()">
+    <!-- 右上角装饰/模式切换入口 -->
+    <div class="step-modal-corner" title="切换视图">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    </div>
+
     <div class="step-hd">
+      <div class="step-title">选择创意方案</div>
+      <div class="step-subtitle">AI 将根据选定的方案和风格，为您精准构建商品视觉链路</div>
+      
       <div class="step-tabs">
-        <div class="step-tab active" id="tabPlan" onclick="switchStepTab('plan')">1. 选择营销方案</div>
-        <div class="step-tab" id="tabStyle" onclick="switchStepTab('style')">2. 选择风格预览</div>
+        <div class="step-tab active" id="tabPlan" onclick="switchStepTab('plan')">1. 创意方案</div>
+        <div class="step-tab" id="tabStyle" onclick="switchStepTab('style')">2. 视觉风格</div>
       </div>
-      <button class="gcfg-close" onclick="closeStepModal()">✕</button>
     </div>
     
     <div class="step-bd">
       <!-- Step 1: 营销方案 -->
       <div class="step-content active" id="contentPlan">
-        <div class="plan-list">
-          <div class="plan-item active" onclick="selectPlan(0, this)">
-            <div class="plan-item-name">极简生活家</div>
-            <span class="plan-item-tag">高转化</span>
-          </div>
-          <div class="plan-item" onclick="selectPlan(1, this)">
-            <div class="plan-item-name">科技先锋派</div>
-            <span class="plan-item-tag">硬核参数</span>
-          </div>
-          <div class="plan-item" onclick="selectPlan(2, this)">
-            <div class="plan-item-name">萌系治愈系</div>
-            <span class="plan-item-tag">情感共鸣</span>
-          </div>
-        </div>
-        <div class="plan-detail" id="planDetail">
-          <!-- 动态加载方案板块内容 -->
+        <div class="plan-row" id="planContainer">
+          <!-- 由 JS 动态生成 3 套方案列 -->
         </div>
       </div>
 
       <!-- Step 2: 风格选择 -->
       <div class="step-content" id="contentStyle">
-        <div style="flex:1; display:flex; flex-direction:column; gap:20px;">
-          <div class="style-grid">
-            <div class="style-card active" onclick="selectStyle(0, this)">
-              <div class="style-previews">
-                <img src="https://sc02.alicdn.com/kf/H01effcee75dc4de1803ca443cd7e7309y.png" class="style-preview-img">
-                <img src="https://sc02.alicdn.com/kf/H01effcee75dc4de1803ca443cd7e7309y.png" class="style-preview-img">
-                <img src="https://sc02.alicdn.com/kf/H01effcee75dc4de1803ca443cd7e7309y.png" class="style-preview-img">
-              </div>
-              <div class="style-info">
-                <div class="style-name">清新马卡龙</div>
-                <div class="style-desc">柔和色调，适合宠物、文具类目</div>
-              </div>
-            </div>
-            <div class="style-card" onclick="selectStyle(1, this)">
-              <div class="style-previews">
-                <img src="https://sc01.alicdn.com/kf/A7b2c269127934e089e674f6eda6101b17.png" class="style-preview-img">
-                <img src="https://sc01.alicdn.com/kf/A7b2c269127934e089e674f6eda6101b17.png" class="style-preview-img">
-                <img src="https://sc01.alicdn.com/kf/A7b2c269127934e089e674f6eda6101b17.png" class="style-preview-img">
-              </div>
-              <div class="style-info">
-                <div class="style-name">赛博工业风</div>
-                <div class="style-desc">冷硬金属质感，适合数码、3C</div>
-              </div>
-            </div>
-            <div class="style-card" onclick="selectStyle(2, this)">
-              <div class="style-previews">
-                <img src="https://sc04.alicdn.com/kf/H857be919e13042459146522c0792945d8.png" class="style-preview-img">
-                <img src="https://sc04.alicdn.com/kf/H857be919e13042459146522c0792945d8.png" class="style-preview-img">
-                <img src="https://sc04.alicdn.com/kf/H857be919e13042459146522c0792945d8.png" class="style-preview-img">
-              </div>
-              <div class="style-info">
-                <div class="style-name">极简纸艺</div>
-                <div class="style-desc">光影写实，高质感家居感</div>
-              </div>
-            </div>
+        <div style="flex:1; display:flex; flex-direction:column; gap:24px;">
+          <div class="style-grid" id="styleContainer">
+            <!-- 由 JS 动态生成 3 套风格预览 -->
           </div>
-          <div style="background:#f8fafc; border-radius:16px; padding:20px; border:1px dashed #cbd5e1; text-align:center;">
-            <p style="color:var(--text-muted); font-size:13px;">💡 预览图仅供参考布局，AI 将根据您的商品图片进行实时适配渲染</p>
+          <div style="background:#f1f5f9; border-radius:20px; padding:20px 32px; display:flex; align-items:center; gap:16px;">
+             <span style="font-size:24px;">💡</span>
+             <p style="color:var(--text-sub); font-size:13px; line-height:1.6; font-weight:500;">预览图仅供参考布局，AI 将根据您的商品图片进行实时适配渲染，确保最终产出与品牌视觉高度一致。</p>
           </div>
         </div>
       </div>
     </div>
 
     <div class="step-ft">
-      <button class="gcfg-cancel" id="btnStepPrev" onclick="switchStepTab('plan')" style="display:none">上一步</button>
-      <button class="btn-next" id="btnStepNext" onclick="switchStepTab('style')">下一步</button>
-      <button class="btn-next" id="btnStepGen" onclick="doFinalGen()" style="display:none">
-        <span id="genText">开始生成</span>
-      </button>
+      <div class="step-agreement">
+        点击生成即代表同意 <a href="#">服务协议</a> 和 <a href="#">隐私政策</a>
+      </div>
+      <div style="display:flex; gap:12px;">
+        <button class="btn-step-back" id="btnStepPrev" onclick="switchStepTab('plan')" style="display:none">返回方案</button>
+        <button class="btn-next" id="btnStepNext" onclick="switchStepTab('style')">
+          下一步
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <button class="btn-next" id="btnStepGen" onclick="doFinalGen()" style="display:none">
+          <span id="genText">立即生成</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        </button>
+      </div>
     </div>
   </div>
 </div>
@@ -12236,6 +12370,8 @@ function handleAdvKeyDown(e) {
 const PLAN_DATA = [
   {
     name: '极简生活家',
+    icon: '🏠',
+    tag: '高转化',
     blocks: [
       { title: '首屏主视觉', content: '【高清大图】产品在纯净极简的家居环境下特写，文案强调“生活的诗意”，突出产品材质与自然光的结合。' },
       { title: '核心卖点图', content: '【功能点特写】利用微距镜头展示细节，配合轻量化的气泡标签，解释产品如何解决日常痛点。' },
@@ -12244,6 +12380,8 @@ const PLAN_DATA = [
   },
   {
     name: '科技先锋派',
+    icon: '🚀',
+    tag: '硬核参数',
     blocks: [
       { title: '首屏主视觉', content: '【3D爆炸视图】展示产品内部结构，深色背景配合霓虹光效，强调“极致工艺”与“硬核性能”。' },
       { title: '参数解析图', content: '【多维度数据】通过极简的折线图或数据看板，展示产品领先的行业参数。' },
@@ -12252,6 +12390,8 @@ const PLAN_DATA = [
   },
   {
     name: '萌系治愈系',
+    icon: '🧸',
+    tag: '情感共鸣',
     blocks: [
       { title: '首屏主视觉', content: '【暖色调大片】配合可爱手绘元素，产品呈现出温润亲和的特质，文案极具情感共鸣。' },
       { title: '细节图', content: '【圆润边角展示】强调安全性与手感，背景使用马卡龙色系的布艺纹理。' },
@@ -12262,7 +12402,72 @@ const PLAN_DATA = [
 
 function openStepModal() {
   document.getElementById('stepMask').classList.add('show');
-  selectPlan(0, document.querySelector('.plan-item'));
+  renderStepContent();
+}
+
+function renderStepContent() {
+  // 渲染营销方案
+  const planContainer = document.getElementById('planContainer');
+  planContainer.innerHTML = PLAN_DATA.map((plan, idx) => `
+    <div class="plan-col ${idx === 0 ? 'active' : ''}" onclick="selectPlanCol(${idx}, this)">
+      <button class="plan-re-gen" onclick="reGenPlan(${idx}, event)" title="重新规划">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+      </button>
+      <div class="plan-col-hd">
+        <div class="plan-item-ic">${plan.icon}</div>
+        <div class="plan-item-name">${plan.name}</div>
+        <span class="plan-item-tag">${plan.tag}</span>
+      </div>
+      <div class="plan-col-bd">
+        ${plan.blocks.map(b => `
+          <div class="mini-block">
+            <span class="mini-block-title">${b.title}</span>
+            <div class="mini-block-content">${b.content}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+
+  // 渲染风格预览
+  const styleContainer = document.getElementById('styleContainer');
+  const styles = [
+    { name: '清新马卡龙', desc: '柔和色调，适合宠物、文具类', img: 'https://sc02.alicdn.com/kf/H01effcee75dc4de1803ca443cd7e7309y.png' },
+    { name: '赛博工业风', desc: '冷硬金属质感，适合数码、3C', img: 'https://sc01.alicdn.com/kf/A7b2c269127934e089e674f6eda6101b17.png' },
+    { name: '极简纸艺', desc: '光影写实，高质感家居感', img: 'https://sc04.alicdn.com/kf/H857be919e13042459146522c0792945d8.png' }
+  ];
+  styleContainer.innerHTML = styles.map((s, idx) => `
+    <div class="style-card ${idx === 0 ? 'active' : ''}" onclick="selectStyle(${idx}, this)">
+      <div class="style-previews">
+        <img src="${s.img}" class="style-preview-img">
+        <img src="${s.img}" class="style-preview-img">
+        <img src="${s.img}" class="style-preview-img">
+      </div>
+      <div class="style-info">
+        <div class="style-name">${s.name}</div>
+        <div class="style-desc">${s.desc}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function selectPlanCol(idx, el) {
+  document.querySelectorAll('.plan-col').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function reGenPlan(idx, e) {
+  e.stopPropagation();
+  const req = prompt("请输入您的简短要求（如：更硬核、侧重户外场景）：");
+  if (req === null) return;
+  
+  showToast('AI 正在为您重新规划...', '🪄');
+  setTimeout(() => {
+    PLAN_DATA[idx].name = "AI 深度定制方案";
+    PLAN_DATA[idx].blocks[0].content = "【根据需求重构】" + PLAN_DATA[idx].blocks[0].content;
+    renderStepContent();
+    showToast('方案已更新');
+  }, 1000);
 }
 
 function closeStepModal(e) {
@@ -12273,8 +12478,13 @@ function closeStepModal(e) {
 function switchStepTab(step) {
   const tabs = ['plan', 'style'];
   tabs.forEach(t => {
-    document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle('active', t === step);
-    document.getElementById('content' + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle('active', t === step);
+    const tabEl = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1));
+    const contentEl = document.getElementById('content' + t.charAt(0).toUpperCase() + t.slice(1));
+    if(tabEl) tabEl.classList.toggle('active', t === step);
+    if(contentEl) {
+      contentEl.classList.toggle('active', t === step);
+      contentEl.style.display = (t === step) ? 'flex' : 'none';
+    }
   });
 
   const nextBtn = document.getElementById('btnStepNext');
@@ -12282,39 +12492,14 @@ function switchStepTab(step) {
   const genBtn = document.getElementById('btnStepGen');
 
   if (step === 'plan') {
-    nextBtn.style.display = 'block';
-    prevBtn.style.display = 'none';
-    genBtn.style.display = 'none';
+    if(nextBtn) nextBtn.style.display = 'flex';
+    if(prevBtn) prevBtn.style.display = 'none';
+    if(genBtn) genBtn.style.display = 'none';
   } else {
-    nextBtn.style.display = 'none';
-    prevBtn.style.display = 'block';
-    genBtn.style.display = 'block';
+    if(nextBtn) nextBtn.style.display = 'none';
+    if(prevBtn) prevBtn.style.display = 'flex';
+    if(genBtn) genBtn.style.display = 'flex';
   }
-}
-
-function selectPlan(idx, el) {
-  document.querySelectorAll('.plan-item').forEach(item => item.classList.remove('active'));
-  el.classList.add('active');
-
-  const detail = document.getElementById('planDetail');
-  const data = PLAN_DATA[idx];
-  detail.innerHTML = data.blocks.map((b, i) => `
-    <div class="block-card">
-      <div class="block-hd">
-        <span class="block-title">${b.title}</span>
-        <button class="block-ai-btn" onclick="simulateAiWrite(${idx}, ${i}, this)">🪄 AI 优化</button>
-      </div>
-      <textarea class="block-edit" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'">${b.content}</textarea>
-    </div>
-  `).join('');
-  
-  // 初始化自适应高度
-  setTimeout(() => {
-    detail.querySelectorAll('textarea').forEach(ta => {
-      ta.style.height = '';
-      ta.style.height = ta.scrollHeight + 'px';
-    });
-  }, 0);
 }
 
 function simulateAiWrite(pIdx, bIdx, btn) {

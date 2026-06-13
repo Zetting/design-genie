@@ -36,20 +36,31 @@
       this.toggleAreas({ 'batchEditWrap': false, 'standardRightArea': true });
       
       const imgEditFeats = document.getElementById('imgEditFeats');
+      const emptyState = document.getElementById('emptyState');
       const emptyFlow = document.querySelector('.empty-state .flow');
       const platformRow = document.querySelector('.empty-state .platform-row');
       
       if (sceneId === 'imgEdit') {
         if (imgEditFeats) imgEditFeats.style.display = 'flex';
+        if (emptyState) emptyState.style.display = 'flex';
         if (emptyFlow) emptyFlow.style.display = 'none';
         if (platformRow) platformRow.style.display = 'none';
         this.resetTabs('上传图片', '历史记录');
       } else {
         if (imgEditFeats) imgEditFeats.style.display = 'none';
+        if (emptyState) emptyState.style.display = 'flex';
         if (emptyFlow) emptyFlow.style.display = 'flex';
         if (platformRow) platformRow.style.display = 'flex';
         this.resetTabs();
       }
+      
+      // 隐藏结果区和案例区，确保看到的是空态引导
+      const resArea = document.getElementById('resultArea');
+      const casesArea = document.getElementById('casesArea');
+      const jewelryWorkspace = document.getElementById('jewelryWorkspace');
+      if (resArea) resArea.style.display = 'none';
+      if (casesArea) casesArea.style.display = 'none';
+      if (jewelryWorkspace) jewelryWorkspace.style.display = 'none';
     },
 
     /**
